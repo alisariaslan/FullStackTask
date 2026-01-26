@@ -19,6 +19,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
+// CORS Politikası
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowNextApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // Frontend
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 // Auto migrate
@@ -52,17 +64,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// CORS Politikası (local ihtiyaç halinde açılacak)
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowNextApp",
-//        policy =>
-//        {
-//            policy.WithOrigins("http://localhost:3000") // Frontend adresi
-//                  .AllowAnyHeader()
-//                  .AllowAnyMethod();
-//        });
-//});
+app.UseCors("AllowNextApp");
 
 app.UseHttpsRedirection();
 

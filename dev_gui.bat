@@ -17,6 +17,7 @@ echo        7. Son Migration'i Geri Al (dotnet ef migrations remove)
 echo        8. Projeyi Derle (dotnet build)
 echo        9. Docker Olmadan Calistir (dotnet run)
 echo        10. Hot Reload ile Calistir (dotnet watch)
+echo        11. Clienti Calistir (npm run dev)
 echo        0. CIKIS
 
 set /p secim="Islem Seciniz (0-11): "
@@ -31,7 +32,7 @@ if "%secim%"=="7" goto EF_REMOVE
 if "%secim%"=="8" goto DOTNET_BUILD
 if "%secim%"=="9" goto DOTNET_RUN
 if "%secim%"=="10" goto DOTNET_WATCH
-if "%secim%"=="11" goto DOTNET_DEEP_CLEAN
+if "%secim%"=="11" goto NPM_RUN_DEV
 if "%secim%"=="0" exit
 
 goto MENU
@@ -125,25 +126,14 @@ dotnet watch run
 pause
 goto MENU
 
-:DOTNET_DEEP_CLEAN
+:: -------------------------------------------------------------------------
+:: NPM ISLEMLERI
+:: -------------------------------------------------------------------------
+:NPM_RUN_DEV
 echo.
-echo ========================================================
-echo   TAM BAKIM VE ONARIM BASLIYOR
-echo ========================================================
-echo.
-echo 1. NuGet Cache temizleniyor...
-dotnet nuget locals all --clear
-echo.
-echo 2. Proje Clean ediliyor (bin/obj temizligi)...
-dotnet clean
-echo.
-echo 3. Paketler zorla (force) restore ediliyor...
-dotnet restore --force
-echo.
-echo 4. Sifirdan Rebuild aliniyor...
-dotnet build --no-restore
-echo.
-echo Islem Tamamlandi! Artik tertemiz bir projeniz var.
-
+echo 1. product-client calistiriliyor...
+cd product-client
+npm run dev
+cd ..
 pause
 goto MENU
