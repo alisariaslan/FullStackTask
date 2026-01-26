@@ -21,11 +21,35 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
+// Auto migrate
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+    int retryCount = 0;
+    while (retryCount < 5)
+    {
+        try
+        {
+            Console.WriteLine("Veritabanına bağlanılıyor ve migration uygulanıyor...");
+            context.Database.Migrate();
+            Console.WriteLine("Veritabanı migration işlemi başarıyla tamamlandı.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            retryCount++;
+            Console.WriteLine($"Veritabanı hatası (Deneme {retryCount}/5): {ex.Message}");
+            System.Threading.Thread.Sleep(2000);
+        }
+    }
+}
+
 // HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); // Swagger arayüzü
+    app.UseSwaggerUI();
 }
 
 // CORS Politikası (local ihtiyaç halinde açılacak)

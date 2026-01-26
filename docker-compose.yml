@@ -1,0 +1,31 @@
+services:
+  # Veritabanı
+  db:
+    image: postgres:latest
+    container_name: product_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: a5134ba8
+      POSTGRES_DB: ProductDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Backend API
+  api:
+    build:
+      context: ./ProductAPI
+      dockerfile: Dockerfile
+    container_name: product_api
+    depends_on:
+      - db # Veritabanı kalkmadan API kalkmasın
+    ports:
+      - "5000:8080" # Dışarıdan 5000, içeriden 8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
+    restart: on-failure
+
+volumes:
+  postgres_data:
