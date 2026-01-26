@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 // Ürünleri getir
 async function getProducts(): Promise<Product[]> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   if (!apiUrl) {
     throw new Error('API URL is not defined');

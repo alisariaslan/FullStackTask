@@ -1,12 +1,12 @@
 @echo off
 title FullStackTask - Developer CLI
 
-set PROJECT_NAME=ProductAPI
+set BACKEND_PROJECT=ProductAPI
 set DOCKER_COMPOSE_FILE=docker-compose.yml
 
 :MENU
 cls
-echo    Proje: %PROJECT_NAME%
+echo    Backend: %BACKEND_PROJECT%
 echo        1. Docker Up (Normal Baslat)
 echo        2. Docker Up --Build (Kod degisti, yeniden derle ve baslat)
 echo        3. Docker Hard Reset (Cache sil, her seyi sil ve sifirdan kur)
@@ -14,13 +14,9 @@ echo        4. Docker Down (Konteynerleri durdur ve sil)
 echo        5. Migration Ekle (dotnet ef migrations add)
 echo        6. Veritabanini Guncelle (dotnet ef database update)
 echo        7. Son Migration'i Geri Al (dotnet ef migrations remove)
-echo        8. Projeyi Derle (dotnet build)
-echo        9. Docker Olmadan Calistir (dotnet run)
-echo        10. Hot Reload ile Calistir (dotnet watch)
-echo        11. Clienti Calistir (npm run dev)
 echo        0. CIKIS
 
-set /p secim="Islem Seciniz (0-11): "
+set /p secim="Islem Seciniz (0-7): "
 
 if "%secim%"=="1" goto DOCKER_UP
 if "%secim%"=="2" goto DOCKER_BUILD
@@ -29,10 +25,6 @@ if "%secim%"=="4" goto DOCKER_DOWN
 if "%secim%"=="5" goto EF_ADD
 if "%secim%"=="6" goto EF_UPDATE
 if "%secim%"=="7" goto EF_REMOVE
-if "%secim%"=="8" goto DOTNET_BUILD
-if "%secim%"=="9" goto DOTNET_RUN
-if "%secim%"=="10" goto DOTNET_WATCH
-if "%secim%"=="11" goto NPM_RUN_DEV
 if "%secim%"=="0" exit
 
 goto MENU
@@ -77,7 +69,7 @@ goto MENU
 :EF_ADD
 echo.
 set /p migName="Migration ismini girin: "
-cd %PROJECT_NAME%
+cd %BACKEND_PROJECT%
 dotnet ef migrations add %migName%
 cd ..
 pause
@@ -85,7 +77,7 @@ goto MENU
 
 :EF_UPDATE
 echo.
-cd %PROJECT_NAME%
+cd %BACKEND_PROJECT%
 echo Veritabani guncelleniyor (Migrate ediliyor)...
 dotnet ef database update
 cd ..
@@ -95,45 +87,8 @@ goto MENU
 :EF_REMOVE
 echo.
 echo Son migration geri aliniyor...
-cd %PROJECT_NAME%
+cd %BACKEND_PROJECT%
 dotnet ef migrations remove
-cd ..
-pause
-goto MENU
-
-:: -------------------------------------------------------------------------
-:: LOCAL .NET ISLEMLERI
-:: -------------------------------------------------------------------------
-:DOTNET_BUILD
-echo.
-echo Proje temizleniyor ve derleniyor...
-dotnet clean
-dotnet build
-pause
-goto MENU
-
-:DOTNET_RUN
-echo.
-echo Uygulama local olarak baslatiliyor...
-dotnet run
-pause
-goto MENU
-
-:DOTNET_WATCH
-echo.
-echo Hot Reload aktif: dotnet watch...
-dotnet watch run
-pause
-goto MENU
-
-:: -------------------------------------------------------------------------
-:: NPM ISLEMLERI
-:: -------------------------------------------------------------------------
-:NPM_RUN_DEV
-echo.
-echo 1. product-client calistiriliyor...
-cd product-client
-npm run dev
 cd ..
 pause
 goto MENU
