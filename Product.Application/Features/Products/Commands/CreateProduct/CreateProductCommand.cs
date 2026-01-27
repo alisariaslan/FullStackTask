@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Product.Application.Interfaces;
 using Product.Domain.Entities;
 
@@ -14,10 +15,12 @@ namespace Product.Application.Features.Products.Commands.CreateProduct
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
     {
         private readonly IProductRepository _repository;
+        private readonly IDistributedCache _cache;
 
-        public CreateProductCommandHandler(IProductRepository repository)
+        public CreateProductCommandHandler(IProductRepository repository, IDistributedCache cache)
         {
             _repository = repository;
+            _cache = cache;
         }
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -31,6 +34,9 @@ namespace Product.Application.Features.Products.Commands.CreateProduct
             };
 
             await _repository.AddAsync(newProduct);
+
+            await _cache.RemoveAsync("all_products", cancellationToken);
+
             return newProduct.Id;
         }
     }

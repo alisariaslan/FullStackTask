@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -31,6 +31,11 @@ export default function AddProduct() {
             router.back();
 
         } catch (err: any) {
+            if (err.message.includes('giriş yapın') || err.message.includes('401')) {
+                router.push('/login');
+                return;
+            }
+
             const errorMessage = err.message === 'Failed to fetch'
                 ? t('errors.apiError')
                 : err.message;

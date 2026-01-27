@@ -4,5 +4,6 @@ import { routing } from './navigation';
 export default createMiddleware(routing);
 
 export const config = {
-    matcher: ['/', '/(en|tr)/:path*']
+    // API, _next ve statik dosyalar hariç TÜM yolları yakala
+    matcher: ['/((?!api|_next|.*\\..*).*)']
 };

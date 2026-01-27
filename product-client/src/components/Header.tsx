@@ -13,7 +13,6 @@ export default function Header() {
     const { totalQuantity } = useAppSelector((state) => state.cart);
     const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 
-    // Sayfa yüklendiğinde localStorage'dan kullanıcıyı geri yükle
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -47,10 +46,10 @@ export default function Header() {
                         )}
                     </Link>
 
-                    {/* AUTH BÖLÜMÜ */}
+                    {/* AUTH */}
                     <div className="flex items-center gap-3 ml-4 pl-4 border-l border-gray-300">
                         {isAuthenticated && user ? (
-                            // Giriş Yapılmış Durum
+                            // Giriş Yapılmış 
                             <div className="flex items-center gap-3">
                                 <span className="text-sm font-semibold text-gray-800">
                                     Merhaba, {user.username}
@@ -64,7 +63,7 @@ export default function Header() {
                                 </Button>
                             </div>
                         ) : (
-                            // Giriş Yapılmamış Durum
+                            // Giriş Yapılmamış 
                             <div className="flex gap-2">
                                 <Link href="/login">
                                     <Button variant="outline" className="h-9 px-4">
