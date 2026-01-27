@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using ProductAPI.Entities;
 
 namespace Product.Infrastructure.Data
 {
@@ -8,6 +7,6 @@ namespace Product.Infrastructure.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Product.Domain.Entities.Product> Products { get; set; }
     }
 }

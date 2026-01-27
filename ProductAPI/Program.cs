@@ -1,31 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductAPI.Data;
-using ProductAPI.Repositories;
-using ProductAPI.Services;
+using Product.Infrastructure.Data;
+using Product.Infrastructure.Repositories;
+using Product.Application.Interfaces;
+using Product.Application.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Controller
 builder.Services.AddControllers();
 
 // Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Veritabanı (DI)
+// Veritabanı
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Servislerimiz (DI)
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
 
-// CORS Politikası
+// MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ProductDto).Assembly));
+
+// CORS Politikası (Frontend için)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") // Frontend
+            policy.WithOrigins("http://localhost:3000")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -33,27 +36,21 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Auto migrate
+// Migration
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<AppDbContext>();
-    int retryCount = 0;
-    while (retryCount < 5)
+    try
     {
-        try
-        {
-            Console.WriteLine("Veritabanına bağlanılıyor ve migration uygulanıyor...");
-            context.Database.Migrate();
-            Console.WriteLine("Veritabanı migration işlemi başarıyla tamamlandı.");
-            break;
-        }
-        catch (Exception ex)
-        {
-            retryCount++;
-            Console.WriteLine($"Veritabanı hatası (Deneme {retryCount}/5): {ex.Message}");
-            System.Threading.Thread.Sleep(2000);
-        }
+        var context = services.GetRequiredService<AppDbContext>();
+        // Veritabanı yoksa oluşturur, varsa eksik migrationları uygular
+        Console.WriteLine("Veritabanı migration kontrol ediliyor...");
+        context.Database.Migrate();
+        Console.WriteLine("Veritabanı hazır.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Veritabanı başlatılırken hata oluştu: {ex.Message}");
     }
 }
 

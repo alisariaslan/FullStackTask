@@ -1,14 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductAPI.Data;
-using ProductAPI.Entities;
+using Product.Application.Interfaces;
+using Product.Infrastructure.Data;
 
 namespace Product.Infrastructure.Repositories
 {
-    public interface IProductRepository
-    {
-        Task<List<Product>> GetAllAsync();
-        Task AddAsync(Product product);
-    }
 
     public class ProductRepository : IProductRepository
     {
@@ -19,12 +14,12 @@ namespace Product.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Product>> GetAllAsync()
+        public async Task<List<Product.Domain.Entities.Product>> GetAllAsync()
         {
             return await _context.Products.ToListAsync();
         }
 
-        public async Task AddAsync(Product product)
+        public async Task AddAsync(Product.Domain.Entities.Product product)
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
