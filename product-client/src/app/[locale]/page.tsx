@@ -2,6 +2,7 @@ import { productService } from '@/services/productService';
 import { Product } from '@/types';
 import { Link } from '@/navigation';
 import { getTranslations } from 'next-intl/server';
+import ProductCard from '@/components/ProductCard'; // <-- YENİ BİLEŞENİ İMPORT ET
 
 export default async function Home() {
   const t = await getTranslations();
@@ -37,20 +38,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {products.length > 0 ? (
             products.map((product) => (
-              <div key={product.id} className="border p-4 rounded shadow bg-white text-gray-800">
-                <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-
-                <div className="flex justify-between items-center text-gray-600 mb-2">
-                  <span className="font-medium">
-                    {t('Product.price')}:
-                    <span className="text-green-600 ml-1">₺{product.price}</span>
-                  </span>
-
-                  <span className="text-sm">
-                    {t('Product.stock')}: {product.stock}
-                  </span>
-                </div>
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))
           ) : (
             <div className="col-span-3 text-center py-10 text-gray-500">
