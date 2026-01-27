@@ -48,5 +48,18 @@
             "generic": "Something went wrong.",
             "apiError": "API connection error. Is the backend running?"
         }
+    },
+    "Cart": {
+        "title": "Shopping Cart",
+        "empty": "Your cart is currently empty.",
+        "continueShopping": "Continue Shopping",
+        "product": "Product",
+        "price": "Price",
+        "quantity": "Quantity",
+        "total": "Total",
+        "summary": "Order Summary",
+        "subtotal": "Subtotal",
+        "checkout": "Proceed to Checkout",
+        "remove": "Remove"
     }
 }

@@ -64,7 +64,11 @@ export default function CartPage() {
                                 </button>
                                 <span className="w-8 text-center font-medium text-gray-800">{item.quantity}</span>
                                 <button
-                                    onClick={() => dispatch(addToCart({ ...item, quantity: 1 } as any))}
+                                    onClick={() => dispatch(addToCart({
+                                        id: item.id,
+                                        name: item.name,
+                                        price: item.price
+                                    }))}
                                     className="w-8 h-8 flex items-center justify-center bg-white rounded shadow-sm hover:bg-gray-100 text-gray-600 font-bold"
                                 >
                                     +

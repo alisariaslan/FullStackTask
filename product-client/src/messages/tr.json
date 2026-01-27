@@ -8,7 +8,7 @@
         "cart": "Sepet",
         "login": "Giriş Yap",
         "logout": "Çıkış",
-        "addProduct": "Ürün Ekle2"
+        "addProduct": "Ürün Ekle"
     },
     "Product": {
         "title": "Ürün Listesi",
@@ -48,5 +48,18 @@
             "generic": "Bir hata oluştu.",
             "apiError": "API bağlantı hatası. Backend çalışıyor mu?"
         }
+    },
+    "Cart": {
+        "title": "Alışveriş Sepeti",
+        "empty": "Sepetiniz şu an boş.",
+        "continueShopping": "Alışverişe Devam Et",
+        "product": "Ürün",
+        "price": "Fiyat",
+        "quantity": "Adet",
+        "total": "Toplam",
+        "summary": "Sipariş Özeti",
+        "subtotal": "Ara Toplam",
+        "checkout": "Ödemeye Geç",
+        "remove": "Kaldır"
     }
 }

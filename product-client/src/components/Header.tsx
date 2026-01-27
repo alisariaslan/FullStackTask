@@ -1,12 +1,29 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Link } from '@/navigation';
-import { useAppSelector } from '@/lib/store/hooks';
+import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
+import { logout, restoreUser } from '@/lib/store/features/auth/authSlice';
 import { useTranslations } from 'next-intl';
+import { Button } from './ui/Button';
 
 export default function Header() {
-    const t = useTranslations('Navigation'); // en.json/tr.json içine Navigation eklemelisin
-    const cartQuantity = useAppSelector((state) => state.cart.totalQuantity);
+    const t = useTranslations('Navigation');
+    const dispatch = useAppDispatch();
+    const { totalQuantity } = useAppSelector((state) => state.cart);
+    const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+
+    // Sayfa yüklendiğinde localStorage'dan kullanıcıyı geri yükle
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            dispatch(restoreUser(JSON.parse(storedUser)));
+        }
+    }, [dispatch]);
+
+    const handleLogout = () => {
+        dispatch(logout());
+    };
 
     return (
         <header className="bg-white shadow-sm border-b sticky top-0 z-50">
@@ -18,36 +35,49 @@ export default function Header() {
 
                 {/* Menü Linkleri */}
                 <nav className="flex items-center gap-6">
-                    <Link href="/" className="text-gray-600 hover:text-blue-600 font-medium">
-                        {t('home') || 'Anasayfa'}
-                    </Link>
 
-                    {/* Sepet Linki */}
-                    <Link href="/cart" className="relative group">
-                        <div className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors">
-                            {/* Basit SVG Sepet İkonu */}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-
-                            <span className="font-medium">{t('cart') || 'Sepet'}</span>
-                        </div>
-
-                        {/* Kırmızı Bildirim (Badge) */}
-                        {cartQuantity > 0 && (
+                    {/* Sepet */}
+                    <Link href="/cart" className="relative group flex items-center gap-2 text-gray-600 hover:text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span className="font-medium">{t('cart')}</span>
+                        {totalQuantity > 0 && (
                             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                                {cartQuantity}
+                                {totalQuantity}
                             </span>
                         )}
                     </Link>
 
-                    {/* Login/Register Linkleri */}
-                    <div className="flex items-center gap-2 ml-4 pl-4 border-l">
-                        <Link href="/login" className="text-sm font-medium text-gray-500 hover:text-gray-900">
-                            {t('login') || 'Giriş'}
-                        </Link>
+                    {/* AUTH BÖLÜMÜ */}
+                    <div className="flex items-center gap-3 ml-4 pl-4 border-l border-gray-300">
+                        {isAuthenticated && user ? (
+                            // Giriş Yapılmış Durum
+                            <div className="flex items-center gap-3">
+                                <span className="text-sm font-semibold text-gray-800">
+                                    Merhaba, {user.username}
+                                </span>
+                                <Button
+                                    onClick={handleLogout}
+                                    variant="outline"
+                                    className="text-xs h-8 px-3 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                >
+                                    Çıkış
+                                </Button>
+                            </div>
+                        ) : (
+                            // Giriş Yapılmamış Durum
+                            <div className="flex gap-2">
+                                <Link href="/login">
+                                    <Button variant="outline" className="h-9 px-4">
+                                        Giriş Yap
+                                    </Button>
+                                </Link>
+                                <Link href="/register">
+                                    <Button className="h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white">
+                                        Kayıt Ol
+                                    </Button>
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </nav>
             </div>
