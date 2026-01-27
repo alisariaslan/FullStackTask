@@ -1,10 +1,12 @@
 ﻿
 
+using Product.Domain.Entities;
+
 namespace Product.Application.Interfaces
 {
     public interface IProductRepository
     {
-        Task<List<Product.Domain.Entities.Product>> GetAllAsync(); 
-        Task AddAsync(Product.Domain.Entities.Product product);
+        Task<List<ProductEntity>> GetAllAsync(); 
+        Task AddAsync(ProductEntity product);
     }
 }

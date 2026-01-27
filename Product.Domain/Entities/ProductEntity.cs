@@ -1,7 +1,6 @@
-﻿
-namespace Product.Domain.Entities
+﻿namespace Product.Domain.Entities
 {
-    public class Product
+    public class ProductEntity
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }

@@ -4,7 +4,6 @@ using Product.Infrastructure.Data;
 
 namespace Product.Infrastructure.Repositories
 {
-
     public class ProductRepository : IProductRepository
     {
         private readonly AppDbContext _context;
@@ -14,12 +13,12 @@ namespace Product.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Product.Domain.Entities.Product>> GetAllAsync()
+        public async Task<List<Product.Domain.Entities.ProductEntity>> GetAllAsync()
         {
             return await _context.Products.ToListAsync();
         }
 
-        public async Task AddAsync(Product.Domain.Entities.Product product)
+        public async Task AddAsync(Product.Domain.Entities.ProductEntity product)
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();

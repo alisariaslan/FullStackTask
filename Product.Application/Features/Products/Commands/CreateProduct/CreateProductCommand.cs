@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Product.Application.Interfaces;
+using Product.Domain.Entities;
 
 namespace Product.Application.Features.Products.Commands.CreateProduct
 {
@@ -21,7 +22,7 @@ namespace Product.Application.Features.Products.Commands.CreateProduct
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var newProduct = new Domain.Entities.Product
+            var newProduct = new ProductEntity
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
