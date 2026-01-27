@@ -24,8 +24,8 @@ services:
   # Backend API (.NET)
   api:
     build:
-      context: ./ProductAPI
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ProductAPI/Dockerfile
     container_name: product_api
     depends_on:
       - db
@@ -44,18 +44,15 @@ services:
       context: ./product-client
       dockerfile: Dockerfile
     container_name: product_client
-    # Hot Reload için dosya takibi (Linux/Windows WSL için önemli)
     environment:
       - WATCHPACK_POLLING=true
-      # Tarayıcı (Client) için dış adres
       - NEXT_PUBLIC_API_URL=http://localhost:5000/api
-      # Sunucu (Server Container) için iç adres
       - API_URL=http://product_api:8080/api
     ports:
       - "3000:3000"
     volumes:
       - ./product-client:/app
-      - /app/node_modules # node_modules'u host'tan ezmemesi için
+      - /app/node_modules
     depends_on:
       - api
     restart: always
