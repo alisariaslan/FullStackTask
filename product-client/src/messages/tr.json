@@ -1,0 +1,52 @@
+{
+    "Metadata": {
+        "title": "E-Ticaret Uygulaması",
+        "description": "Next.js & .NET Core Full Stack Projesi"
+    },
+    "Navigation": {
+        "home": "Ana Sayfa",
+        "cart": "Sepet",
+        "login": "Giriş Yap",
+        "logout": "Çıkış",
+        "addProduct": "Ürün Ekle2"
+    },
+    "Product": {
+        "title": "Ürün Listesi",
+        "price": "Fiyat",
+        "stock": "Stok",
+        "addToCart": "Sepete Ekle",
+        "searchPlaceholder": "Ürün ara...",
+        "noProducts": "Ürün bulunamadı."
+    },
+    "Auth": {
+        "loginTitle": "Giriş Yap",
+        "registerTitle": "Kayıt Ol",
+        "username": "Kullanıcı Adı",
+        "password": "Şifre",
+        "submit": "Gönder",
+        "haveAccount": "Zaten hesabın var mı?",
+        "noAccount": "Hesabın yok mu?"
+    },
+    "AddProduct": {
+        "title": "Yeni Ürün Ekle",
+        "labels": {
+            "name": "Ürün Adı",
+            "price": "Fiyat",
+            "stock": "Stok Adedi"
+        },
+        "placeholders": {
+            "name": "Örn: Laptop",
+            "price": "0.00",
+            "stock": "0"
+        },
+        "buttons": {
+            "save": "Kaydet",
+            "saving": "Kaydediliyor...",
+            "cancel": "İptal"
+        },
+        "errors": {
+            "generic": "Bir hata oluştu.",
+            "apiError": "API bağlantı hatası. Backend çalışıyor mu?"
+        }
+    }
+}

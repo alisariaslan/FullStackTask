@@ -1,7 +1,7 @@
 @echo off
 title AliSariaslan - Developer CLI
 
-set BACKEND_PROJECT=ProductAPI
+set BACKEND_PROJECT=Product.API
 set INFRA_PROJECT=Product.Infrastructure
 set DOCKER_COMPOSE_FILE=docker-compose.yml
 

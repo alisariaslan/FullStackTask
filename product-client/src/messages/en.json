@@ -1,0 +1,52 @@
+{
+    "Metadata": {
+        "title": "E-Commerce Application",
+        "description": "Next.js & .NET Core Full Stack Project"
+    },
+    "Navigation": {
+        "home": "Home",
+        "cart": "Cart",
+        "login": "Login",
+        "logout": "Logout",
+        "addProduct": "Add Product"
+    },
+    "Product": {
+        "title": "Product List",
+        "price": "Price",
+        "stock": "Stock",
+        "addToCart": "Add to Cart",
+        "searchPlaceholder": "Search products...",
+        "noProducts": "No products found."
+    },
+    "Auth": {
+        "loginTitle": "Login",
+        "registerTitle": "Register",
+        "username": "Username",
+        "password": "Password",
+        "submit": "Submit",
+        "haveAccount": "Already have an account?",
+        "noAccount": "Don't have an account?"
+    },
+    "AddProduct": {
+        "title": "Add New Product",
+        "labels": {
+            "name": "Product Name",
+            "price": "Price",
+            "stock": "Stock Quantity"
+        },
+        "placeholders": {
+            "name": "e.g. Laptop",
+            "price": "0.00",
+            "stock": "0"
+        },
+        "buttons": {
+            "save": "Save",
+            "saving": "Saving...",
+            "cancel": "Cancel"
+        },
+        "errors": {
+            "generic": "Something went wrong.",
+            "apiError": "API connection error. Is the backend running?"
+        }
+    }
+}
