@@ -25,6 +25,11 @@ namespace Product.Infrastructure.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto request)
         {
+            if (await _context.Users.AnyAsync(u => u.Username == request.Username))
+            {
+                throw new Exception("Bu e-posta adresi zaten kullanılıyor.");
+            }
+
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             var user = new UserEntity
