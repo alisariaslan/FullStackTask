@@ -2,6 +2,7 @@
 title AliSariaslan - Developer CLI
 
 set BACKEND_PROJECT=ProductAPI
+set INFRA_PROJECT=Product.Infrastructure
 set DOCKER_COMPOSE_FILE=docker-compose.yml
 
 :MENU
@@ -68,27 +69,23 @@ goto MENU
 :: -------------------------------------------------------------------------
 :EF_ADD
 echo.
-set /p migName="Migration ismini girin: "
-cd %BACKEND_PROJECT%
-dotnet ef migrations add %migName%
-cd ..
+echo !!! Migration dosyalari Infrastructure katmanina eklenecek !!!
+set /p migName="Migration ismi girin: "
+echo.
+dotnet ef migrations add %migName% --project %INFRA_PROJECT% --startup-project %BACKEND_PROJECT%
 pause
 goto MENU
 
 :EF_UPDATE
 echo.
-cd %BACKEND_PROJECT%
-echo Veritabani guncelleniyor (Migrate ediliyor)...
-dotnet ef database update
-cd ..
+echo Veritabani guncelleniyor...
+dotnet ef database update --project %INFRA_PROJECT% --startup-project %BACKEND_PROJECT%
 pause
 goto MENU
 
 :EF_REMOVE
 echo.
 echo Son migration geri aliniyor...
-cd %BACKEND_PROJECT%
-dotnet ef migrations remove
-cd ..
+dotnet ef migrations remove --project %INFRA_PROJECT% --startup-project %BACKEND_PROJECT%
 pause
 goto MENU

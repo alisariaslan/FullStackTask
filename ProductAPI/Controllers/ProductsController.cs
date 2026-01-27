@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Product.Application.Features.Products.Commands.CreateProduct;
-using Product.Application.Features.Products.Commands.GetAllProducts;
+using Product.Application.Features.Products.Queries.GetAllProducts;
 
 namespace ProductAPI.Controllers
 {
