@@ -25,7 +25,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: ProductAPI/Dockerfile
+      dockerfile: Product.API/Dockerfile
     container_name: product_api
     depends_on:
       - db

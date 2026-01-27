@@ -4,7 +4,7 @@ using Product.Application.DTOs;
 using Product.Application.Features.Auth.Commands.Login;
 using Product.Application.Features.Auth.Commands.Register;
 
-namespace ProductAPI.Controllers
+namespace Product.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
