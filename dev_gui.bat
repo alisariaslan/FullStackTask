@@ -1,5 +1,5 @@
 @echo off
-title FullStackTask - Developer CLI
+title AliSariaslan - Developer CLI
 
 set BACKEND_PROJECT=ProductAPI
 set DOCKER_COMPOSE_FILE=docker-compose.yml
