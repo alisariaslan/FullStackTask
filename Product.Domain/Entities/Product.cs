@@ -1,5 +1,5 @@
 ﻿
-namespace ProductAPI.Entities
+namespace Product.Domain.Entities
 {
     public class Product
     {

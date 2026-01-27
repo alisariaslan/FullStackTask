@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProductAPI.Entities;
 
-namespace ProductAPI.Data
+namespace Product.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {

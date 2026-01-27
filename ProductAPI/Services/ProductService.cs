@@ -1,7 +1,6 @@
 ﻿
-using ProductAPI.DTOs;
-using ProductAPI.Entities;
-using ProductAPI.Repositories;
+using Product.Application.DTOs;
+using Product.Infrastructure.Repositories;
 
 namespace ProductAPI.Services
 {

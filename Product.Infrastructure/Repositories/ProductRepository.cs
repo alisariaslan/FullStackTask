@@ -2,7 +2,7 @@
 using ProductAPI.Data;
 using ProductAPI.Entities;
 
-namespace ProductAPI.Repositories
+namespace Product.Infrastructure.Repositories
 {
     public interface IProductRepository
     {
