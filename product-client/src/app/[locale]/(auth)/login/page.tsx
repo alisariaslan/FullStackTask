@@ -9,7 +9,7 @@ import { authService } from '@/services/authService';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { loginSuccess } from '@/lib/store/features/auth/authSlice';
 import { Link } from '@/navigation';
-import ApiErrorMessage from '@/components/ApiErrorMessage';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export default function LoginPage() {
     const t = useTranslations('Login');
@@ -47,7 +47,7 @@ export default function LoginPage() {
                     {t('title')}
                 </h1>
 
-                {error && <ApiErrorMessage message={error} />}
+                {error && <ErrorMessage message={error} />}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>

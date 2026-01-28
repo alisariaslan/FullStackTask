@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { authService } from '@/services/authService';
 import { Link } from '@/navigation';
 
-import ApiErrorMessage from '@/components/ApiErrorMessage';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export default function RegisterPage() {
     const t = useTranslations('Register');
@@ -41,7 +41,7 @@ export default function RegisterPage() {
                     {t('title')}
                 </h1>
 
-                {error && <ApiErrorMessage message={error} />}
+                {error && <ErrorMessage message={error} />}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 

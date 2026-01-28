@@ -3,8 +3,9 @@
 // ApiResponse<T>
 export interface ApiResponse<T> {
     isSuccess: boolean;
-    message: string;
-    data: T;
+    message?: string;
+    data?: T;
+    errorMessage?: string;
     errors?: string[];
 }
 

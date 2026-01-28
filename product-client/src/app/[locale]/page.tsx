@@ -3,7 +3,7 @@ import { Product } from '@/types';
 import { Link } from '@/navigation';
 import { getTranslations } from 'next-intl/server';
 import ProductCard from '@/components/ProductCard'; // <-- YENİ BİLEŞENİ İMPORT ET
-import ApiErrorMessage from '@/components/ApiErrorMessage';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export default async function Home({
   params
@@ -37,7 +37,7 @@ export default async function Home({
         </Link>
       </div>
 
-      {error && <ApiErrorMessage message={error} />}
+      {error && <ErrorMessage message={error} />}
 
       {!error && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

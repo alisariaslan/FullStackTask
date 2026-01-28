@@ -8,6 +8,7 @@ const getBaseUrl = () => {
 };
 
 export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
     let token = null;
@@ -22,7 +23,6 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
     } as HeadersInit;
 
     const url = `${getBaseUrl()}${cleanEndpoint}`;
-
     console.log(`API Request (${typeof window === 'undefined' ? 'Server' : 'Client'}): ${url}`);
 
     try {
@@ -31,14 +31,13 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
             headers,
         });
 
-        // 401 Unauthorized Kontrolü
         if (response.status === 401) {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 window.location.href = '/login';
             }
-            throw new Error('Oturum süresi doldu, lütfen tekrar giriş yapın.');
+            throw new Error('ClientErrors.sessionExpired');
         }
 
         const responseText = await response.text();
@@ -47,23 +46,30 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
         try {
             apiResponse = JSON.parse(responseText);
         } catch {
-            if (!response.ok) throw new Error(responseText || `HTTP Hata: ${response.status}`);
-            return {} as T; // Beklenmedik durum
+            if (!response.ok) {
+                console.error(`HTTP Error: ${response.status}`);
+                throw new Error('ClientErrors.networkError');
+            }
+            throw new Error('ClientErrors.invalidResponse');
         }
 
-        // Backend Logic Kontrolü
         if (!apiResponse.isSuccess) {
-            const errorMessage = apiResponse.message ||
+            const failMessage = apiResponse.errorMessage ||
                 (apiResponse.errors && apiResponse.errors[0]) ||
-                'Bilinmeyen bir hata oluştu.';
-            throw new Error(errorMessage);
-        }
+                apiResponse.message ||
+                'ClientErrors.unknown';
 
-        // Başarılı ise
-        return apiResponse.data;
+            throw new Error(failMessage);
+        }
+        return apiResponse.data as T;
 
     } catch (error: any) {
         console.error(`Fetch Error on ${url}:`, error);
-        throw error;
+
+        if (error.message && (error.message.startsWith('ClientErrors.') || !error.message.includes(' '))) {
+            throw error;
+        }
+
+        throw new Error('ClientErrors.networkError');
     }
 }

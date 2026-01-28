@@ -81,5 +81,11 @@
         "userNotFound": "Kullanıcı bulunamadı veya şifre hatalı.",
         "systemError": "Beklenmeyen bir hata oluştu.",
         "apiError": "Sunucuya bağlanılamadı."
+    },
+    "ClientErrors": {
+        "sessionExpired": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın.",
+        "networkError": "Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.",
+        "invalidResponse": "Sunucudan geçersiz bir yanıt alındı.",
+        "unknown": "Beklenmeyen bir sistem hatası oluştu."
     }
 }

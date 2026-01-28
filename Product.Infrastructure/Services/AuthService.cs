@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Product.Application.Constants;
 using Product.Application.DTOs;
+using Product.Application.Exceptions;
 using Product.Application.Interfaces;
 using Product.Domain.Entities;
-using Product.Application.Exceptions; // <--- Bunu eklemeyi unutma!
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -25,7 +26,7 @@ namespace Product.Infrastructure.Services
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto request)
         {
             if (await _userRepository.UserExistsAsync(request.Username))
-                throw new ValidationException("userEmailAlreadyExists");
+                throw new ValidationException(Messages.UserEmailAlreadyExists);
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -33,7 +34,7 @@ namespace Product.Infrastructure.Services
             {
                 Username = request.Username,
                 PasswordHash = Convert.ToBase64String(passwordHash) + "." + Convert.ToBase64String(passwordSalt),
-                Role = "User"
+                Role = Roles.User
             };
 
             await _userRepository.AddAsync(user);
@@ -46,7 +47,7 @@ namespace Product.Infrastructure.Services
             var user = await _userRepository.GetByUsernameAsync(request.Username);
 
             if (user == null)
-                throw new ValidationException("userNotFound");
+                throw new ValidationException(Messages.UserNotFound);
 
             var parts = user.PasswordHash.Split('.');
             var storedHash = Convert.FromBase64String(parts[0]);
@@ -54,7 +55,7 @@ namespace Product.Infrastructure.Services
 
             if (!VerifyPasswordHash(request.Password, storedHash, storedSalt))
             {
-                throw new ValidationException("passwordIncorrect");
+                throw new ValidationException(Messages.PasswordIncorrect);
             }
 
             return new AuthResponseDto(CreateToken(user), user.Username);
@@ -65,11 +66,11 @@ namespace Product.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role ?? "User")
+                new Claim(ClaimTypes.Role, user.Role ??Roles.User)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!));
+                _configuration.GetSection(ConfigurationKeys.JwtToken).Value!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

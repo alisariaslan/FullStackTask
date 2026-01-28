@@ -31,7 +31,8 @@ builder.Services.AddControllers()
 
 // Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
         Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
@@ -108,7 +109,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"DB Hatası: {ex.Message}");
+        Console.WriteLine($"DB Error: {ex.Message}");
     }
 }
 

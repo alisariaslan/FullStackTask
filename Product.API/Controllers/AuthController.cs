@@ -22,14 +22,14 @@ namespace Product.API.Controllers
         public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto request)
         {
             var result = await _mediator.Send(new RegisterCommand(request));
-            return Ok(ApiResponse<AuthResponseDto>.Success(result, "Kayıt başarılı"));
+            return Ok(ApiResponse<AuthResponseDto>.Success(result));
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto request)
         {
             var result = await _mediator.Send(new LoginCommand(request));
-            return Ok(ApiResponse<AuthResponseDto>.Success(result, "Giriş başarılı"));
+            return Ok(ApiResponse<AuthResponseDto>.Success(result));
         }
     }
 }

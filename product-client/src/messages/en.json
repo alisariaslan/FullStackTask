@@ -82,5 +82,11 @@
         "passwordIncorrect": "Invalid password.",
         "systemError": "An unexpected error occurred.",
         "apiError": "Could not connect to the server."
+    },
+    "ClientErrors": {
+        "sessionExpired": "Your session has expired, please login again.",
+        "networkError": "Could not connect to the server. Please check your internet connection.",
+        "invalidResponse": "Invalid response received from the server.",
+        "unknown": "An unexpected system error occurred."
     }
 }

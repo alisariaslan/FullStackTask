@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { productService } from '@/services/productService';
-import ApiErrorMessage from '@/components/ApiErrorMessage';
+import ErrorMessage from '@/components/ErrorMessage';
 
 
 export default function AddProduct() {
@@ -55,7 +55,7 @@ export default function AddProduct() {
                 </h1>
 
                 {/* Hata Mesajı */}
-                {error && <ApiErrorMessage message={error} />}
+                {error && <ErrorMessage message={error} />}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 using Product.API.Models;
+using Product.Application.Constants;
 using Product.Application.Exceptions;
 using System.Net;
 using System.Text.Json;
@@ -19,7 +20,7 @@ namespace Product.API.Middlewares
             _next = next;
             _logger = logger;
             _env = env;
-           _jsonOptions = jsonOptions.Value.SerializerOptions;
+            _jsonOptions = jsonOptions.Value.SerializerOptions;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -31,9 +32,9 @@ namespace Product.API.Middlewares
             catch (Exception ex)
             {
                 if (ex is ValidationException)
-                    _logger.LogWarning("İş kuralı hatası: {Message}", ex.Message);
+                    _logger.LogWarning("Business Error: {Message}", ex.Message);
                 else
-                    _logger.LogError(ex, "Sistem Hatası: {Message}", ex.Message);
+                    _logger.LogError(ex, "System Error: {Message}", ex.Message);
 
                 await HandleExceptionAsync(context, ex);
             }
@@ -50,15 +51,15 @@ namespace Product.API.Middlewares
             {
                 case ValidationException validationEx:
                     statusCode = (int)HttpStatusCode.OK;
-                    errorKey = validationEx.Message;   
+                    errorKey = validationEx.Message;
                     errors.Add(errorKey);
                     break;
                 default:
                     statusCode = (int)HttpStatusCode.InternalServerError;
-                    errorKey = "systemError";
+                    errorKey = Messages.SystemError;
                     if (_env.IsDevelopment())
                     {
-                        errors.Add(exception.Message); 
+                        errors.Add(exception.Message);
                     }
                     else
                     {

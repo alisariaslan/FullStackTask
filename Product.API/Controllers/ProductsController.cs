@@ -31,7 +31,7 @@ namespace Product.API.Controllers
         public async Task<ActionResult<ApiResponse<Guid>>> Create(CreateProductCommand command)
         {
             var id = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetAll), new { id = id }, ApiResponse<Guid>.Success(id, "Ürün başarıyla oluşturuldu"));
+            return CreatedAtAction(nameof(GetAll), new { id = id }, ApiResponse<Guid>.Success(id));
         }
     }
 }
