@@ -15,9 +15,10 @@ echo        4. Docker Down (Konteynerleri durdur ve sil)
 echo        5. Migration Ekle (dotnet ef migrations add)
 echo        6. Veritabanini Guncelle (dotnet ef database update)
 echo        7. Son Migration'i Geri Al (dotnet ef migrations remove)
+echo        8. Backend Log Klasorunu Ac
 echo        0. CIKIS
 
-set /p secim="Islem Seciniz (0-7): "
+set /p secim="Islem Seciniz (0-8): "
 
 if "%secim%"=="1" goto DOCKER_UP
 if "%secim%"=="2" goto DOCKER_BUILD
@@ -26,6 +27,7 @@ if "%secim%"=="4" goto DOCKER_DOWN
 if "%secim%"=="5" goto EF_ADD
 if "%secim%"=="6" goto EF_UPDATE
 if "%secim%"=="7" goto EF_REMOVE
+if "%secim%"=="8" goto OPEN_LOGS
 if "%secim%"=="0" exit
 
 goto MENU
@@ -87,5 +89,21 @@ goto MENU
 echo.
 echo Son migration geri aliniyor...
 dotnet ef migrations remove --project %INFRA_PROJECT% --startup-project %BACKEND_PROJECT%
+pause
+goto MENU
+
+:: -------------------------------------------------------------------------
+:: LOG BOLUMU
+:: -------------------------------------------------------------------------
+:OPEN_LOGS
+echo.
+echo Backend log klasoru aciliyor...
+
+if not exist backend-logs (
+    echo backend-logs klasoru bulunamadi, olusturuluyor...
+    mkdir backend-logs
+)
+
+start backend-logs
 pause
 goto MENU

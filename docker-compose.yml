@@ -43,6 +43,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
       - ConnectionStrings__Redis=redis:6379
+    volumes:
+      - ./backend-logs:/app/logs
     restart: on-failure
 
   # Frontend (Next.js)

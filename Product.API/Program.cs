@@ -115,7 +115,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowNextApp");
-app.UseHttpsRedirection();
+
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 app.UseAuthentication(); // Kimlik Doğrulama
 app.UseAuthorization();  // Yetkilendirme
