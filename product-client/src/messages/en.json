@@ -1,65 +1,86 @@
 {
-    "Metadata": {
+    "Layout": {
         "title": "E-Commerce Application",
         "description": "Next.js & .NET Core Full Stack Project"
     },
-    "Navigation": {
-        "home": "Home",
+    "Navbar": {
+        "title": "E-Commerce Application",
         "cart": "Cart",
         "login": "Login",
-        "logout": "Logout",
-        "addProduct": "Add Product"
+        "register": "Register",
+        "logout": "Logout"
     },
-    "Product": {
+    "Home": {
         "title": "Product List",
         "price": "Price",
         "stock": "Stock",
         "addToCart": "Add to Cart",
-        "searchPlaceholder": "Search products...",
+        "addProduct": "Add Product",
+        "unknownError": "An unknown error occurred.",
         "noProducts": "No products found."
     },
-    "Auth": {
-        "loginTitle": "Login",
-        "registerTitle": "Register",
-        "username": "Username",
-        "password": "Password",
-        "submit": "Submit",
+    "Login": {
+        "title": "Login",
+        "unknownError": "An unknown error occurred.",
+        "email": "Email",
+        "emailPlaceholder": "mail@example.com",
+        "logginIn": "Logging in...",
+        "login": "Login",
+        "dontHaveAccount": "Don't have an account?",
+        "registerLink": "Register here",
+        "loginNotSuccessful": "Login unsuccessful. Please check your credentials."
+    },
+    "Register": {
+        "title": "Register",
+        "unknownError": "An unknown error occurred.",
+        "emailPlaceholder": "mail@example.com",
+        "saving": "Registering...",
+        "register": "Register",
         "haveAccount": "Already have an account?",
-        "noAccount": "Don't have an account?"
+        "loginLink": "Login here"
     },
     "AddProduct": {
         "title": "Add New Product",
-        "labels": {
+        "unknownError": "An unknown error occurred.",
+        "Labels": {
             "name": "Product Name",
             "price": "Price",
             "stock": "Stock Quantity"
         },
-        "placeholders": {
+        "Placeholders": {
             "name": "e.g. Laptop",
             "price": "0.00",
             "stock": "0"
         },
-        "buttons": {
+        "Buttons": {
             "save": "Save",
             "saving": "Saving...",
             "cancel": "Cancel"
-        },
-        "errors": {
-            "generic": "Something went wrong.",
-            "apiError": "API connection error. Is the backend running?"
         }
     },
     "Cart": {
         "title": "Shopping Cart",
         "empty": "Your cart is currently empty.",
         "continueShopping": "Continue Shopping",
-        "product": "Product",
         "price": "Price",
-        "quantity": "Quantity",
         "total": "Total",
-        "summary": "Order Summary",
         "subtotal": "Subtotal",
+        "summary": "Order Summary",
         "checkout": "Proceed to Checkout",
         "remove": "Remove"
+    },
+    "ProductCard": {
+        "price": "Price",
+        "stock": "Stock",
+        "addToCart": "Add to Cart",
+        "outOfStock": "Out of Stock",
+        "noImage": "No Image Available"
+    },
+    "ApiErrors": {
+        "userEmailAlreadyExists": "This email address is already in use.",
+        "userNotFound": "User not found.",
+        "passwordIncorrect": "Invalid password.",
+        "systemError": "An unexpected error occurred.",
+        "apiError": "Could not connect to the server."
     }
 }

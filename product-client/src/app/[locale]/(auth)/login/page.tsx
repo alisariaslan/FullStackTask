@@ -9,36 +9,32 @@ import { authService } from '@/services/authService';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { loginSuccess } from '@/lib/store/features/auth/authSlice';
 import { Link } from '@/navigation';
+import ApiErrorMessage from '@/components/ApiErrorMessage';
 
 export default function LoginPage() {
-    const t = useTranslations('Auth');
+    const t = useTranslations('Login');
     const router = useRouter();
     const dispatch = useAppDispatch();
 
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
-
+        setError(null);
         try {
-
             const response = await authService.login(formData.email, formData.password);
-
             dispatch(loginSuccess({
                 username: response.username,
                 email: formData.email,
                 token: response.token
             }));
-
             router.push('/');
             router.refresh();
-
-        } catch (err: any) {
-            setError(err.message || 'Giriş başarısız.');
+        } catch (e: any) {
+            setError(e.message || t('unknownError'));
         } finally {
             setLoading(false);
         }
@@ -48,14 +44,10 @@ export default function LoginPage() {
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md border">
                 <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-                    {t.has('loginTitle') ? t('loginTitle') : 'Giriş Yap'}
+                    {t('title')}
                 </h1>
 
-                {error && (
-                    <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
-                        {error}
-                    </div>
-                )}
+                {error && <ApiErrorMessage message={error} />}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
@@ -65,7 +57,7 @@ export default function LoginPage() {
                             required
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            placeholder="mail@ornek.com"
+                            placeholder={t('emailPlaceholder')}
                         />
                     </div>
 
@@ -81,12 +73,12 @@ export default function LoginPage() {
                     </div>
 
                     <Button type="submit" disabled={loading} className="w-full mt-2 bg-blue-600 hover:bg-blue-700">
-                        {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+                        {loading ? t('logginIn') : t('login')}
                     </Button>
                 </form>
 
                 <p className="mt-4 text-center text-sm text-gray-600">
-                    Hesabın yok mu? <Link href="/register" className="text-blue-600 hover:underline">Kayıt Ol</Link>
+                    {t('dontHaveAccount')} <Link href="/register" className="text-blue-600 hover:underline">{t('registerLink')}</Link>
                 </p>
             </div>
         </div>

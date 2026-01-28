@@ -23,7 +23,11 @@ builder.Host.UseSerilog((context, configuration) =>
         .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day));
 
 // Controller
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 
 // Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

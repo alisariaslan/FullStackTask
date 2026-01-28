@@ -20,7 +20,9 @@ export default function CartPage() {
         return (
             <div className="container mx-auto p-4 py-20 text-center">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4">{t('title')}</h1>
-                <p className="text-gray-500 mb-8 text-lg">{t('empty')}</p>
+                <p className="text-gray-500 mb-8 text-lg">
+                    {t('empty')}
+                </p>
                 <Link
                     href="/"
                     className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
@@ -33,7 +35,9 @@ export default function CartPage() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">{t('title')}</h1>
+            <h1 className="text-2xl font-bold mb-6 text-gray-800">
+                {t('title')}
+            </h1>
 
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Ürün Listesi Sol Taraf */}

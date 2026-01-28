@@ -1,6 +1,22 @@
-// src/types/middleware.ts
+// src/types/index.ts
+
+// ApiResponse<T>
+export interface ApiResponse<T> {
+    isSuccess: boolean;
+    message: string;
+    data: T;
+    errors?: string[];
+}
+
+// Auth DTO
+export interface AuthResponseDto {
+    token: string;
+    username: string;
+}
+
+// Product DTO
 export interface Product {
-    id: number;
+    id: string;
     name: string;
     price: number;
     stock: number;

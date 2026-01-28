@@ -6,6 +6,8 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { productService } from '@/services/productService';
+import ApiErrorMessage from '@/components/ApiErrorMessage';
+
 
 export default function AddProduct() {
     const t = useTranslations('AddProduct');
@@ -19,28 +21,20 @@ export default function AddProduct() {
         e.preventDefault();
         setLoading(true);
         setError(null);
-
         try {
             await productService.create({
                 name: formData.name,
                 price: Number(formData.price),
                 stock: Number(formData.stock),
             });
-
             router.refresh();
             router.back();
-
-        } catch (err: any) {
-            if (err.message.includes('giriş yapın') || err.message.includes('401')) {
+        } catch (e: any) {
+            if (e.message.includes('401')) {
                 router.push('/login');
                 return;
             }
-
-            const errorMessage = err.message === 'Failed to fetch'
-                ? t('errors.apiError')
-                : err.message;
-
-            setError(errorMessage);
+            setError(e.message || t('unknownError'));
         } finally {
             setLoading(false);
         }
@@ -61,23 +55,19 @@ export default function AddProduct() {
                 </h1>
 
                 {/* Hata Mesajı */}
-                {error && (
-                    <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm border border-red-200">
-                        {error}
-                    </div>
-                )}
+                {error && <ApiErrorMessage message={error} />}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
                     {/* Ürün Adı */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {t('labels.name')}
+                            {t('Labels.name')}
                         </label>
                         <Input
                             value={formData.name}
                             onChange={(e) => handleChange(e, 'name')}
-                            placeholder={t('placeholders.name')}
+                            placeholder={t('Placeholders.name')}
                             required
                         />
                     </div>
@@ -85,14 +75,14 @@ export default function AddProduct() {
                     {/* Fiyat */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {t('labels.price')}
+                            {t('Labels.price')}
                         </label>
                         <Input
                             type="number"
                             step="0.01"
                             value={formData.price}
                             onChange={(e) => handleChange(e, 'price')}
-                            placeholder={t('placeholders.price')}
+                            placeholder={t('Placeholders.price')}
                             required
                         />
                     </div>
@@ -100,13 +90,13 @@ export default function AddProduct() {
                     {/* Stok */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {t('labels.stock')}
+                            {t('Labels.stock')}
                         </label>
                         <Input
                             type="number"
                             value={formData.stock}
                             onChange={(e) => handleChange(e, 'stock')}
-                            placeholder={t('placeholders.stock')}
+                            placeholder={t('Placeholders.stock')}
                             required
                         />
                     </div>
@@ -114,7 +104,7 @@ export default function AddProduct() {
                     {/* Butonlar */}
                     <div className="flex gap-3 mt-4">
                         <Button type="submit" disabled={loading} className="flex-1 bg-blue-600 hover:bg-blue-700">
-                            {loading ? t('buttons.saving') : t('buttons.save')}
+                            {loading ? t('Buttons.saving') : t('Buttons.save')}
                         </Button>
 
                         <Button
@@ -123,7 +113,7 @@ export default function AddProduct() {
                             onClick={() => router.back()}
                             className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
                         >
-                            {t('buttons.cancel')}
+                            {t('Buttons.cancel')}
                         </Button>
                     </div>
                 </form>

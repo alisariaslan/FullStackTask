@@ -25,9 +25,7 @@ namespace Product.Infrastructure.Services
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto request)
         {
             if (await _userRepository.UserExistsAsync(request.Username))
-            {
-                throw new ValidationException("Bu e-posta adresi zaten kullanılıyor.");
-            }
+                throw new ValidationException("userEmailAlreadyExists");
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -47,7 +45,8 @@ namespace Product.Infrastructure.Services
         {
             var user = await _userRepository.GetByUsernameAsync(request.Username);
 
-            if (user == null) throw new ValidationException("Kullanıcı bulunamadı.");
+            if (user == null)
+                throw new ValidationException("userNotFound");
 
             var parts = user.PasswordHash.Split('.');
             var storedHash = Convert.FromBase64String(parts[0]);
@@ -55,7 +54,7 @@ namespace Product.Infrastructure.Services
 
             if (!VerifyPasswordHash(request.Password, storedHash, storedSalt))
             {
-                throw new ValidationException("Şifre yanlış.");
+                throw new ValidationException("passwordIncorrect");
             }
 
             return new AuthResponseDto(CreateToken(user), user.Username);

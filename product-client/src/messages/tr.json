@@ -1,65 +1,85 @@
 {
-    "Metadata": {
+    "Layout": {
         "title": "E-Ticaret Uygulaması",
         "description": "Next.js & .NET Core Full Stack Projesi"
     },
-    "Navigation": {
-        "home": "Ana Sayfa",
+    "Navbar": {
+        "title": "E-Ticaret Uygulaması",
         "cart": "Sepet",
         "login": "Giriş Yap",
-        "logout": "Çıkış",
-        "addProduct": "Ürün Ekle"
+        "register": "Kayıt Ol",
+        "logout": "Çıkış Yap"
     },
-    "Product": {
+    "Home": {
         "title": "Ürün Listesi",
         "price": "Fiyat",
         "stock": "Stok",
         "addToCart": "Sepete Ekle",
-        "searchPlaceholder": "Ürün ara...",
+        "addProduct": "Ürün Ekle",
+        "unknownError": "Bilinmeyen bir hata oluştu.",
         "noProducts": "Ürün bulunamadı."
     },
-    "Auth": {
-        "loginTitle": "Giriş Yap",
-        "registerTitle": "Kayıt Ol",
-        "username": "Kullanıcı Adı",
-        "password": "Şifre",
-        "submit": "Gönder",
+    "Login": {
+        "title": "Giriş Yap",
+        "unknownError": "Bilinmeyen bir hata oluştu.",
+        "email": "E-posta",
+        "emailPlaceholder": "mail@ornek.com",
+        "logginIn": "Giriş yapılıyor...",
+        "login": "Giriş Yap",
+        "dontHaveAccount": "Hesabın yok mu?",
+        "registerLink": "Buradan kayıt ol",
+        "loginNotSuccessful": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin."
+    },
+    "Register": {
+        "title": "Kayıt Ol",
+        "unknownError": "Bilinmeyen bir hata oluştu.",
+        "emailPlaceholder": "mail@ornek.com",
+        "saving": "Kayıt yapılıyor...",
+        "register": "Kayıt Ol",
         "haveAccount": "Zaten hesabın var mı?",
-        "noAccount": "Hesabın yok mu?"
+        "loginLink": "Buradan giriş yap"
     },
     "AddProduct": {
         "title": "Yeni Ürün Ekle",
-        "labels": {
+        "unknownError": "Bilinmeyen bir hata oluştu.",
+        "Labels": {
             "name": "Ürün Adı",
             "price": "Fiyat",
-            "stock": "Stok Adedi"
+            "stock": "Stok Miktarı"
         },
-        "placeholders": {
-            "name": "Örn: Laptop",
-            "price": "0.00",
+        "Placeholders": {
+            "name": "Örn. Laptop",
+            "price": "0,00",
             "stock": "0"
         },
-        "buttons": {
+        "Buttons": {
             "save": "Kaydet",
             "saving": "Kaydediliyor...",
             "cancel": "İptal"
-        },
-        "errors": {
-            "generic": "Bir hata oluştu.",
-            "apiError": "API bağlantı hatası. Backend çalışıyor mu?"
         }
     },
     "Cart": {
         "title": "Alışveriş Sepeti",
-        "empty": "Sepetiniz şu an boş.",
+        "empty": "Sepetiniz şu anda boş.",
         "continueShopping": "Alışverişe Devam Et",
-        "product": "Ürün",
         "price": "Fiyat",
-        "quantity": "Adet",
         "total": "Toplam",
-        "summary": "Sipariş Özeti",
         "subtotal": "Ara Toplam",
+        "summary": "Sipariş Özeti",
         "checkout": "Ödemeye Geç",
         "remove": "Kaldır"
+    },
+    "ProductCard": {
+        "price": "Fiyat",
+        "stock": "Stok",
+        "addToCart": "Sepete Ekle",
+        "outOfStock": "Stokta Yok",
+        "noImage": "Görsel Yok"
+    },
+    "ApiErrors": {
+        "userEmailAlreadyExists": "Bu e-posta adresi zaten kullanılıyor.",
+        "userNotFound": "Kullanıcı bulunamadı veya şifre hatalı.",
+        "systemError": "Beklenmeyen bir hata oluştu.",
+        "apiError": "Sunucuya bağlanılamadı."
     }
 }

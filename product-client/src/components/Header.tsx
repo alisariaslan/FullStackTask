@@ -4,11 +4,11 @@ import { useEffect } from 'react';
 import { Link } from '@/navigation';
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
 import { logout, restoreUser } from '@/lib/store/features/auth/authSlice';
-import { useTranslations } from 'next-intl';
 import { Button } from './ui/Button';
+import { useTranslations } from 'next-intl';
 
 export default function Header() {
-    const t = useTranslations('Navigation');
+    const t = useTranslations('Navbar');
     const dispatch = useAppDispatch();
     const { totalQuantity } = useAppSelector((state) => state.cart);
     const { isAuthenticated, user } = useAppSelector((state) => state.auth);
@@ -29,7 +29,7 @@ export default function Header() {
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="text-2xl font-bold text-blue-600">
-                    E-Ticaret
+                    {t('title')}
                 </Link>
 
                 {/* Menü Linkleri */}
@@ -52,14 +52,14 @@ export default function Header() {
                             // Giriş Yapılmış 
                             <div className="flex items-center gap-3">
                                 <span className="text-sm font-semibold text-gray-800">
-                                    Merhaba, {user.username}
+                                    {user.username}
                                 </span>
                                 <Button
                                     onClick={handleLogout}
                                     variant="outline"
                                     className="text-xs h-8 px-3 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
                                 >
-                                    Çıkış
+                                    {t('logout')}
                                 </Button>
                             </div>
                         ) : (
@@ -67,12 +67,12 @@ export default function Header() {
                             <div className="flex gap-2">
                                 <Link href="/login">
                                     <Button variant="outline" className="h-9 px-4">
-                                        Giriş Yap
+                                        {t('login')}
                                     </Button>
                                 </Link>
                                 <Link href="/register">
                                     <Button className="h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white">
-                                        Kayıt Ol
+                                        {t('register')}
                                     </Button>
                                 </Link>
                             </div>

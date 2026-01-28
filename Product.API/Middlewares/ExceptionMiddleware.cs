@@ -1,6 +1,9 @@
-﻿using Product.API.Models;
+﻿using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
+using Product.API.Models;
 using Product.Application.Exceptions;
 using System.Net;
+using System.Text.Json;
 
 namespace Product.API.Middlewares
 {
@@ -9,12 +12,14 @@ namespace Product.API.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
+        private readonly JsonSerializerOptions _jsonOptions;
 
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
+        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env, IOptions<JsonOptions> jsonOptions)
         {
             _next = next;
             _logger = logger;
             _env = env;
+           _jsonOptions = jsonOptions.Value.SerializerOptions;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -37,36 +42,36 @@ namespace Product.API.Middlewares
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-
-            string message;
+            string errorKey;
             var errors = new List<string>();
+            int statusCode = (int)HttpStatusCode.InternalServerError;
 
             switch (exception)
             {
                 case ValidationException validationEx:
-                    context.Response.StatusCode = (int)HttpStatusCode.OK;
-                    message = validationEx.Message;
-                    errors.Add(validationEx.Message);
+                    statusCode = (int)HttpStatusCode.OK;
+                    errorKey = validationEx.Message;   
+                    errors.Add(errorKey);
                     break;
-
                 default:
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    statusCode = (int)HttpStatusCode.InternalServerError;
+                    errorKey = "systemError";
                     if (_env.IsDevelopment())
                     {
-                        message = exception.Message;
-                        errors.Add(exception.StackTrace ?? "");
+                        errors.Add(exception.Message); 
                     }
                     else
                     {
-                        message = "Sunucu tarafında beklenmeyen bir hata oluştu.";
-                        errors.Add(message);
+                        errors.Add("An unexpected error occurred at backend.");
                     }
+                    _logger.LogError(exception, "System Error");
                     break;
             }
+            context.Response.StatusCode = statusCode;
+            var response = ApiResponse<object>.Fail(errorKey, errors);
 
-            var response = ApiResponse<object>.Fail(message, errors);
-
-            await context.Response.WriteAsync(response.ToString());
+            var json = JsonSerializer.Serialize(response, _jsonOptions);
+            await context.Response.WriteAsync(json);
         }
     }
 }

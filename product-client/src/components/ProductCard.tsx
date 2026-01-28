@@ -11,7 +11,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    const t = useTranslations('Product');
+    const t = useTranslations('ProductCard');
     const dispatch = useAppDispatch();
 
     const handleAddToCart = () => {
@@ -20,8 +20,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             name: product.name,
             price: product.price
         }));
-
-        console.log(`${product.name} sepete eklendi!`);
     };
 
     return (
@@ -31,7 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
 
                 <div className="w-full h-40 bg-gray-200 rounded mb-4 flex items-center justify-center text-gray-400">
-                    <span>Resim Yok</span>
+                    <span>{t('noImage')}</span>
                 </div>
 
                 <div className="flex justify-between items-center text-gray-600 mb-4">
@@ -50,7 +48,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors"
                 disabled={product.stock <= 0}
             >
-                {product.stock > 0 ? 'Sepete Ekle' : 'Stokta Yok'}
+                {product.stock > 0 ? t('addToCart') : t('outOfStock')}
 
             </Button>
         </div>
