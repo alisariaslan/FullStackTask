@@ -8,5 +8,6 @@ namespace Product.Application.Interfaces
     {
         Task<List<ProductEntity>> GetAllAsync(); 
         Task AddAsync(ProductEntity product);
+        Task<ProductEntity?> GetByIdAsync(Guid id);
     }
 }

@@ -23,5 +23,10 @@ namespace Product.Infrastructure.Repositories
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Product.Domain.Entities.ProductEntity?> GetByIdAsync(Guid id)
+        {
+            return await _context.Products.FindAsync(id);
+        }
     }
 }
