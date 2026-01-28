@@ -43,6 +43,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 // Servisler ve Repository
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // MediatR

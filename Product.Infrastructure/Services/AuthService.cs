@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Product.Application.DTOs;
 using Product.Application.Interfaces;
 using Product.Domain.Entities;
-using Product.Infrastructure.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -14,18 +12,18 @@ namespace Product.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly AppDbContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
-        public AuthService(AppDbContext context, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, IConfiguration configuration)
         {
-            _context = context;
+            _userRepository = userRepository;
             _configuration = configuration;
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto request)
         {
-            if (await _context.Users.AnyAsync(u => u.Username == request.Username))
+            if (await _userRepository.UserExistsAsync(request.Username))
             {
                 throw new Exception("Bu e-posta adresi zaten kullanılıyor.");
             }
@@ -35,18 +33,19 @@ namespace Product.Infrastructure.Services
             var user = new UserEntity
             {
                 Username = request.Username,
-                PasswordHash = Convert.ToBase64String(passwordHash) + "." + Convert.ToBase64String(passwordSalt)
+                PasswordHash = Convert.ToBase64String(passwordHash) + "." + Convert.ToBase64String(passwordSalt),
+                Role = "User" 
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.AddAsync(user);
 
             return new AuthResponseDto(CreateToken(user), user.Username);
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            var user = await _userRepository.GetByUsernameAsync(request.Username);
+
             if (user == null) throw new Exception("Kullanıcı bulunamadı.");
 
             var parts = user.PasswordHash.Split('.');
@@ -66,7 +65,7 @@ namespace Product.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.Role ?? "User")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
