@@ -1,0 +1,44 @@
+﻿using MediatR;
+using Product.Application.DTOs;
+using Product.Application.Interfaces;
+
+namespace Services.Product.API.Features.Products.Queries.GetProductById
+{
+    public record GetProductByIdQuery(Guid Id) : IRequest<ProductDto?>, ILocalizedRequest
+    {
+        public string LanguageCode { get; set; } = "en";
+    }
+
+    public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductDto?>
+    {
+        private readonly IProductRepository _repository;
+
+        public GetProductByIdQueryHandler(IProductRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<ProductDto?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        {
+            var product = await _repository.GetByIdAsync(request.Id);
+
+            if (product == null) return null;
+
+            var pTranslation = product.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
+                               ?? product.Translations.FirstOrDefault();
+
+            var cTranslation = product.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
+                               ?? product.Category?.Translations.FirstOrDefault();
+
+            return new ProductDto(
+                product.Id,
+                pTranslation?.Name ?? "No Name",
+                product.Price,
+                product.Stock,
+                product.ImageUrl,
+                product.CategoryId,
+                cTranslation?.Name ?? "Uncategorized"
+            );
+        }
+    }
+}

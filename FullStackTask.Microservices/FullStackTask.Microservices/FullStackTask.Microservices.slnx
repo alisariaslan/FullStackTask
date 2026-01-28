@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Gateways/">
+    <Project Path="Gateways.Yarp/Gateways.Yarp.csproj" Id="9524815d-ac4d-4ef6-b50e-ae56097e8e67" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="Services.Auth.API/Services.Auth.API.csproj" Id="051588f6-b1b2-4d57-8b99-d566acad491d" />
+    <Project Path="Services.Product.API/Services.Product.API.csproj" Id="e5696153-2fe6-46b2-914c-d74cf64c387d" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Shared.Kernel/Shared.Kernel.csproj" />
+  </Folder>
+</Solution>
