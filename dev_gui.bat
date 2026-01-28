@@ -4,6 +4,7 @@ title AliSariaslan - Developer CLI
 set BACKEND_PROJECT=Product.API
 set INFRA_PROJECT=Product.Infrastructure
 set DOCKER_COMPOSE_FILE=docker-compose.yml
+set IMAGES_PATH=Product.API\wwwroot\images
 
 :MENU
 cls
@@ -16,10 +17,9 @@ echo        5. Migration Ekle (dotnet ef migrations add)
 echo        6. Veritabanini Guncelle (dotnet ef database update)
 echo        7. Son Migration'i Geri Al (dotnet ef migrations remove)
 echo        8. Backend Log Klasorunu Ac
+echo        9. Resim (Uploads) Klasorunu Ac
 echo        0. CIKIS
-
-set /p secim="Islem Seciniz (0-8): "
-
+set /p secim="Islem Seciniz (0-9): "
 if "%secim%"=="1" goto DOCKER_UP
 if "%secim%"=="2" goto DOCKER_BUILD
 if "%secim%"=="3" goto DOCKER_HARD_RESET
@@ -28,13 +28,10 @@ if "%secim%"=="5" goto EF_ADD
 if "%secim%"=="6" goto EF_UPDATE
 if "%secim%"=="7" goto EF_REMOVE
 if "%secim%"=="8" goto OPEN_LOGS
+if "%secim%"=="9" goto OPEN_IMAGES
 if "%secim%"=="0" exit
-
 goto MENU
 
-:: -------------------------------------------------------------------------
-:: DOCKER BOLUMU
-:: -------------------------------------------------------------------------
 :DOCKER_UP
 echo.
 echo Docker konteynerleri baslatiliyor...
@@ -66,9 +63,6 @@ docker-compose down
 pause
 goto MENU
 
-:: -------------------------------------------------------------------------
-:: EF CORE BOLUMU
-:: -------------------------------------------------------------------------
 :EF_ADD
 echo.
 echo !!! Migration dosyalari Infrastructure katmanina eklenecek !!!
@@ -92,18 +86,23 @@ dotnet ef migrations remove --project %INFRA_PROJECT% --startup-project %BACKEND
 pause
 goto MENU
 
-:: -------------------------------------------------------------------------
-:: LOG BOLUMU
-:: -------------------------------------------------------------------------
 :OPEN_LOGS
 echo.
 echo Backend log klasoru aciliyor...
-
 if not exist backend-logs (
     echo backend-logs klasoru bulunamadi, olusturuluyor...
     mkdir backend-logs
 )
-
 start backend-logs
 pause
+goto MENU
+
+:OPEN_IMAGES
+echo.
+echo Resim (Uploads) klasoru aciliyor... (%IMAGES_PATH%)
+if not exist "%IMAGES_PATH%" (
+    echo Resim klasoru henuz yok, olusturuluyor...
+    mkdir "%IMAGES_PATH%"
+)
+start "" "%IMAGES_PATH%"
 goto MENU

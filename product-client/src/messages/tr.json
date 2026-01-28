@@ -80,7 +80,10 @@
         "userEmailAlreadyExists": "Bu e-posta adresi zaten kullanılıyor.",
         "userNotFound": "Kullanıcı bulunamadı veya şifre hatalı.",
         "systemError": "Beklenmeyen bir hata oluştu.",
-        "apiError": "Sunucuya bağlanılamadı."
+        "apiError": "Sunucuya bağlanılamadı.",
+        "nameRequired": "İsimlendirme gereklidir.",
+        "priceInvalid": "Geçersiz fiyat değeri.",
+        "categoryRequired": "Kategori gereklidir."
     },
     "ClientErrors": {
         "sessionExpired": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın.",

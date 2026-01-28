@@ -30,7 +30,7 @@ namespace Product.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ApiResponse<Guid>>> Create(CreateProductCommand command)
+        public async Task<ActionResult<ApiResponse<Guid>>> Create([FromForm] CreateProductCommand command)
         {
             var id = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetAll), new { id = id }, ApiResponse<Guid>.Success(id));

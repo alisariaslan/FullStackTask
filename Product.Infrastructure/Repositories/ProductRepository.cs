@@ -15,7 +15,11 @@ namespace Product.Infrastructure.Repositories
 
         public async Task<List<Product.Domain.Entities.ProductEntity>> GetAllAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products
+            .Include(p => p.Translations)
+            .Include(p => p.Category)
+                .ThenInclude(c => c!.Translations)
+            .ToListAsync();
         }
 
         public async Task AddAsync(Product.Domain.Entities.ProductEntity product)
@@ -26,7 +30,11 @@ namespace Product.Infrastructure.Repositories
 
         public async Task<Product.Domain.Entities.ProductEntity?> GetByIdAsync(Guid id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products
+           .Include(p => p.Translations)
+           .Include(p => p.Category)
+               .ThenInclude(c => c!.Translations)
+           .FirstOrDefaultAsync(p => p.Id == id);
         }
     }
 }

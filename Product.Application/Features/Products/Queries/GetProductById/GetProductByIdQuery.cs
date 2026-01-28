@@ -4,7 +4,10 @@ using Product.Application.Interfaces;
 
 namespace Product.Application.Features.Products.Queries.GetProductById
 {
-    public record GetProductByIdQuery(Guid Id) : IRequest<ProductDto?>;
+    public record GetProductByIdQuery(Guid Id) : IRequest<ProductDto?>, ILocalizedRequest
+    {
+        public string LanguageCode { get; set; } = "en";
+    }
 
     public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductDto?>
     {
@@ -21,7 +24,21 @@ namespace Product.Application.Features.Products.Queries.GetProductById
 
             if (product == null) return null;
 
-            return new ProductDto(product.Id, product.Name, product.Price, product.Stock);
+            var pTranslation = product.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
+                               ?? product.Translations.FirstOrDefault();
+
+            var cTranslation = product.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
+                               ?? product.Category?.Translations.FirstOrDefault();
+
+            return new ProductDto(
+                product.Id,
+                pTranslation?.Name ?? "No Name",
+                product.Price,
+                product.Stock,
+                product.ImageUrl,
+                product.CategoryId,
+                cTranslation?.Name ?? "Uncategorized"
+            );
         }
     }
 }

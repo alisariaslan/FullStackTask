@@ -78,10 +78,12 @@
     },
     "ApiErrors": {
         "userEmailAlreadyExists": "This email address is already in use.",
-        "userNotFound": "User not found.",
-        "passwordIncorrect": "Invalid password.",
+        "userNotFound": "User not found or the password is incorrect.",
         "systemError": "An unexpected error occurred.",
-        "apiError": "Could not connect to the server."
+        "apiError": "Could not connect to the server.",
+        "nameRequired": "Name is required.",
+        "priceInvalid": "Invalid price value.",
+        "categoryRequired": "Category is required."
     },
     "ClientErrors": {
         "sessionExpired": "Your session has expired, please login again.",

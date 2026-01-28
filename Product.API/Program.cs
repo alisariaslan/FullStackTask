@@ -2,15 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Product.API.Middlewares;
+using Product.Application.Behaviors;
 using Product.Application.DTOs;
 using Product.Application.Interfaces;
 using Product.Infrastructure.Data;
 using Product.Infrastructure.Repositories;
 using Product.Infrastructure.Services;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
-using Serilog;
-using Product.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,13 +57,21 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.InstanceName = "ProductStore_"; // Key Prefix
 });
 
+// Pipeline Behavior
+builder.Services.AddHttpContextAccessor();
+
 // Servisler ve Repository
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // MediatR
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ProductDto).Assembly));
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(typeof(ProductDto).Assembly);
+    cfg.AddOpenBehavior(typeof(LocalizationBehavior<,>));
+});
 
 // JWT AUTH
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -123,6 +132,8 @@ app.UseCors("AllowNextApp");
 
 if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthentication(); // Kimlik Doğrulama
 app.UseAuthorization();  // Yetkilendirme
