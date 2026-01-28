@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Product.Application.Constants;
-using Product.Application.DTOs;
-using Product.Application.Exceptions;
-using Product.Application.Interfaces;
-using Product.Domain.Entities;
+﻿using Microsoft.IdentityModel.Tokens;
+using Services.Auth.API.Constants;
+using Services.Auth.API.Entities;
+using Services.Auth.API.Models;
+using Services.Auth.API.Repositories;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;

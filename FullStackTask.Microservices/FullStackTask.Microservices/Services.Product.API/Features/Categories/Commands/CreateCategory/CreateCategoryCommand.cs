@@ -1,8 +1,9 @@
 ﻿using MediatR;
-using Product.Application.Interfaces;
-using Product.Domain.Entities;
-using Product.Application.Constants;
 using Microsoft.Extensions.Caching.Distributed;
+using Services.Product.API.Constants;
+using Services.Product.API.Entities;
+using Services.Product.API.Models;
+using Services.Product.API.Repositories;
 using System.ComponentModel.DataAnnotations;
 
 namespace Services.Product.API.Features.Categories.Commands.CreateCategory

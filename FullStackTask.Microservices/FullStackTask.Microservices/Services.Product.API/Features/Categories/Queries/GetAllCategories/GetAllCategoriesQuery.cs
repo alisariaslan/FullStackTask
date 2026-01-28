@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
-using Product.Application.DTOs;
-using Product.Application.Interfaces;
+using Services.Product.API.Models;
+using Services.Product.API.Repositories;
 using System.Text.Json;
 
 namespace Services.Product.API.Features.Categories.Queries.GetAllCategories

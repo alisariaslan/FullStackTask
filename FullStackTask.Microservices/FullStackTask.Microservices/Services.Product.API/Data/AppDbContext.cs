@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Product.Domain.Entities;
+using Services.Product.API.Entities;
 
 namespace Services.Product.API.Data
 {

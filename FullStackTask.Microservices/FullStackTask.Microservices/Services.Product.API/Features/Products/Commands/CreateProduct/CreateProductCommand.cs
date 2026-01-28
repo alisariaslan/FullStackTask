@@ -1,9 +1,10 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
-using Product.Application.Constants;
-using Product.Application.Interfaces;
-using Product.Domain.Entities;
+using Services.Product.API.Constants;
+using Services.Product.API.Entities;
+using Services.Product.API.Models;
+using Services.Product.API.Repositories;
+using Services.Product.API.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace Services.Product.API.Features.Products.Commands.CreateProduct
