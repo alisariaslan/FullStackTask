@@ -9,8 +9,18 @@ using Product.Infrastructure.Repositories;
 using Product.Infrastructure.Services;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using Serilog;
+using Product.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Serilog
+builder.Host.UseSerilog((context, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day));
 
 // Controller
 builder.Services.AddControllers();
@@ -76,6 +86,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// HTTP Request Serilog
+app.UseSerilogRequestLogging();
+
+// Global exception handling
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Migration Kontrolü
 using (var scope = app.Services.CreateScope())

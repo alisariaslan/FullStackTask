@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Product.API.Models;
 using Product.Application.DTOs;
 using Product.Application.Features.Auth.Commands.Login;
 using Product.Application.Features.Auth.Commands.Register;
@@ -20,29 +21,15 @@ namespace Product.API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto request)
         {
-            try
-            {
-                var result = await _mediator.Send(new RegisterCommand(request));
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _mediator.Send(new RegisterCommand(request));
+            return Ok(ApiResponse<AuthResponseDto>.Success(result, "Kayıt başarılı"));
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto request)
         {
-            try
-            {
-                var result = await _mediator.Send(new LoginCommand(request));
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _mediator.Send(new LoginCommand(request));
+            return Ok(ApiResponse<AuthResponseDto>.Success(result, "Giriş başarılı"));
         }
     }
 }

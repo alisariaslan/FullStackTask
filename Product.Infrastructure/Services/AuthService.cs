@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Product.Application.DTOs;
 using Product.Application.Interfaces;
 using Product.Domain.Entities;
+using Product.Application.Exceptions; // <--- Bunu eklemeyi unutma!
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -25,7 +26,7 @@ namespace Product.Infrastructure.Services
         {
             if (await _userRepository.UserExistsAsync(request.Username))
             {
-                throw new Exception("Bu e-posta adresi zaten kullanılıyor.");
+                throw new ValidationException("Bu e-posta adresi zaten kullanılıyor.");
             }
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -34,7 +35,7 @@ namespace Product.Infrastructure.Services
             {
                 Username = request.Username,
                 PasswordHash = Convert.ToBase64String(passwordHash) + "." + Convert.ToBase64String(passwordSalt),
-                Role = "User" 
+                Role = "User"
             };
 
             await _userRepository.AddAsync(user);
@@ -46,7 +47,7 @@ namespace Product.Infrastructure.Services
         {
             var user = await _userRepository.GetByUsernameAsync(request.Username);
 
-            if (user == null) throw new Exception("Kullanıcı bulunamadı.");
+            if (user == null) throw new ValidationException("Kullanıcı bulunamadı.");
 
             var parts = user.PasswordHash.Split('.');
             var storedHash = Convert.FromBase64String(parts[0]);
@@ -54,7 +55,7 @@ namespace Product.Infrastructure.Services
 
             if (!VerifyPasswordHash(request.Password, storedHash, storedSalt))
             {
-                throw new Exception("Şifre yanlış.");
+                throw new ValidationException("Şifre yanlış.");
             }
 
             return new AuthResponseDto(CreateToken(user), user.Username);

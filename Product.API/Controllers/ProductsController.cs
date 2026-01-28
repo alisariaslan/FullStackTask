@@ -1,9 +1,10 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Product.Application.DTOs;
 using Product.Application.Features.Products.Commands.CreateProduct;
 using Product.Application.Features.Products.Queries.GetAllProducts;
+using Product.API.Models;
 
 namespace Product.API.Controllers
 {
@@ -19,18 +20,18 @@ namespace Product.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<ApiResponse<List<ProductDto>>>> GetAll()
         {
             var result = await _mediator.Send(new GetAllProductsQuery());
-            return Ok(result);
+            return Ok(ApiResponse<List<ProductDto>>.Success(result));
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Create(CreateProductCommand command)
+        public async Task<ActionResult<ApiResponse<Guid>>> Create(CreateProductCommand command)
         {
             var id = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetAll), new { id = id }, command);
+            return CreatedAtAction(nameof(GetAll), new { id = id }, ApiResponse<Guid>.Success(id, "Ürün başarıyla oluşturuldu"));
         }
     }
 }
