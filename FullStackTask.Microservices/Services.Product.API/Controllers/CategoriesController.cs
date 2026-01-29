@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Product.Application.Features.Categories.Commands.AddCategoryTranslation;
 using Services.Product.Application.Features.Categories.Commands.CreateCategory;
 using Services.Product.Application.Features.Categories.Queries.GetAllCategories;
 using Services.Product.Application.Models;
+using Shared.Kernel.Constants;
 using Shared.Kernel.Models;
 
 namespace Services.Product.API.Controllers
@@ -32,6 +34,17 @@ namespace Services.Product.API.Controllers
         {
             var id = await _mediator.Send(command);
             return Ok(ApiResponse<Guid>.Success(id));
+        }
+
+        [HttpPost("{id}/translations")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse<Unit>>> AddTranslation(Guid id, [FromBody] AddCategoryTranslationCommand command)
+        {
+            if (id != command.CategoryId)
+                return BadRequest(ApiResponse<Unit>.Fail(Messages.IdMismatch));
+
+            await _mediator.Send(command);
+            return Ok(ApiResponse<Unit>.Success(Unit.Value));
         }
     }
 }

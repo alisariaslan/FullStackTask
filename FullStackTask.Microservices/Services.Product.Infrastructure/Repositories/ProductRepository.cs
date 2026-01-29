@@ -39,5 +39,16 @@ namespace Services.Product.Infrastructure.Repositories
                .ThenInclude(c => c!.Translations)
            .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<bool> SlugExistsAsync(string slug)
+        {
+            return await _context.Products
+                .AnyAsync(p => p.Translations.Any(t => t.Slug == slug));
+        }
+        public async Task UpdateAsync(ProductEntity product)
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+        }
     }
 }

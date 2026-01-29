@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Product.Application.Features.Products.Commands.AddProductTranslation;
 using Services.Product.Application.Features.Products.Commands.CreateProduct;
 using Services.Product.Application.Features.Products.Queries.GetAllProducts;
 using Services.Product.Application.Features.Products.Queries.GetProductById;
@@ -45,6 +46,17 @@ namespace Services.Product.API.Controllers
                 return NotFound(ApiResponse<ProductDto>.Fail(Messages.ProductNotFound));
             }
             return Ok(ApiResponse<ProductDto>.Success(result));
+        }
+
+        [HttpPost("{id}/translations")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse<Unit>>> AddTranslation(Guid id, [FromBody] AddProductTranslationCommand command)
+        {
+            if (id != command.ProductId)
+                return Ok(ApiResponse<Unit>.Fail(Messages.IdMismatch));
+
+            await _mediator.Send(command);
+            return Ok(ApiResponse<Unit>.Success(Unit.Value));
         }
     }
 }

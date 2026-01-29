@@ -7,5 +7,7 @@ namespace Services.Product.Application.Interfaces
         Task<List<ProductEntity>> GetAllAsync();
         Task AddAsync(ProductEntity product);
         Task<ProductEntity?> GetByIdAsync(Guid id);
+        Task<bool> SlugExistsAsync(string slug);
+        Task UpdateAsync(ProductEntity product);
     }
 }

@@ -11,5 +11,7 @@
         public const string PriceInvalid = "priceInvalid";
         public const string CategoryRequired = "categoryRequired";
         public const string CategoryNotFound = "categoryNotFound";
+        public const string IdMismatch = "idMismatch";
+        public const string TranslationAlreadyExists = "translationAlreadyExists";
     }
 }
