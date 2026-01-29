@@ -2,9 +2,17 @@
   <Folder Name="/Gateways/">
     <Project Path="Gateways.Yarp/Gateways.Yarp.csproj" Id="9524815d-ac4d-4ef6-b50e-ae56097e8e67" />
   </Folder>
+  <Folder Name="/Product/">
+    <Project Path="Services.Product.API/Services.Product.API.csproj" Id="e5696153-2fe6-46b2-914c-d74cf64c387d" />
+    <Project Path="Services.Product.Application/Services.Product.Application.csproj" Id="aa1fe3f1-502e-4393-ac35-87e80f99b32f" />
+    <Project Path="Services.Product.Domain/Services.Product.Domain.csproj" Id="dd708962-3ef3-4a82-b1a5-924a05043ee7" />
+    <Project Path="Services.Product.Infrastructure/Services.Product.Infrastructure.csproj" Id="48efd872-c0f5-4236-bb24-183de73ee9b2" />
+  </Folder>
   <Folder Name="/Services/">
     <Project Path="Services.Auth.API/Services.Auth.API.csproj" Id="051588f6-b1b2-4d57-8b99-d566acad491d" />
-    <Project Path="Services.Product.API/Services.Product.API.csproj" Id="e5696153-2fe6-46b2-914c-d74cf64c387d" />
+    <Project Path="Services.Auth.Application/Services.Auth.Application.csproj" Id="72d61d4c-2425-4471-a514-44fd023a5bf1" />
+    <Project Path="Services.Auth.Domain/Services.Auth.Domain.csproj" Id="6e026c6b-9470-40b1-88d3-5b6bf9e34cec" />
+    <Project Path="Services.Auth.Infrastructure/Services.Auth.Infrastructure.csproj" Id="861505cd-74b0-41dd-8e17-655703468276" />
   </Folder>
   <Folder Name="/Shared/">
     <Project Path="Shared.Kernel/Shared.Kernel.csproj" />

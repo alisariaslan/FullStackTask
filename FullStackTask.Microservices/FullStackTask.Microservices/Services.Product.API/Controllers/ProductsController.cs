@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Product.API.Constants;
-using Services.Product.API.Features.Products.Commands.CreateProduct;
-using Services.Product.API.Features.Products.Queries.GetAllProducts;
-using Services.Product.API.Features.Products.Queries.GetProductById;
-using Services.Product.API.Models;
+using Services.Product.Application.Features.Products.Commands.CreateProduct;
+using Services.Product.Application.Features.Products.Queries.GetAllProducts;
+using Services.Product.Application.Features.Products.Queries.GetProductById;
+using Services.Product.Application.Models;
+using Shared.Kernel.Constants;
+using Shared.Kernel.Models;
 
 namespace Services.Product.API.Controllers
 {

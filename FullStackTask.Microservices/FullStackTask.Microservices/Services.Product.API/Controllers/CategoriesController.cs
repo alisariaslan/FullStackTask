@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Product.API.Features.Categories.Commands.CreateCategory;
-using Services.Product.API.Features.Categories.Queries.GetAllCategories;
-using Services.Product.API.Models;
+using Services.Product.Application.Features.Categories.Commands.CreateCategory;
+using Services.Product.Application.Features.Categories.Queries.GetAllCategories;
+using Services.Product.Application.Models;
+using Shared.Kernel.Models;
 
 namespace Services.Product.API.Controllers
 {

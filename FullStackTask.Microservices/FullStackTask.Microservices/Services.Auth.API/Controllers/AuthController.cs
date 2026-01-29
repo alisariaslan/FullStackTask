@@ -1,9 +1,10 @@
 ﻿
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Services.Auth.API.Features.Auth.Commands.Login;
-using Services.Auth.API.Features.Auth.Commands.Register;
-using Services.Auth.API.Models;
+using Services.Auth.Application.Features.Auth.Commands.Login;
+using Services.Auth.Application.Features.Auth.Commands.Register;
+using Services.Auth.Application.Models;
+using Shared.Kernel.Models;
 
 namespace Services.Auth.API.Controllers
 {
