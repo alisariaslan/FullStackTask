@@ -137,7 +137,7 @@ services:
     environment:
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_API_URL=http://localhost:6004
-      - API_URL=http://product_api:8080/api
+      - API_URL=http://micro_product_api:8080/api
     ports:
       - "6005:3000"
     volumes:

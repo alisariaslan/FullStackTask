@@ -1,4 +1,4 @@
-backend-logs/
+logs/
 *.py
 __pycache__/
 bin/
