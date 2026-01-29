@@ -1,74 +1,159 @@
 services:
-  # Veritabanı (PostgreSQL) -> Port 5001
-  db:
-    image: postgres:latest
-    container_name: product_db
+  postgres-db:
+    image: postgres:17-alpine
+    container_name: micro_postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: a5134ba8
-      POSTGRES_DB: ProductDb
     ports:
-      - "5001:5432" # Dışarıdan 5001 ile erişilir
+      - "6000:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: always
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - micro-net
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    image: redis:alpine
+    container_name: micro_redis
+    ports:
+      - "6001:6379"
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: micro_rabbitmq
+    ports:
+      - "6002:5672"
+      - "6003:15672"
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Cache (Redis) -> Port 5002
-  redis:
-    image: redis:alpine
-    container_name: product_cache
-    ports:
-      - "5002:6379" # Dışarıdan 5002 ile erişilir
-    restart: always
-
-  # Backend API (.NET) -> Port 5000
-  api:
+  auth-api:
     build:
-      context: .
-      dockerfile: Product.API/Dockerfile
-    container_name: product_api
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    ports:
-      - "5000:8080" # Ana API kapısı
+      context: ./FullStackTask.Microservices
+      dockerfile: Services.Auth.API/Dockerfile
+    container_name: micro_auth_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      # Konteynerlar arası iletişimde port değişmez (5432 ve 6379 kalır)
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
-      - ConnectionStrings__Redis=redis:6379
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=AuthDb;Username=postgres;Password=a5134ba8
+      - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
+      - JwtSettings__Issuer=MicroserviceApp
+      - JwtSettings__Audience=MicroserviceApp
+    depends_on:
+      postgres-db:
+        condition: service_healthy
     volumes:
-      - ./backend-logs:/app/logs
-      - ./Product.API/wwwroot/images:/app/wwwroot/images
-    restart: on-failure
+      - ./logs/auth:/app/logs
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6006:8080"
 
-  # Frontend (Next.js) -> Port 5003
+  product-api:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Services.Product.API/Dockerfile
+    container_name: micro_product_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
+      - ConnectionStrings__Redis=redis-cache:6379
+      - RabbitMQSettings__Host=rabbitmq
+      - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
+      - JwtSettings__Issuer=MicroserviceApp
+      - JwtSettings__Audience=MicroserviceApp
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+    volumes:
+      - ./logs/product:/app/logs
+      - ./images:/app/wwwroot/images
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6007:8080"
+
+  gateway-yarp:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Gateways.Yarp/Dockerfile
+    container_name: micro_gateway
+    ports:
+      - "0.0.0.0:6004:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    depends_on:
+      auth-api:
+        condition: service_healthy
+      product-api:
+        condition: service_healthy
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   frontend:
     build:
       context: ./product-client
       dockerfile: Dockerfile
-    container_name: product_client
+    container_name: micro_frontend
     environment:
       - WATCHPACK_POLLING=true
-      # Tarayıcı bu API'ye dışarıdan (host üzerinden) erişir, o yüzden 5000
-      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
-      # Server-side render için iç ağdan erişim
+      - NEXT_PUBLIC_API_URL=http://localhost:6004
       - API_URL=http://product_api:8080/api
     ports:
-      - "5003:3000" # Siteye http://localhost:5003 adresinden gireceksin
+      - "6005:3000"
     volumes:
       - ./product-client:/app
       - /app/node_modules
     depends_on:
-      - api
+      gateway-yarp:
+        condition: service_healthy
+    networks:
+      - micro-net
     restart: always
 
 volumes:
   postgres_data:
+
+
+networks:
+  micro-net:
+    driver: bridge

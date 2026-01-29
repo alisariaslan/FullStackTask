@@ -83,7 +83,8 @@
         "apiError": "Sunucuya bağlanılamadı.",
         "nameRequired": "İsimlendirme gereklidir.",
         "priceInvalid": "Geçersiz fiyat değeri.",
-        "categoryRequired": "Kategori gereklidir."
+        "categoryRequired": "Kategori gereklidir.",
+        "categoryNotFound": "Kategori bulunamadı."
     },
     "ClientErrors": {
         "sessionExpired": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın.",

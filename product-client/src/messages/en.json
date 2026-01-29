@@ -83,7 +83,8 @@
         "apiError": "Could not connect to the server.",
         "nameRequired": "Name is required.",
         "priceInvalid": "Invalid price value.",
-        "categoryRequired": "Category is required."
+        "categoryRequired": "Category is required.",
+        "categoryNotFound": "Category not found."
     },
     "ClientErrors": {
         "sessionExpired": "Your session has expired, please login again.",
