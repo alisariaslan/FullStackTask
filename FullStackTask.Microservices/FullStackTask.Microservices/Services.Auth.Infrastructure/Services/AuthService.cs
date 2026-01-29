@@ -72,7 +72,7 @@ namespace Services.Auth.Infrastructure.Services
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection(ConfigurationKeys.JwtToken).Value!));
+                _configuration.GetSection(ConfigurationKeys.JwtKey).Value!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

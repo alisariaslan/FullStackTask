@@ -1,48 +1,77 @@
-﻿/// Services.Auth.API.Program.cs
+﻿///Services.Auth.API.Program.cs
 
-using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Serilog;
 using Services.Auth.Application.Interfaces;
 using Services.Auth.Infrastructure.Data;
 using Services.Auth.Infrastructure.Repositories;
 using Services.Auth.Infrastructure.Services;
 using Shared.Kernel.Behaviors;
-using Shared.Kernel.Extensions; 
-using Shared.Kernel.Middlewares; 
+using Shared.Kernel.Constants;
+using Shared.Kernel.Middlewares;
+using Swashbuckle.AspNetCore.Filters;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- SHARED KERNEL  -----------------------------------------
-
 // Serilog
-builder.AddSharedSerilog("AuthService");
+builder.Host.UseSerilog((context, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("Application", "AuthService")
+        .WriteTo.Console()
+        .WriteTo.File("logs/AuthService-log-.txt", rollingInterval: RollingInterval.Day));
 
-// Swagger
-builder.Services.AddSharedSwagger();
-
-// Auth
-builder.Services.AddSharedAuthentication(builder.Configuration);
-
-// CORS
-builder.Services.AddSharedCors(builder.Configuration, "AllowNextApp");
-
-// ------------------------------------------------------------
-
-// Property Naming Policy
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+// JWT
+var jwtSection = builder.Configuration.GetSection(ConfigurationKeys.JwtSettings);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection[ConfigurationKeys.JwtKey]!)),
+            ValidateIssuer = true,
+            ValidIssuer = jwtSection[ConfigurationKeys.JwtIssuer],
+            ValidateAudience = true,
+            ValidAudience = jwtSection[ConfigurationKeys.JwtAudience],
+            ClockSkew = TimeSpan.Zero
+        };
     });
 
-// DB
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly("Services.Auth.API")
-    ));
+// EndpointsApiExplorer
+builder.Services.AddEndpointsApiExplorer();
 
-// HttpContextAccessor
+// Swagger
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme (\"Bearer {token}\")",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+// Cors
+var gatewayOrigin = builder.Configuration[ConfigurationKeys.GatewayOrigin] ?? throw new Exception("Gateway origin missing");
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowGateway", policy => {
+        policy.WithOrigins(gatewayOrigin).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    });
+});
+
+// Json Naming Policy
+builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
+
+//Postgre
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration[ConfigurationKeys.PostgreConnection]));
+
+// AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
 // Services
@@ -55,49 +84,23 @@ builder.Services.AddMediatR(cfg => {
     cfg.AddOpenBehavior(typeof(LocalizationBehavior<,>));
 });
 
-// MassTransit (RabbitMQ)
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host("localhost", "/", h => {
-            h.Username("guest");
-            h.Password("guest");
-        });
-    });
-});
-
 var app = builder.Build();
 
+// Serilog
 app.UseSerilogRequestLogging();
+
+// Middleware 
 app.UseMiddleware<ExceptionMiddleware>();
 
-// Migration
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        Log.Error(ex, "Auth DB Migration Error");
-    }
+// DB Migration
+using (var scope = app.Services.CreateScope()) {
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseCors("AllowNextApp");
-app.UseHttpsRedirection();
-
+if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
+app.UseCors("AllowGateway");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Services.Product.Application.Interfaces;
 using Services.Product.Domain.Entities;
 using Shared.Kernel.Constants;
+using Shared.Kernel.IntegrationEvents;
 using Shared.Kernel.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,13 +25,14 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
     {
         private readonly IProductRepository _repository;
         private readonly IDistributedCache _cache;
-        private readonly IImageService _imageService; 
-
-        public CreateProductCommandHandler(IProductRepository repository, IDistributedCache cache, IImageService imageService)
+        private readonly IImageService _imageService;
+        private readonly IPublishEndpoint _publishEndpoint;
+        public CreateProductCommandHandler(IProductRepository repository, IDistributedCache cache, IImageService imageService, IPublishEndpoint publishEndpoint)
         {
             _repository = repository;
             _cache = cache;
             _imageService = imageService;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -78,6 +81,15 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
             await _repository.AddAsync(newProduct);
 
             await _cache.RemoveAsync($"all_products_{request.LanguageCode}", cancellationToken);
+
+            await _publishEndpoint.Publish(new ProductCreatedEvent
+            {
+                Id = newProduct.Id,
+                Name = request.Name,
+                Price = newProduct.Price,
+                Stock = newProduct.Stock,
+                CategoryId = newProduct.CategoryId
+            }, cancellationToken);
 
             return newProduct.Id;
         }

@@ -1,54 +1,83 @@
-﻿/// Services.Product.API.Program.cs
+﻿///Services.Product.API.Program.cs
 
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Serilog;
 using Services.Product.Application.Interfaces;
 using Services.Product.Infrastructure.Data;
 using Services.Product.Infrastructure.Repositories;
 using Services.Product.Infrastructure.Services;
 using Shared.Kernel.Behaviors;
-using Shared.Kernel.Extensions;
+using Shared.Kernel.Constants;
 using Shared.Kernel.Middlewares;
+using Swashbuckle.AspNetCore.Filters;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- SHARED KERNEL  -----------------------------------------
-
 // Serilog
-builder.AddSharedSerilog("ProductService");
+builder.Host.UseSerilog((context, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("Application", "ProductService")
+        .WriteTo.Console()
+        .WriteTo.File("logs/ProductService-log-.txt", rollingInterval: RollingInterval.Day));
 
-// Swagger
-builder.Services.AddSharedSwagger();
-
-// Auth
-builder.Services.AddSharedAuthentication(builder.Configuration);
-
-// CORS
-builder.Services.AddSharedCors(builder.Configuration, "AllowNextApp");
-
-// ------------------------------------------------------------
-
-// Property Naming Policy
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+// JWT
+var jwtSection = builder.Configuration.GetSection(ConfigurationKeys.JwtSettings);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection[ConfigurationKeys.JwtKey]!)),
+            ValidateIssuer = true,
+            ValidIssuer = jwtSection[ConfigurationKeys.JwtIssuer],
+            ValidateAudience = true,
+            ValidAudience = jwtSection[ConfigurationKeys.JwtAudience],
+            ClockSkew = TimeSpan.Zero
+        };
     });
 
-// DB
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly("Services.Product.API")));
+// EndpointsApiExplorer
+builder.Services.AddEndpointsApiExplorer();
 
-// Redis
-builder.Services.AddStackExchangeRedisCache(options =>
+// Swagger
+builder.Services.AddSwaggerGen(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
-    options.InstanceName = "ProductStore_";
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Bearer {token}",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-// HttpContextAccessor
+// Cors
+var gatewayOrigin = builder.Configuration[ConfigurationKeys.GatewayOrigin] ?? throw new Exception("Gateway origin missing");
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowGateway", policy => {
+        policy.WithOrigins(gatewayOrigin).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    });
+});
+
+// Json Naming Policy
+builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
+
+// Postgre
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration[ConfigurationKeys.PostgreConnection]));
+
+// Redis
+builder.Services.AddStackExchangeRedisCache(opt => {
+    opt.Configuration = builder.Configuration[ConfigurationKeys.RedisConnection];
+});
+
+// AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
 // Services
@@ -62,50 +91,35 @@ builder.Services.AddMediatR(cfg => {
     cfg.AddOpenBehavior(typeof(LocalizationBehavior<,>));
 });
 
-// MassTransit (RabbitMQ)
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host("localhost", "/", h => {
-            h.Username("guest");
-            h.Password("guest");
+// MassTransit
+builder.Services.AddMassTransit(x => {
+    x.UsingRabbitMq((context, cfg) => {
+        var rabbitSection = builder.Configuration.GetSection(ConfigurationKeys.RabbitMQSection);
+        cfg.Host(rabbitSection["Host"] ?? "localhost", "/", h => {
+            h.Username(rabbitSection["Username"] ?? "guest");
+            h.Password(rabbitSection["Password"] ?? "guest");
         });
     });
 });
 
 var app = builder.Build();
 
+// Serilog
 app.UseSerilogRequestLogging();
+
+// Middleware 
 app.UseMiddleware<ExceptionMiddleware>();
 
-// Migration
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        Log.Error(ex, "Product DB Migration Error");
-    }
+// DB Migration
+using (var scope = app.Services.CreateScope()) {
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseCors("AllowNextApp");
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
+app.UseCors("AllowGateway");
 app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

@@ -1,5 +1,5 @@
 services:
-  # Veritabanı (PostgreSQL)
+  # Veritabanı (PostgreSQL) -> Port 5001
   db:
     image: postgres:latest
     container_name: product_db
@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: a5134ba8
       POSTGRES_DB: ProductDb
     ports:
-      - "5432:5432"
+      - "5001:5432" # Dışarıdan 5001 ile erişilir
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
@@ -18,15 +18,15 @@ services:
       timeout: 5s
       retries: 5
 
-  # Cache (Redis)
+  # Cache (Redis) -> Port 5002
   redis:
     image: redis:alpine
     container_name: product_cache
     ports:
-      - "6379:6379"
+      - "5002:6379" # Dışarıdan 5002 ile erişilir
     restart: always
 
-  # Backend API (.NET)
+  # Backend API (.NET) -> Port 5000
   api:
     build:
       context: .
@@ -38,9 +38,10 @@ services:
       redis:
         condition: service_started
     ports:
-      - "5000:8080"
+      - "5000:8080" # Ana API kapısı
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      # Konteynerlar arası iletişimde port değişmez (5432 ve 6379 kalır)
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
       - ConnectionStrings__Redis=redis:6379
     volumes:
@@ -48,7 +49,7 @@ services:
       - ./Product.API/wwwroot/images:/app/wwwroot/images
     restart: on-failure
 
-  # Frontend (Next.js)
+  # Frontend (Next.js) -> Port 5003
   frontend:
     build:
       context: ./product-client
@@ -56,10 +57,12 @@ services:
     container_name: product_client
     environment:
       - WATCHPACK_POLLING=true
+      # Tarayıcı bu API'ye dışarıdan (host üzerinden) erişir, o yüzden 5000
       - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+      # Server-side render için iç ağdan erişim
       - API_URL=http://product_api:8080/api
     ports:
-      - "3000:3000"
+      - "5003:3000" # Siteye http://localhost:5003 adresinden gireceksin
     volumes:
       - ./product-client:/app
       - /app/node_modules

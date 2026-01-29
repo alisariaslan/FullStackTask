@@ -1,0 +1,119 @@
+services:
+  postgres-db:
+    image: postgres:17-alpine
+    container_name: micro_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: a5134ba8
+    ports:
+      - "6000:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d # Çoklu DB için kritik
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    image: redis:alpine
+    container_name: micro_redis
+    ports:
+      - "6001:6379"
+    networks:
+      - micro-net
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: micro_rabbitmq
+    ports:
+      - "6002:5672"
+      - "6003:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - micro-net
+
+  auth-api:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Services.Auth.API/Dockerfile
+    container_name: micro_auth_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=AuthDb;Username=postgres;Password=a5134ba8
+      - Cors__GatewayOrigin=http://localhost:6004 # Gateway'in dış adresi (Tarayıcı için)
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    volumes:
+      - ./logs/auth:/app/logs
+    networks:
+      - micro-net
+
+  product-api:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Services.Product.API/Dockerfile
+    container_name: micro_product_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
+      - ConnectionStrings__Redis=redis-cache:6379
+      - RabbitMQSettings__Host=rabbitmq
+      - Cors__GatewayOrigin=http://localhost:6004
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./logs/product:/app/logs
+      - ./images:/app/wwwroot/images
+    networks:
+      - micro-net
+
+  gateway-yarp:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Gateways.Yarp/Dockerfile
+    container_name: micro_gateway
+    ports:
+      - "6004:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - Cors__FrontendOrigin=http://localhost:6005
+    depends_on:
+      - auth-api
+      - product-api
+    networks:
+      - micro-net
+
+  frontend:
+    build:
+      context: ./product-client
+      dockerfile: Dockerfile
+    container_name: micro_frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:6004
+    ports:
+      - "6005:3000"
+    networks:
+      - micro-net
+
+volumes:
+  postgres_data:
+
+
+networks:
+  micro-net:
+    driver: bridge

@@ -1,31 +1,34 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+﻿# Services.Auth.API.Dockerfile
 
-# Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
-# For more information, please see https://aka.ms/containercompat
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-nanoserver-ltsc2022 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
+
+USER root
+RUN apt-get update && apt-get install -y libgssapi-krb5-2
+
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:10.0-nanoserver-ltsc2022 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
 COPY ["Services.Auth.API/Services.Auth.API.csproj", "Services.Auth.API/"]
-RUN dotnet restore "./Services.Auth.API/Services.Auth.API.csproj"
+COPY ["Services.Auth.Application/Services.Auth.Application.csproj", "Services.Auth.Application/"]
+COPY ["Services.Auth.Domain/Services.Auth.Domain.csproj", "Services.Auth.Domain/"]
+COPY ["Services.Auth.Infrastructure/Services.Auth.Infrastructure.csproj", "Services.Auth.Infrastructure/"]
+COPY ["Shared.Kernel/Shared.Kernel.csproj", "Shared.Kernel/"]
+
+RUN dotnet restore "Services.Auth.API/Services.Auth.API.csproj"
+
 COPY . .
 WORKDIR "/src/Services.Auth.API"
-RUN dotnet build "./Services.Auth.API.csproj" -c %BUILD_CONFIGURATION% -o /app/build
+RUN dotnet build "Services.Auth.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Services.Auth.API.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Services.Auth.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
