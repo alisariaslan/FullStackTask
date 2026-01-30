@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Services.Auth.Application.Interfaces;
 using Services.Auth.Application.Models;
 
 namespace Services.Auth.Application.Features.Auth.Commands.Login

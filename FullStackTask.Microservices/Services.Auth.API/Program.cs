@@ -10,7 +10,6 @@ using Services.Auth.Infrastructure.Data;
 using Services.Auth.Infrastructure.Repositories;
 using Services.Auth.Infrastructure.Services;
 using Shared.Kernel.Behaviors;
-using Shared.Kernel.Constants;
 using Shared.Kernel.Middlewares;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
@@ -22,25 +21,21 @@ builder.Services.AddHealthChecks();
 // Serilog
 builder.Host.UseSerilog((context, configuration) =>
     configuration
-        .ReadFrom.Configuration(context.Configuration)
-        .Enrich.FromLogContext()
-        .Enrich.WithProperty("Application", "AuthService")
-        .WriteTo.Console()
-        .WriteTo.File("logs/AuthService-log-.txt", rollingInterval: RollingInterval.Day));
+        .ReadFrom.Configuration(context.Configuration));
 
-// JWT
-var jwtSection = builder.Configuration.GetSection(ConfigurationKeys.JwtSettings);
+// JWT Authentication
+var jwtSection = builder.Configuration.GetSection("JwtSettings")!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection[ConfigurationKeys.JwtKey]!)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]!)),
             ValidateIssuer = true,
-            ValidIssuer = jwtSection[ConfigurationKeys.JwtIssuer],
+            ValidIssuer = jwtSection["Issuer"],
             ValidateAudience = true,
-            ValidAudience = jwtSection[ConfigurationKeys.JwtAudience],
+            ValidAudience = jwtSection["Audience"],
             ClockSkew = TimeSpan.Zero
         };
     });
@@ -61,11 +56,13 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-// Json Naming Policy
+// Controllers & JSON Options
 builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 
+var connStrSection = builder.Configuration.GetSection("ConnectionStrings")!;
+
 //Postgre
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration[ConfigurationKeys.PostgreConnection]));
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connStrSection["PostgreConnection"]!));
 
 // AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
@@ -99,6 +96,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

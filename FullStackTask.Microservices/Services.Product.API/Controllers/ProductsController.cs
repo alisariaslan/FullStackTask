@@ -8,6 +8,7 @@ using Services.Product.Application.Features.Products.Queries.GetProductById;
 using Services.Product.Application.Models;
 using Shared.Kernel.Constants;
 using Shared.Kernel.Models;
+using static MassTransit.ValidationResultExtensions;
 
 namespace Services.Product.API.Controllers
 {
@@ -34,7 +35,7 @@ namespace Services.Product.API.Controllers
         public async Task<ActionResult<ApiResponse<Guid>>> Create([FromForm] CreateProductCommand command)
         {
             var id = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetAll), new { id = id }, ApiResponse<Guid>.Success(id));
+            return Ok(ApiResponse<Guid>.Success(id));
         }
 
         [HttpGet("{id}")]

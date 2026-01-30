@@ -1,15 +1,11 @@
-﻿///Services.Product.API.Program.cs
+﻿///Services.Log.API.Program.cs
 
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Serilog;
-using Services.Product.Application.Interfaces;
-using Services.Product.Infrastructure.Data;
-using Services.Product.Infrastructure.Repositories;
-using Services.Product.Infrastructure.Services;
+using Services.Log.Application.Consumers;
 using Shared.Kernel.Behaviors;
 using Shared.Kernel.Middlewares;
 using Swashbuckle.AspNetCore.Filters;
@@ -25,7 +21,7 @@ builder.Host.UseSerilog((context, configuration) =>
         .ReadFrom.Configuration(context.Configuration));
 
 // JWT Authentication
-var jwtSection = builder.Configuration.GetSection("JwtSettings");
+var jwtSection = builder.Configuration.GetSection("JwtSettings")!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -56,37 +52,24 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Controllers & JSON Options
-builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
-
-var connStrSection = builder.Configuration.GetSection("ConnectionStrings")!;
-
-// Postgre
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connStrSection["PostgreConnection"]!));
-
-// Redis
-builder.Services.AddStackExchangeRedisCache(opt =>
-{
-    opt.Configuration = connStrSection["Redis"]!;
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 
 // AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
-// Services
-builder.Services.AddScoped<IImageService, ImageService>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
 // MediatR
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(Services.Product.Application.Features.Products.Commands.CreateProduct.CreateProductCommand).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(Services.Log.Application.Features.Logs.Commands.CreateLog.CreateLogCommand).Assembly);
     cfg.AddOpenBehavior(typeof(LocalizationBehavior<,>));
 });
 
-// MassTransit
+// MassTransit (RabbitMQ)
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<LogCreatedConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         var rabbitSection = builder.Configuration.GetSection("RabbitMQSettings")!;
@@ -96,6 +79,10 @@ builder.Services.AddMassTransit(x =>
             h.Password(rabbitSection["Password"]!);
         });
         cfg.UseMessageRetry(r => r.Interval(5, TimeSpan.FromSeconds(10)));
+        cfg.ReceiveEndpoint("log-service-queue", e =>
+        {
+            e.ConfigureConsumer<LogCreatedConsumer>(context);
+        });
     });
 });
 
@@ -109,17 +96,11 @@ app.UseSerilogRequestLogging();
 // Middleware 
 app.UseMiddleware<ExceptionMiddleware>();
 
-// DB Migration
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
-
 if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
 
-app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

@@ -71,13 +71,11 @@ namespace Services.Auth.Infrastructure.Services
                 new Claim(ClaimTypes.Role, user.Role ??Roles.User)
             };
 
-            var jwtKey = _configuration[$"{ConfigurationKeys.JwtSettings}:{ConfigurationKeys.JwtKey}"];
-            var issuer = _configuration[$"{ConfigurationKeys.JwtSettings}:Issuer"];
-            var audience = _configuration[$"{ConfigurationKeys.JwtSettings}:Audience"];
-            if (string.IsNullOrEmpty(jwtKey))
-            {
-                throw new Exception("JWT Key configuration is missing!");
-            }
+            var jwtSettings = _configuration.GetSection("JwtSettings")!;
+            var jwtKey = jwtSettings["Key"]!;
+            var issuer = jwtSettings["Issuer"]!;
+            var audience = jwtSettings["Audience"]!;
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

@@ -1,13 +1,20 @@
 ﻿///Gateways.Yarp.Program.cs
 
 using Microsoft.AspNetCore.RateLimiting;
-using Shared.Kernel.Constants;
+using Serilog;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// HealthChecks
 builder.Services.AddHealthChecks();
 
+// Serilog
+builder.Host.UseSerilog((context, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration));
+
+// Reverse Proxy
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 

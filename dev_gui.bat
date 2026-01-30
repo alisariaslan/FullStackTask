@@ -1,25 +1,41 @@
 @echo off
 title AliSariaslan - Developer CLI
 
-set BACKEND_PROJECT=Product.API
-set INFRA_PROJECT=Product.Infrastructure
+set PRODUCT_API_PROJECT=Services.Product.API
+set PRODUCT_INFRA_PROJECT=Services.Product.Infrastructure
 set DOCKER_COMPOSE_FILE=docker-compose.yml
-set IMAGES_PATH=Product.API\wwwroot\images
+set PRODUCT_IMAGES_PATH=Services.Product.API\wwwroot\images
+set ROOT_DIR=%~dp0
+set MICROSERVICES_DIR=%ROOT_DIR%FullStackTask.Microservices
+
+for %%D in (
+    "%MICROSERVICES_DIR%"
+    "%MICROSERVICES_DIR%\%PRODUCT_API_PROJECT%"
+    "%MICROSERVICES_DIR%\%PRODUCT_INFRA_PROJECT%"
+    "%DOCKER_COMPOSE_FILE%"
+) do (
+    if not exist %%D (
+        echo Missing: %%D
+        pause
+        exit /b 1
+    )
+)
 
 :MENU
 cls
-echo    Backend: %BACKEND_PROJECT%
-echo        1. Docker Up (Normal Baslat)
-echo        2. Docker Up --Build (Kod degisti, yeniden derle ve baslat)
-echo        3. Docker Hard Reset (Cache sil, her seyi sil ve sifirdan kur)
-echo        4. Docker Down (Konteynerleri durdur ve sil)
-echo        5. Migration Ekle (dotnet ef migrations add)
-echo        6. Veritabanini Guncelle (dotnet ef database update)
-echo        7. Son Migration'i Geri Al (dotnet ef migrations remove)
-echo        8. Backend Log Klasorunu Ac
-echo        9. Resim (Uploads) Klasorunu Ac
-echo        0. CIKIS
-set /p secim="Islem Seciniz (0-9): "
+echo    Backend: %PRODUCT_API_PROJECT%
+echo        1. Docker Up (Start containers)
+echo        2. Docker Up --Build (Rebuild and start)
+echo        3. Docker Hard Reset (Remove containers, images, volumes)
+echo        4. Docker Down (Stop and remove containers)
+echo        5. [Product.API] Add Migration (dotnet ef migrations add)
+echo        6. [Product.API] Update Database (dotnet ef database update)
+echo        7. [Product.API] Remove Last Migration (dotnet ef migrations remove)
+echo        8. Open Backend Logs Folder
+echo        9. [Product.API] Open Product Images (Uploads) Folder
+echo        0. EXIT
+set /p secim="Select an option (0-9): "
+
 if "%secim%"=="1" goto DOCKER_UP
 if "%secim%"=="2" goto DOCKER_BUILD
 if "%secim%"=="3" goto DOCKER_HARD_RESET
@@ -34,21 +50,21 @@ goto MENU
 
 :DOCKER_UP
 echo.
-echo Docker konteynerleri baslatiliyor...
+echo Starting Docker containers...
 docker-compose up
 pause
 goto MENU
 
 :DOCKER_BUILD
 echo.
-echo Kod degisiklikleri derleniyor ve baslatiliyor...
+echo Rebuilding and starting containers...
 docker-compose up --build
 pause
 goto MENU
 
 :DOCKER_HARD_RESET
 echo.
-echo !!! DIKKAT: Konteynerler, Aglar ve Cache silinecek !!!
+echo !!! WARNING: Containers, images, networks, and volumes will be removed !!!
 pause
 docker-compose down --rmi all --volumes --remove-orphans
 echo.
@@ -58,39 +74,45 @@ goto MENU
 
 :DOCKER_DOWN
 echo.
-echo Konteynerler durduruluyor...
+echo Stopping Docker containers...
 docker-compose down
 pause
 goto MENU
 
 :EF_ADD
 echo.
-echo !!! Migration dosyalari Infrastructure katmanina eklenecek !!!
-set /p migName="Migration ismi girin: "
+echo !!! Migration files will be added to the Infrastructure layer !!!
+set /p migName="Enter migration name: "
 echo.
-dotnet ef migrations add %migName% --project %INFRA_PROJECT% --startup-project %BACKEND_PROJECT%
+pushd "%MICROSERVICES_DIR%"
+dotnet ef migrations add %migName% --project %PRODUCT_INFRA_PROJECT% --startup-project %PRODUCT_API_PROJECT%
+popd
 pause
 goto MENU
 
 :EF_UPDATE
 echo.
-echo Veritabani guncelleniyor...
-dotnet ef database update --project %INFRA_PROJECT% --startup-project %BACKEND_PROJECT%
+echo Updating database...
+pushd "%MICROSERVICES_DIR%"
+dotnet ef database update --project %PRODUCT_INFRA_PROJECT% --startup-project %PRODUCT_API_PROJECT%
+popd
 pause
 goto MENU
 
 :EF_REMOVE
 echo.
-echo Son migration geri aliniyor...
-dotnet ef migrations remove --project %INFRA_PROJECT% --startup-project %BACKEND_PROJECT%
+echo Removing last migration...
+pushd "%MICROSERVICES_DIR%"
+dotnet ef migrations remove --project %PRODUCT_INFRA_PROJECT% --startup-project %PRODUCT_API_PROJECT%
+popd
 pause
 goto MENU
 
 :OPEN_LOGS
 echo.
-echo Backend log klasoru aciliyor...
+echo Opening backend logs folder...
 if not exist backend-logs (
-    echo backend-logs klasoru bulunamadi, olusturuluyor...
+    echo backend-logs folder not found, creating...
     mkdir backend-logs
 )
 start backend-logs
@@ -99,10 +121,10 @@ goto MENU
 
 :OPEN_IMAGES
 echo.
-echo Resim (Uploads) klasoru aciliyor... (%IMAGES_PATH%)
-if not exist "%IMAGES_PATH%" (
-    echo Resim klasoru henuz yok, olusturuluyor...
-    mkdir "%IMAGES_PATH%"
+echo Opening images (uploads) folder... (%PRODUCT_IMAGES_PATH%)
+if not exist "%PRODUCT_IMAGES_PATH%" (
+    echo Images folder does not exist, creating...
+    mkdir "%PRODUCT_IMAGES_PATH%"
 )
-start "" "%IMAGES_PATH%"
+start "" "%PRODUCT_IMAGES_PATH%"
 goto MENU
