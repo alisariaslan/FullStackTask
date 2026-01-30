@@ -1,97 +1,97 @@
-# 🛠️ Detailed Setup & Deployment Guide
+# 🛠️ Detaylı Kurulum & Dağıtım Rehberi
 
-This document provides a **step-by-step, in-depth setup guide** for developers who want to fully understand, customize, or debug the system beyond the quick `docker-compose up` workflow.
+Bu doküman, yalnızca hızlı bir `docker-compose up` akışının ötesine geçerek sistemi **tam anlamıyla kavramak, özelleştirmek veya debug etmek** isteyen geliştiriciler için hazırlanmış **adım adım ve detaylı bir kurulum rehberi** sunar.
 
-It is written based on the ​**actual Docker Compose, environment variables, gateway configuration, and frontend API strategy used in this repository**​.
+Doküman; bu repoda kullanılan **gerçek Docker Compose yapılandırmaları, environment değişkenleri, gateway konfigürasyonu ve frontend API stratejisi** baz alınarak yazılmıştır.
 
-## 📦 System Overview
+## 📦 Sistem Genel Bakışı
 
-The system is composed of the following components, all running in Docker containers:
+Sistem, tamamı Docker container’ları içinde çalışan aşağıdaki bileşenlerden oluşur:
 
-### Backend Infrastructure
+### Backend Altyapısı
 
-* **PostgreSQL** – Primary database (AuthDb & ProductDb)
-* **Redis** – Distributed cache (Product queries)
-* **RabbitMQ** – Event bus for asynchronous communication
-* **Seq** – Centralized structured logging
+* **PostgreSQL** – Ana veritabanı (AuthDb & ProductDb)
+* **Redis** – Dağıtık cache sistemi (Product sorguları için)
+* **RabbitMQ** – Asenkron iletişim için event bus
+* **Seq** – Merkezi, yapılandırılmış loglama sistemi
 
-### Backend Services (.NET)
+### Backend Servisleri (.NET)
 
-* **Auth API** – Authentication & JWT issuing
-* **Product API** – Product domain (CQRS + Cache)
-* **Log API** – Central log consumer
+* **Auth API** – Kimlik doğrulama & JWT üretimi
+* **Product API** – Ürün domain’i (CQRS + Cache)
+* **Log API** – Merkezi log tüketici servisi
 * **YARP Gateway** – API Gateway & Rate Limiting
 
 ### Frontend
 
-* **Next.js 14 Web Application** – SSR/ISR enabled UI
+* **Next.js 14 Web Uygulaması** – SSR / ISR destekli UI
 
-All services communicate over a dedicated Docker bridge network: `micro-net`.
+Tüm servisler, `micro-net` isimli özel bir Docker bridge network üzerinden haberleşir.
 
-## 🔌 Network & Port Mapping
+## 🔌 Network & Port Eşlemeleri
 
-| Service            | Internal Port | External Port |
-| -------------------- | --------------- | --------------- |
-| PostgreSQL         | 5432          | 6000          |
-| Redis              | 6379          | 6001          |
-| RabbitMQ (AMQP)    | 5672          | 6002          |
-| RabbitMQ UI        | 15672         | 6003          |
-| API Gateway (YARP) | 8080          | 6004          |
-| Frontend (Next.js) | 3000          | 6005          |
-| Auth API           | 8080          | 6006          |
-| Product API        | 8080          | 6007          |
-| Seq                | 80            | 6008          |
-| Log API            | 8080          | 6009          |
+| Servis             | Dahili Port | Harici Port |
+| -------------------- | ------------- | ------------- |
+| PostgreSQL         | 5432        | 6000        |
+| Redis              | 6379        | 6001        |
+| RabbitMQ (AMQP)    | 5672        | 6002        |
+| RabbitMQ UI        | 15672       | 6003        |
+| API Gateway (YARP) | 8080        | 6004        |
+| Frontend (Next.js) | 3000        | 6005        |
+| Auth API           | 8080        | 6006        |
+| Product API        | 8080        | 6007        |
+| Seq                | 80          | 6008        |
+| Log API            | 8080        | 6009        |
 
-## 🐘 PostgreSQL Setup
+## 🐘 PostgreSQL Kurulumu
 
 ### Container
 
 * Image: `postgres:17-alpine`
-* Container name: `micro_postgres`
+* Container adı: `micro_postgres`
 
-### Credentials
+### Kimlik Bilgileri
 
 ```text
-Username: postgres
-Password: a5134ba8
+Kullanıcı Adı: postgres
+Şifre: a5134ba8
 ```
 
-### Databases
+### Veritabanları
 
 * `AuthDb` → Auth Service
 * `ProductDb` → Product Service
 
-### Persistence
+### Kalıcılık (Persistence)
 
 ```yaml
 volumes:
   - postgres_data:/var/lib/postgresql/data
 ```
 
-This ensures data is preserved across container restarts.
+Bu yapılandırma, container yeniden başlatılsa bile verilerin korunmasını sağlar.
 
 ### Health Check
 
-PostgreSQL is marked healthy using:
+PostgreSQL, aşağıdaki komut ile **healthy** olarak işaretlenir:
 
 ```bash
 pg_isready -U postgres
 ```
 
-Other services **wait until the DB is ready** before starting.
+Diğer servisler, **veritabanı hazır olana kadar** başlatılmaz.
 
 ## ⚡ Redis Cache
 
-* Used **only by Product Service**
-* Accelerates read-heavy queries (product listing & categories)
+* **Sadece Product Service** tarafından kullanılır
+* Okuma ağırlıklı sorguları hızlandırır (ürün listesi & kategoriler)
 
 ```text
 Host: redis-cache
 Port: 6379
 ```
 
-Redis health is validated using:
+Redis sağlık durumu şu komutla kontrol edilir:
 
 ```bash
 redis-cli ping
@@ -99,42 +99,42 @@ redis-cli ping
 
 ## 🐇 RabbitMQ Event Bus
 
-RabbitMQ enables **event-driven communication** between services.
+RabbitMQ, servisler arası **event-driven (olay tabanlı)** iletişimi sağlar.
 
-### Ports
+### Portlar
 
 * AMQP: `6002`
-* Management UI: `6003`
+* Yönetim UI: `6003`
 
-### Default UI Credentials
+### Varsayılan UI Kimlik Bilgileri
 
 ```text
-Username: admin
-Password: admin
+Kullanıcı Adı: admin
+Şifre: admin
 ```
 
-### Usage
+### Kullanım Senaryosu
 
-* Product Service emits domain events
-* Log Service consumes log events asynchronously
+* Product Service domain event’leri üretir
+* Log Service, log event’lerini asenkron olarak tüketir
 
-## 📊 Centralized Logging (Seq)
+## 📊 Merkezi Loglama (Seq)
 
-Seq collects **structured logs** from all .NET services via Serilog.
+Seq, tüm .NET servislerinden gelen **yapılandırılmış logları** Serilog aracılığıyla toplar.
 
-### Access
+### Erişim
 
 ```text
 http://localhost:6008
 ```
 
-### Default Admin Password
+### Varsayılan Kullanıcı (admin) Şifresi
 
 ```text
 admin
 ```
 
-All services send logs using:
+Tüm servisler logları şu adres üzerinden gönderir:
 
 ```text
 http://micro_seq:80
@@ -142,13 +142,13 @@ http://micro_seq:80
 
 ## 🔐 Auth API
 
-### Responsibilities
+### Sorumluluklar
 
-* User registration
-* User login
-* JWT generation
+* Kullanıcı kayıt
+* Kullanıcı giriş
+* JWT üretimi
 
-### Environment Variables
+### Environment Değişkenleri
 
 ```env
 ConnectionStrings__PostgreConnection=Host=postgres-db;Database=AuthDb
@@ -157,67 +157,67 @@ JwtSettings__Issuer=MicroserviceApp
 JwtSettings__Audience=MicroserviceApp
 ```
 
-### Startup Behavior
+### Başlangıç Davranışı
 
-* Automatically applies EF Core migrations
-* Exposes `/health` endpoint
+* EF Core migration’larını otomatik uygular
+* `/health` endpoint’ini açar
 
 ## 📦 Product API
 
-### Responsibilities
+### Sorumluluklar
 
-* Product CRUD (CQRS)
-* Redis caching
-* RabbitMQ event publishing
+* Ürün CRUD işlemleri (CQRS)
+* Redis cache yönetimi
+* RabbitMQ event yayınlama
 
-### Image Storage
+### Görsel Depolama
 
-Product images are persisted via:
+Ürün görselleri aşağıdaki volume ile kalıcı hale getirilir:
 
 ```yaml
 volumes:
   - ./images:/app/wwwroot/images
 ```
 
-### Cache Strategy
+### Cache Stratejisi
 
-* Queries cached in Redis
-* Cache invalidated on Create / Update / Delete commands
+* Sorgular Redis’te cache’lenir
+* Create / Update / Delete işlemlerinde cache temizlenir
 
 ## 📝 Log API
 
-### Responsibilities
+### Sorumluluklar
 
-* Consumes events from RabbitMQ
-* Pushes logs into Seq
-* Decouples logging from request lifecycle
+* RabbitMQ’dan event tüketir
+* Logları Seq’e gönderir
+* Loglamayı request lifecycle’ından ayırır
 
-This ensures **no performance impact** on user-facing APIs.
+Bu sayede kullanıcıya bakan API’lerde ​**performans kaybı yaşanmaz**​.
 
 ## 🌐 API Gateway (YARP)
 
-The gateway acts as the **single entry point** for all frontend requests.
+Gateway, frontend’ten gelen tüm istekler için **tek giriş noktası** olarak çalışır.
 
 ### Routing
 
-| Public Path             | Target Service |
-| ------------------------- | ---------------- |
-| `/api/auth/*`       | Auth API       |
-| `/api/products/*`   | Product API    |
-| `/api/categories/*` | Product API    |
-| `/api/logs/*`       | Log API        |
+| Public Path             | Hedef Servis |
+| ------------------------- | -------------- |
+| `/api/auth/*`       | Auth API     |
+| `/api/products/*`   | Product API  |
+| `/api/categories/*` | Product API  |
+| `/api/logs/*`       | Log API      |
 
-### Features
+### Özellikler
 
 * Fixed Window Rate Limiting
-* Centralized CORS
-* Health aggregation
+* Merkezi CORS yönetimi
+* Health check toplama
 
 ## 🖥️ Frontend (Next.js)
 
-### Runtime Mode
+### Çalışma Modu
 
-The frontend automatically switches API targets based on execution context:
+Frontend, çalıştığı ortama göre otomatik olarak API adresini değiştirir:
 
 ```ts
 if (typeof window !== 'undefined') {
@@ -227,36 +227,36 @@ if (typeof window !== 'undefined') {
 }
 ```
 
-### Environment Variables
+### Environment Değişkenleri
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:6004
 API_URL=http://micro_product_api:8080/api
 ```
 
-### Authentication Flow
+### Kimlik Doğrulama Akışı
 
-* JWT stored in `localStorage`
-* Token attached automatically to API requests
-* 401 responses trigger logout & redirect
+* JWT `localStorage` içinde tutulur
+* Token otomatik olarak API isteklerine eklenir
+* 401 yanıtlarında logout + redirect tetiklenir
 
-## ▶️ Running the System
+## ▶️ Sistemi Çalıştırma
 
-### First-Time Startup
+### İlk Kurulum
 
 ```bash
 docker-compose up --build -d
 ```
 
-### Verify Health
+### Sağlık Kontrolü
 
 ```bash
 docker ps
 ```
 
-All services should show ​**healthy**​.
+Tüm servislerin **healthy** durumda olması gerekir.
 
-## 🧪 Useful URLs
+## 🧪 Faydalı URL’ler
 
 * Frontend: [http://localhost:6005](http://localhost:6005/)
 * Gateway: [http://localhost:6004](http://localhost:6004/)
@@ -266,12 +266,12 @@ All services should show ​**healthy**​.
 * RabbitMQ UI: [http://localhost:6003](http://localhost:6003/)
 * Seq Logs: [http://localhost:6008](http://localhost:6008/)
 
-## 🧠 Notes for Reviewers
+## 🧠 İnceleyenler İçin Notlar
 
-* All configuration follows **12-Factor App** principles
-* Services are independently deployable
-* No service communicates directly with another except via RabbitMQ or Gateway
-* Environment parity is maintained between local & containerized runs
+* Tüm konfigürasyonlar **12-Factor App** prensiplerine uygundur
+* Servisler bağımsız olarak deploy edilebilir
+* Servisler birbiriyle **doğrudan** değil, yalnızca RabbitMQ veya Gateway üzerinden haberleşir
+* Local ve container ortamları arasında environment parity korunur
 
-✅ This guide is intended for **advanced reviewers, DevOps engineers, or developers** who want full transparency into the system architecture and runtime behavior.
+Bu rehber; **detaylı mimariyi ve runtime davranışını tam şeffaflıkla görmek isteyen ileri seviye reviewer’lar, DevOps mühendisleri ve geliştiriciler** için hazırlanmıştır.
 

@@ -1,96 +1,144 @@
-# Backend Project Architecture
+# Backend Proje Mimarisi
 
-## Overview
+## Genel Bakış
 
-This project implements a high-performance, event-driven microservices architecture based on **12-Factor App** principles. It focuses on scalability, separation of concerns through Onion Architecture, and asynchronous inter-service communication.
+Bu proje, **12-Factor App** prensiplerini temel alan, yüksek performanslı ve **event-driven** bir mikroservis mimarisi uygular.
+Ölçeklenebilirlik, Onion Architecture ile **sorumlulukların ayrılması** ve servisler arası **asenkron iletişim** ana odak noktalarıdır.
 
-The main components are:
+Ana bileşenler:
 
-* **Auth Service:** Identity management and JWT/Refresh token issuance.
-* **Log Service:** Centralized log consumer and processor.
-* **Product Service:** Core business domain with CQRS and Caching.
-* **API Gateway (YARP):** Unified entry point with traffic management.
+* **Auth Service:** Kimlik yönetimi ve JWT / Refresh Token üretimi
+* **Log Service:** Merkezi log tüketimi ve işleme
+* **Product Service:** CQRS ve Cache içeren ana iş alanı
+* **API Gateway (YARP):** Trafik yönetimi sağlayan tekil giriş noktası
 
-## Technology Stack
+## Teknoloji Yığını
 
-* **Language/Framework:** C# (.NET 10.0)
-* **Communication:** REST (External), RabbitMQ/MassTransit (Internal Event-Driven)
+* **Dil / Framework:** C# (.NET 10.0)
+* **İletişim:** REST (Dış), RabbitMQ / MassTransit (İç – Event-Driven)
 * **API Gateway:** YARP (Yet Another Reverse Proxy)
 * **Containerization:** Docker & Docker Compose
-* **Orchestration Tools:** Seq (Log Visualization), Redis (Caching)
+* **Orkestrasyon Araçları:** Seq (Log Görselleştirme), Redis (Caching)
 
-## Onion Architecture Configuration
+## Onion Architecture Yapılandırması
 
-Each microservice follows a strict Onion Architecture to ensure domain logic remains independent of external concerns:
+Her mikroservis, domain logic’in dış bağımlılıklardan tamamen izole kalmasını sağlamak için **katı Onion Architecture** prensiplerine göre yapılandırılmıştır:
 
-**Services.(Name).API** *(Controllers, Program.cs, Middleware, Dependency Injection)* ↓
+**Services.(Name).API**
+*(Controllers, Program.cs, Middleware, Dependency Injection)*
+↓
 
-**Services.(Name).Infrastructure** *(DB Context, Repository Implementations, External Service Clients)* ↓
+**Services.(Name).Infrastructure**
+*(DbContext, Repository implementasyonları, dış servis client’ları)*
+↓
 
-**Services.(Name).Application** *(MediatR Handlers, CQRS Commands/Queries, Mappers, Interfaces)* ↓
+**Services.(Name).Application**
+*(MediatR Handler’ları, CQRS Command / Query’ler, Mapper’lar, Interface’ler)*
+↓
 
-**Services.(Name).Domain** *(Entities, Value Objects, Domain Exceptions)* ↓
+**Services.(Name).Domain**
+*(Entity’ler, Value Object’ler, Domain Exception’ları)*
+↓
 
-**Shared.Kernel** *(Cross-cutting concerns used by all layers)*
+**Shared.Kernel**
+*(Tüm katmanlarda kullanılan cross-cutting concern’ler)*
 
-## Infrastructure & Resilience
+## Altyapı & Dayanıklılık (Resilience)
 
-* **Database:** PostgreSQL (Database-per-service pattern). `AuthDb` and `ProductDb` are isolated.
-* **Cache:** **Redis** is integrated into the Product Service for high-speed query performance.
-* **Message Queue:** **RabbitMQ** with **MassTransit** handles asynchronous communication.
-* **Resilience:** Implemented **Message Retry** policies (5 retries, 10s intervals) for robust event processing.
-* **Logging:** Centralized structured logging using **Serilog** and **Seq**.
+* **Veritabanı:** PostgreSQL
+  * Database-per-service pattern uygulanmıştır
+  * `AuthDb` ve `ProductDb` tamamen izoledir
+* **Cache:**
+  * Product Service içerisinde **Redis** kullanılmıştır
+  * Yüksek hızlı sorgu performansı hedeflenmiştir
+* **Message Queue:**
+  * **RabbitMQ + MassTransit** ile asenkron iletişim sağlanır
+* **Resilience:**
+  * Event işleme için **Message Retry** politikaları tanımlıdır
+  * (5 retry, 10 saniye aralıklarla)
+* **Logging:**
+  * **Serilog** ile structured logging
+  * **Seq** ile merkezi log toplama
 
-## Service Details
+## Servis Detayları
 
 ### API Gateway (YARP)
 
-* **Routing:** Directs traffic to internal services using Docker service discovery.
-* **Traffic Control:** Implements **Fixed Window Rate Limiting** (100 requests/min) to prevent abuse.
-* **CORS:** Global CORS policy enabled for frontend integration.
-* **Health Monitoring:** Centralized `/health` checks for all downstream services.
+* **Routing:**
+  * Docker service discovery kullanarak trafiği ilgili servislere yönlendirir
+* **Traffic Control:**
+  * Abuse’u önlemek için **Fixed Window Rate Limiting**
+  * (100 request / dakika)
+* **CORS:**
+  * Frontend entegrasyonu için global CORS policy
+* **Health Monitoring:**
+  * Downstream servisler için merkezi `/health` kontrolleri
 
 ### Auth Service
 
-* **Identity:** Handles registration, login, and JWT token generation.
-* **Security:** Role and Policy-based authorization ready.
-* **Persistence:** Entity Framework Core with Npgsql.
-* **Auto-Migration:** Applies DB migrations automatically on startup to ensure environment consistency.
+* **Identity:**
+  * Register, login ve JWT token üretimi
+* **Security:**
+  * Role ve Policy-based authorization altyapısı hazır
+* **Persistence:**
+  * Entity Framework Core + Npgsql
+* **Auto-Migration:**
+  * Ortam tutarlılığı için uygulama ayağa kalkarken migration’lar otomatik uygulanır
 
 ### Product Service
 
-* **Optimization:** Uses the **CQRS Pattern** via MediatR to separate read and write operations.
-* **Performance:** Implements **Redis Caching** for product listings and categories.
-* **Storage:** Integrated `IImageService` for product image management.
-* **Events:** Firing events to RabbitMQ when product data changes.
+* **Optimizasyon:**
+  * MediatR üzerinden **CQRS Pattern** uygulanmıştır
+  * Read ve Write operasyonları ayrılmıştır
+* **Performans:**
+  * Ürün listeleri ve kategoriler için **Redis Cache**
+* **Storage:**
+  * Ürün görselleri için `ImageService` entegrasyonu
+* **Events:**
+  * Ürün verisi değiştiğinde RabbitMQ üzerinden event fırlatılır
 
 ### Log Service
 
-* **Event Consumer:** Uses `LogCreatedConsumer` to process logs asynchronously from the queue.
-* **Centralization:** Acts as a bridge to push logs into structured storage (Seq/File).
-* **Decoupling:** Services can fire-and-forget logs without impacting user response times.
+* **Event Consumer:**
+  * `LogCreatedConsumer` ile log event’leri asenkron işlenir
+* **Merkezileştirme:**
+  * Log’lar structured storage’a (Seq / File) aktarılır
+* **Decoupling:**
+  * Diğer servisler “fire-and-forget” log atabilir
+  * Kullanıcı response süreleri etkilenmez
 
-## Key Design Decisions
+## Temel Tasarım Kararları
 
-* **Microservices Architecture:** Independent deployment and scaling of individual business units.
-* **API Gateway Pattern:** Provides a single, secure entry point and hides internal system complexity.
-* **Eventual Consistency:** Log processing and cross-service notifications are handled via RabbitMQ events.
-* **Shared Kernel Strategy:** A shared project manages common logic like `LocalizationBehavior`, `ExceptionMiddleware`, and DTOs to ensure DRY (Don't Repeat Yourself).
-* **Environment Management:** Configuration is managed via environment variables and `.env` files for seamless Docker deployment.
+* **Microservices Architecture:**
+  * Her iş birimi bağımsız deploy ve scale edilebilir
+* **API Gateway Pattern:**
+  * Tek, güvenli giriş noktası sağlar
+  * İç sistem karmaşıklığını gizler
+* **Eventual Consistency:**
+  * Log işleme ve servisler arası bildirimler RabbitMQ event’leriyle yürütülür
+* **Shared Kernel Stratejisi:**
+  * `LocalizationBehavior`, `ExceptionMiddleware`, DTO’lar gibi ortak yapılar
+  * Tek bir shared projede toplanarak **DRY** prensibi korunur
+* **Environment Yönetimi:**
+  * Konfigürasyonlar environment variable’lar ve `.env` dosyaları üzerinden yönetilir
+  * Docker deploy süreçleri sorunsuz hâle getirilmiştir
 
-## Shared Kernel Details
+## Shared Kernel Detayları
 
-* **Behaviors:** `LocalizationBehavior<,>` for automated multi-language support in MediatR pipelines.
-* **Middlewares:** `ExceptionMiddleware` for global, structured error handling and consistent API responses.
-* **Packages:**
-* `MassTransit.Abstractions` (Messaging)
-* `MediatR` (Internal Dispatching)
-* `Serilog.AspNetCore` & `Serilog.Sinks.Seq` (Logging)
-* `Swashbuckle.AspNetCore` (OpenAPI/Swagger documentation with JWT support)
+* **Behaviors:**
+  * `LocalizationBehavior<,>`
+  * MediatR pipeline’ında otomatik çoklu dil desteği
+* **Middlewares:**
+  * `ExceptionMiddleware`
+  * Global, tutarlı ve structured hata yönetimi
+* **Paketler:**
+  * `MassTransit.Abstractions` – Messaging
+  * `MediatR` – Internal dispatching
+  * `Serilog.AspNetCore` & `Serilog.Sinks.Seq` – Logging
+  * `Swashbuckle.AspNetCore` – JWT destekli OpenAPI / Swagger
 
-## Installation & Deployment
+## Kurulum & Deployment
 
-* ​[Full-Stack Task](../README.md): Visit parent md.
-
-
+* **[Full-Stack-Task](../README.md)**
+  Ana README dosyasını ziyaret edin.
 

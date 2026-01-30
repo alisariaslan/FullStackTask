@@ -1,86 +1,85 @@
-# Full-Stack Task
+# Full-Stack-Task
 
-This is the main repository for the full-stack task project, consisting of a microservices-based backend and a modern frontend.
+Bu repo, mikroservis tabanlı bir backend ve modern bir frontend’den oluşan full-stack task projesinin ana reposudur.
 
-## 🧩 Task Compliance
+## 🧩 Görev Uyumluluğu
 
-### Phase 1 – Monolithic Product API
+### Aşama 1 – Monolitik Product API
 
-- Product CRUD implemented (POST/GET)
-- EF Core + PostgreSQL
-- Swagger documentation
-- Async operations
+* Product CRUD işlemleri (POST/GET)
+* EF Core + PostgreSQL
+* Swagger dokümantasyonu
+* Asenkron işlemler
 
-### Phase 2 – Auth, CQRS & Redis
+### Aşama 2 – Auth, CQRS & Redis
 
-- Auth Service with JWT
-- Product Service with CQRS (MediatR)
-- Redis caching + invalidation
-- Global exception handling & logging
+* JWT kullanan Auth Service
+* CQRS (MediatR) kullanan Product Service
+* Redis cache + cache invalidation
+* Global exception handling ve logging
 
-### Phase 3 – Microservices & Event-Driven
+### Aşama 3 – Mikroservisler & Event-Driven Mimari
 
-- Auth, Product, Log microservices
-- RabbitMQ-based event communication
-- YARP API Gateway
-- Dockerized full system
+* Auth, Product ve Log mikroservisleri
+* RabbitMQ tabanlı event iletişimi
+* YARP API Gateway
+* Tamamen Dockerize edilmiş sistem
 
-## 🧠 Micro-Frontend Scope Decision
+## 🧠 Micro-Frontend Kapsam Kararı
 
-Although the task mentions a micro-frontend architecture (Home & Cart),
-this project focuses on backend microservices and a unified frontend
-application to demonstrate core system design, API gateway integration,
-SEO, and state management.
+Görev tanımında micro-frontend mimarisi (Home & Cart) geçmesine rağmen,
+bu proje; backend mikroservisleri ve **tekil (unified) bir frontend** uygulaması üzerine odaklanmıştır.
 
-The frontend architecture is structured in a modular way and can be
-evolved into a micro-frontend setup (Multi-Zone or Module Federation)
-without major refactoring.
+Bu tercih bilinçli bir şekilde alınmıştır.
 
-## 🔗 Project Components
+Frontend mimarisi modüler bir şekilde kurgulanmıştır ve **büyük bir refactor gerektirmeden**
+ileride micro-frontend yapısına (Multi-Zone veya Module Federation) evrilebilir.
 
-For detailed technical documentation, architectural decisions, and setup guides, please visit the respective project directories:
+## 🔗 Proje Bileşenleri
 
-* ​[Backend Microservices](./FullStackTask.Microservices/README.md): .NET 10, Onion Architecture, CQRS, RabbitMQ, and YARP Gateway.
-  ​
-* ​[Frontend Web UI](./product-client/README.md): Next.js 14+, TypeScript, Redux Toolkit, and Internationalization.
+Detaylı teknik dokümantasyon, mimari kararlar ve kurulum rehberleri için ilgili proje dizinlerini inceleyebilirsiniz:
 
-## 📊 Dashboards &  Interface Endpoints
+* **[Tasarım Kararları](./DESIGN.md)**
+* **[Backend Dökümantasyon](./FullStackTask.Microservices/README.md)**
+* **[Frontend Dökümantasyon](./product-client/README.md)**
 
-Once the environment is running via Docker, use the links below to access the system components:
-
-### 🌐 User Interfaces
-
-* **Main Web Application:** [http://localhost:6005](https://www.google.com/search?q=http://localhost:6005)
-
-### 🛠️ Development & Monitoring
-
-| **Service**             | **Link**                                                              | **Credentials**   |
-| ------------------------------- | ----------------------------------------------------------------------------- | ------------------------- |
-| **📊 Structured Logs (Seq)** | [http://localhost:6008](https://www.google.com/search?q=http://localhost:6008) | `admin`/`admin` |
-| **🐇 RabbitMQ Management**   | [http://localhost:6003](https://www.google.com/search?q=http://localhost:6003) | `admin`/`admin` |
-
-### 📜 API Documentation (Swagger)
-
-* **Auth Service:** [http://localhost:6006/swagger](https://www.google.com/search?q=http://localhost:6006/swagger)
-* **Product Service:** [http://localhost:6007/swagger](https://www.google.com/search?q=http://localhost:6007/swagger)
-* **Log Service:** [http://localhost:6009/swagger](https://www.google.com/search?q=http://localhost:6009/swagger)
-
-## ⚡ Quick Deployment
+## ⚡ Hızlı Kurulum
 
 **Bash**
 
-```
-# Clone the repository
+```bash
+# Repoyu klonla
 git clone https://github.com/alisariaslan/FullStackTask.git
 
-# Launch all
+# Tüm sistemi ayağa kaldır
 docker-compose up --build -d
 ```
 
-## 📘 Detailed Setup Guide
+## 📊 Dashboard’lar & Arayüz Endpoint’leri
 
-For developers who want an in-depth explanation of the infrastructure,
-environment variables, networking, and service communication:
+Ortam Docker ile ayağa kaldırıldıktan sonra, sistem bileşenlerine aşağıdaki bağlantılar üzerinden erişebilirsiniz:
 
-➡️ See [Detailed Setup Guide](./DETAILED_SETUP_GUIDE.md)
+### 🌐 Kullanıcı Arayüzleri
+
+* **Ana Web Uygulaması:** [http://localhost:6005](http://localhost:6005/)
+
+### 🛠️ Geliştirme & İzleme
+
+| Servis                   | Bağlantı                                   | Kimlik Bilgileri        |
+| -------------------------- | ---------------------------------------------- | ------------------------- |
+| 📊 Structured Logs (Seq) | [http://localhost:6008](http://localhost:6008/) | `admin`/`admin` |
+| 🐇 RabbitMQ Management   | [http://localhost:6003](http://localhost:6003/) | `admin`/`admin` |
+
+### 📜 API Dokümantasyonu (Swagger)
+
+* **Auth Service:** [http://localhost:6006/swagger](http://localhost:6006/swagger)
+* **Product Service:** [http://localhost:6007/swagger](http://localhost:6007/swagger)
+* **Log Service:** [http://localhost:6009/swagger](http://localhost:6009/swagger)
+
+## 📘 Detaylı Kurulum Rehberi
+
+Altyapı, environment değişkenleri, network yapısı ve servisler arası iletişimi
+derinlemesine incelemek isteyenler için:
+
+➡️ [Ortam Dökümantasyon](./SETUP.md)
 
