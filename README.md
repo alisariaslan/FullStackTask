@@ -1,6 +1,6 @@
-# Full-Stack Project Task
+# Full-Stack Task
 
-This is the main repository for the fullstack task project, consisting of a microservices-based backend and a modern frontend.
+This is the main repository for the full-stack task project, consisting of a microservices-based backend and a modern frontend.
 
 ## 🔗 Project Components
 
@@ -10,14 +10,13 @@ For detailed technical documentation, architectural decisions, and setup guides,
   ​
 * ​[Frontend Web UI](./product-client/README.md): Next.js 14+, TypeScript, Redux Toolkit, and Internationalization.
 
-## 📊 Dashboards & Service Endpoints
+## 📊 Dashboards &  Interface Endpoints
 
 Once the environment is running via Docker, use the links below to access the system components:
 
 ### 🌐 User Interfaces
 
-* **Main Web Application:**[http://localhost:6005](https://www.google.com/search?q=http://localhost:6005)
-* **API Gateway (YARP):**[http://localhost:6004](https://www.google.com/search?q=http://localhost:6004)
+* **Main Web Application:** [http://localhost:6005](https://www.google.com/search?q=http://localhost:6005)
 
 ### 🛠️ Development & Monitoring
 
@@ -28,9 +27,9 @@ Once the environment is running via Docker, use the links below to access the sy
 
 ### 📜 API Documentation (Swagger)
 
-* **Auth Service:**[http://localhost:6006/swagger](https://www.google.com/search?q=http://localhost:6006/swagger)
-* **Product Service:**[http://localhost:6007/swagger](https://www.google.com/search?q=http://localhost:6007/swagger)
-* **Log Service:**[http://localhost:6009/swagger](https://www.google.com/search?q=http://localhost:6009/swagger)
+* **Auth Service:** [http://localhost:6006/swagger](https://www.google.com/search?q=http://localhost:6006/swagger)
+* **Product Service:** [http://localhost:6007/swagger](https://www.google.com/search?q=http://localhost:6007/swagger)
+* **Log Service:** [http://localhost:6009/swagger](https://www.google.com/search?q=http://localhost:6009/swagger)
 
 ## ⚡ Quick Deployment
 
@@ -38,9 +37,9 @@ Once the environment is running via Docker, use the links below to access the sy
 
 ```
 # Clone the repository
-git clone https://github.com/your-repo/RoadToKayseri.git
+git clone https://github.com/alisariaslan/FullStackTask.git
 
-# Run all services
+# Launch all
 docker-compose up --build -d
 ```
 

@@ -90,31 +90,7 @@ Each microservice follows a strict Onion Architecture to ensure domain logic rem
 
 ## Installation & Deployment
 
-### Requirements
+* ​[Full-Stack Task](../README.md): Visit parent md.
 
-* **.NET SDK:** Version 10.0
-* **Docker Desktop:** Required for container orchestration.
-
-### Quick Start
-
-1. Navigate to the root directory.
-2. Run the following command:
-
-```bash
-docker-compose up --build -d
-```
-
-3. Access services:
-
-### 🚀 Access & Management Dashboards
-
-| **Service**            | **URL**                                                                               | **Credentials (User/Pass)** |
-| ------------------------------ | --------------------------------------------------------------------------------------------- | ----------------------------------- |
-| **⚡ API Gateway (YARP)**   | [http://localhost:6004](https://www.google.com/search?q=http://localhost:6004)                 | -                      |
-| **📊 Logging (Seq)**        | [http://localhost:6008](https://www.google.com/search?q=http://localhost:6008)                 | `admin`/`admin`           |
-| **🐇 Message Broker (RMQ)** | [http://localhost:6003](https://www.google.com/search?q=http://localhost:6003)                 | `admin`/`admin`           |
-| **📜 Auth API Swagger**     | [http://localhost:6006/swagger](https://www.google.com/search?q=http://localhost:6006/swagger) | -                                 |
-| **📦 Product API Swagger**  | [http://localhost:6007/swagger](https://www.google.com/search?q=http://localhost:6007/swagger) | -                                 |
-| **📝 Log API Swagger**      | [http://localhost:6009/swagger](https://www.google.com/search?q=http://localhost:6009/swagger) | -                                 |
 
 

@@ -43,19 +43,7 @@ Configuration is managed via `.env` files to support the **12-Factor App** metho
 
 ## Installation & Deployment
 
-1. Go to the project root or `product-client` directory.
-2. Build and run via Docker:
+* ​[Full-Stack Task](../README.md): Visit parent md.
 
-```bash
-docker-compose up --build -d frontend
-```
-
-3. Access the application:
-
-### 🚀 Access & Management Dashboards
-
-| **Service**            | **URL**                                                                               | **Credentials (User/Pass)** |
-| ------------------------------ | --------------------------------------------------------------------------------------------- | ----------------------------------- |
-| **🌍 Web UI (Frontend)**    | [http://localhost:6005](https://www.google.com/search?q=http://localhost:6005)                 | -
 
 
