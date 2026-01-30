@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
 using Services.Product.Application.Interfaces;
 using Services.Product.Domain.Entities;
 using Shared.Kernel.Constants;
 using Shared.Kernel.Extensions;
+using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
 namespace Services.Product.Application.Features.Products.Commands.AddProductTranslation
@@ -11,12 +11,12 @@ namespace Services.Product.Application.Features.Products.Commands.AddProductTran
     public class AddProductTranslationCommandHandler : IRequestHandler<AddProductTranslationCommand, Unit>
     {
         private readonly IProductRepository _repository;
-        private readonly IDistributedCache _cache;
+        private readonly IConnectionMultiplexer _redisConnection;
 
-        public AddProductTranslationCommandHandler(IProductRepository repository, IDistributedCache cache)
+        public AddProductTranslationCommandHandler(IProductRepository repository, IConnectionMultiplexer redisConnection)
         {
             _repository = repository;
-            _cache = cache;
+            _redisConnection = redisConnection;
         }
 
         public async Task<Unit> Handle(AddProductTranslationCommand request, CancellationToken cancellationToken)
@@ -57,7 +57,7 @@ namespace Services.Product.Application.Features.Products.Commands.AddProductTran
 
             await _repository.UpdateAsync(product);
 
-            await _cache.RemoveAsync($"all_products_{request.LanguageCode}", cancellationToken);
+            await _redisConnection.RemoveByPatternAsync("product*");
 
             return Unit.Value;
         }

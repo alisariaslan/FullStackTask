@@ -2,6 +2,7 @@
 using Services.Product.Application.Interfaces;
 using Services.Product.Domain.Entities;
 using Services.Product.Infrastructure.Data;
+using Shared.Kernel.Models;
 
 namespace Services.Product.Infrastructure.Repositories
 {
@@ -14,15 +15,6 @@ namespace Services.Product.Infrastructure.Repositories
         public ProductRepository(AppDbContext context)
         {
             _context = context;
-        }
-
-        public async Task<List<ProductEntity>> GetAllAsync()
-        {
-            return await _context.Products
-            .Include(p => p.Translations)
-            .Include(p => p.Category)
-                .ThenInclude(c => c!.Translations)
-            .ToListAsync();
         }
 
         public async Task AddAsync(ProductEntity product)
@@ -49,6 +41,46 @@ namespace Services.Product.Infrastructure.Repositories
         {
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<PaginatedResult<ProductEntity>> GetFilteredProductsAsync(
+     string languageCode, string? searchTerm, Guid? categoryId,
+     decimal? minPrice, decimal? maxPrice, string? sortBy,
+     int pageNumber, int pageSize)
+        {
+            var query = _context.Products
+                .Include(p => p.Translations)
+                .Include(p => p.Category).ThenInclude(c => c!.Translations)
+                .AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(p => p.Translations.Any(t => t.Name.Contains(searchTerm)));
+
+            if (categoryId.HasValue)
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(x => x.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(x => x.Price <= maxPrice.Value);
+
+            query = sortBy?.ToLower() switch
+            {
+                "price_asc" => query.OrderBy(x => x.Price).ThenBy(x => x.Id),
+                "price_desc" => query.OrderByDescending(x => x.Price).ThenBy(x => x.Id),
+                "name_desc" => query.OrderByDescending(p => p.Translations.Where(t => t.LanguageCode == languageCode).Select(t => t.Name).FirstOrDefault()),
+                _ => query.OrderBy(p => p.Translations.Where(t => t.LanguageCode == languageCode).Select(t => t.Name).FirstOrDefault())
+            };
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PaginatedResult<ProductEntity>(items, totalCount, pageNumber, pageSize);
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Shared.Kernel.Models
         public bool IsSuccess { get; set; }
         public string? Message { get; set; }
         public T? Data { get; set; }
-        public string? ErrorMessage { get; set; }
         public List<string>? Errors { get; set; }
 
         public static ApiResponse<T> Success(T? data, string messageKeyOrText = "")
@@ -26,7 +25,6 @@ namespace Shared.Kernel.Models
             return new ApiResponse<T>
             {
                 IsSuccess = false,
-                ErrorMessage = errMessageKeyOrText,
                 Errors = errors ?? new List<string> { errMessageKeyOrText }
             };
         }

@@ -23,10 +23,10 @@ namespace Services.Product.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<List<ProductDto>>>> GetAll([FromQuery] GetAllProductsQuery query)
+        public async Task<ActionResult<ApiResponse<PaginatedResult<ProductDto>>>> GetAll([FromQuery] GetAllProductsQuery query)
         {
             var result = await _mediator.Send(query);
-            return Ok(ApiResponse<List<ProductDto>>.Success(result));
+            return Ok(ApiResponse<PaginatedResult<ProductDto>>.Success(result));
         }
 
         [HttpPost]

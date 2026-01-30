@@ -52,7 +52,7 @@ services:
       - ACCEPT_EULA=Y
       - SEQ_FIRSTRUN_ADMINPASSWORD=admin
     ports:
-      - "6008:80"
+      - "0.0.0.0:6008:80"
     networks:
       - micro-net
     restart: unless-stopped

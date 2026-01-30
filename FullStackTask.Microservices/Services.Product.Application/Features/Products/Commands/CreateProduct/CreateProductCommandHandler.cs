@@ -1,11 +1,11 @@
 ﻿using MassTransit;
 using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
 using Services.Product.Application.Interfaces;
 using Services.Product.Domain.Entities;
 using Shared.Kernel.Constants;
 using Shared.Kernel.Extensions;
 using Shared.Kernel.IntegrationEvents;
+using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
 namespace Services.Product.Application.Features.Products.Commands.CreateProduct
@@ -14,14 +14,14 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
     {
         private readonly IProductRepository _repository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IDistributedCache _cache;
+        private readonly IConnectionMultiplexer _redisConnection;
         private readonly IImageService _imageService;
         private readonly IPublishEndpoint _publishEndpoint;
-        public CreateProductCommandHandler(IProductRepository repository, ICategoryRepository categoryRepository, IDistributedCache cache, IImageService imageService, IPublishEndpoint publishEndpoint)
+        public CreateProductCommandHandler(IProductRepository repository, ICategoryRepository categoryRepository, IConnectionMultiplexer redisConnection, IImageService imageService, IPublishEndpoint publishEndpoint)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
-            _cache = cache;
+            _redisConnection = redisConnection;
             _imageService = imageService;
             _publishEndpoint = publishEndpoint;
         }
@@ -87,7 +87,7 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
 
             await _repository.AddAsync(newProduct);
 
-            await _cache.RemoveAsync($"all_products_{request.LanguageCode}", cancellationToken);
+            await _redisConnection.RemoveByPatternAsync("product*");
 
             await _publishEndpoint.Publish(new ProductCreatedEvent
             {
@@ -101,6 +101,8 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
 
             return newProduct.Id;
         }
+
+
     }
 
 }

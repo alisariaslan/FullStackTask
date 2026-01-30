@@ -16,6 +16,7 @@ using Services.Product.Infrastructure.Repositories;
 using Services.Product.Infrastructure.Services;
 using Shared.Kernel.Behaviors;
 using Shared.Kernel.Middlewares;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -81,6 +82,10 @@ builder.Services.AddStackExchangeRedisCache(opt =>
 {
     opt.Configuration = connStrSection["Redis"]!;
 });
+
+// Cache Invalidation 
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+    ConnectionMultiplexer.Connect(connStrSection["Redis"]!));
 
 // HttpContextAccessor
 // Task: User context, audit & localization

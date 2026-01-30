@@ -2,11 +2,12 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Services.Product.Application.Interfaces;
 using Services.Product.Application.Models;
+using Shared.Kernel.Models;
 using System.Text.Json;
 
 namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
 {
-    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, List<ProductDto>>
+    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, PaginatedResult<ProductDto>>
     {
         private readonly IProductRepository _repository;
         private readonly IDistributedCache _cache;
@@ -17,19 +18,22 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
             _cache = cache;
         }
 
-        public async Task<List<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            string cacheKey = $"products_{request.LanguageCode}_{request.SearchTerm}_{request.CategoryId}_{request.MinPrice}_{request.MaxPrice}_{request.SortBy}";
+            string cacheKey = $"products_{request.LanguageCode}_{request.PageNumber}_{request.PageSize}_{request.SearchTerm}_{request.CategoryId}_{request.MinPrice}_{request.MaxPrice}_{request.SortBy}";
 
             var cachedData = await _cache.GetStringAsync(cacheKey, cancellationToken);
             if (!string.IsNullOrEmpty(cachedData))
             {
-                return JsonSerializer.Deserialize<List<ProductDto>>(cachedData)!;
+                return JsonSerializer.Deserialize<PaginatedResult<ProductDto>>(cachedData)!;
             }
 
-            var products = await _repository.GetAllAsync();
+            var pagedEntities = await _repository.GetFilteredProductsAsync(
+                request.LanguageCode, request.SearchTerm, request.CategoryId,
+                request.MinPrice, request.MaxPrice, request.SortBy,
+                request.PageNumber, request.PageSize);
 
-            var query = products.Select(p => {
+            var dtos = pagedEntities.Items.Select(p => {
                 var pTranslation = p.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) ?? p.Translations.FirstOrDefault();
                 var cTranslation = p.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) ?? p.Category?.Translations.FirstOrDefault();
 
@@ -43,35 +47,16 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
                     p.CategoryId,
                     cTranslation?.Name ?? "Uncategorized"
                 );
-            }).AsQueryable();
+            }).ToList();
 
-            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
-                query = query.Where(x => x.Name.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase));
-
-            if (request.CategoryId.HasValue)
-                query = query.Where(x => x.CategoryId == request.CategoryId.Value);
-
-            if (request.MinPrice.HasValue)
-                query = query.Where(x => x.Price >= request.MinPrice.Value);
-
-            if (request.MaxPrice.HasValue)
-                query = query.Where(x => x.Price <= request.MaxPrice.Value);
-
-            query = request.SortBy?.ToLower() switch
-            {
-                "price_asc" => query.OrderBy(x => x.Price),
-                "price_desc" => query.OrderByDescending(x => x.Price),
-                "name_desc" => query.OrderByDescending(x => x.Name),
-                _ => query.OrderBy(x => x.Name)
-            };
-
-            var result = query.ToList();
+            var result = new PaginatedResult<ProductDto>(dtos, pagedEntities.TotalCount, pagedEntities.PageNumber, pagedEntities.PageSize);
 
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20) };
             await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), cacheOptions, cancellationToken);
 
             return result;
         }
-    }
+    
+}
 
 }
