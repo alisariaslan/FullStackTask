@@ -1,5 +1,9 @@
 ﻿///Services.Product.API.Program.cs
 
+// Phase 2 & Phase 3 – Product Service
+// Bu servis, ürün CRUD işlemlerinin ana sorumlusudur.
+// CQRS, Redis Cache ve Event Publishing altyapısı içerir.
+
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +21,19 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// HealthChecks
+// Task: Container readiness & service health
 builder.Services.AddHealthChecks();
 
 // Serilog
+// Task: Structured logging & centralized observability
 builder.Host.UseSerilog((context, configuration) =>
     configuration
         .ReadFrom.Configuration(context.Configuration));
 
 // JWT Authentication
+// Task: Protected product operations
+// Create / Update / Delete işlemleri JWT gerektirir
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -42,6 +51,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Endpoints & Swagger
+// Task: API documentation & JWT secured endpoints visibility
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -56,35 +66,44 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Controllers & JSON Options
+// Task: Consistent API response contract
 builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 
+// Database (PostgreSQL)
+// Task: EF Core + relational database usage
 var connStrSection = builder.Configuration.GetSection("ConnectionStrings")!;
-
-// Postgre
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connStrSection["PostgreConnection"]!));
 
-// Redis
+// Redis Cache
+// Task: Query side optimization
+// Product listing & detail queries cache’lenir
 builder.Services.AddStackExchangeRedisCache(opt =>
 {
     opt.Configuration = connStrSection["Redis"]!;
 });
 
-// AddHttpContextAccessor
+// HttpContextAccessor
+// Task: User context, audit & localization
 builder.Services.AddHttpContextAccessor();
 
-// Services
+// Services & Repositories
+// Task: SOLID & clean separation (Infrastructure ↔ Application)
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // MediatR
+// Task: CQRS (Command / Query separation)
+// LocalizationBehavior örnek cross-cutting concern
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(Services.Product.Application.Features.Products.Commands.CreateProduct.CreateProductCommand).Assembly);
     cfg.AddOpenBehavior(typeof(LocalizationBehavior<,>));
 });
 
-// MassTransit
+// MassTransit (RabbitMQ)
+// Task: Event publishing (ProductCreated, ProductUpdated, etc.)
+// Log Service gibi downstream servisler bilgilendirilir
 builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((context, cfg) =>
@@ -101,25 +120,39 @@ builder.Services.AddMassTransit(x =>
 
 var app = builder.Build();
 
+// Health endpoint
 app.MapHealthChecks("/health");
 
-// Serilog
+// Serilog request logging
+// Task: HTTP request tracing
 app.UseSerilogRequestLogging();
 
-// Middleware 
+// Global exception handling
+// Task: Consistent error model & logging
 app.UseMiddleware<ExceptionMiddleware>();
 
-// DB Migration
+// Database migration
+// Task: Development & demo simplicity
+// Production’da CI/CD aşamasına taşınması beklenir
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
+// Swagger (Development only)
+// Task: Security & environment separation
 if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
 
+// Static files
+// Task: Product image serving (local / demo scope)
 app.UseStaticFiles();
+
+// Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Controllers
 app.MapControllers();
+
 app.Run();
