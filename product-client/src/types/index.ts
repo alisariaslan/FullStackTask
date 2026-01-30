@@ -5,7 +5,6 @@ export interface ApiResponse<T> {
     isSuccess: boolean;
     message?: string;
     data?: T;
-    errorMessage?: string;
     errors?: string[];
 }
 
@@ -19,6 +18,29 @@ export interface AuthResponseDto {
 export interface Product {
     id: string;
     name: string;
+    description: string;
     price: number;
     stock: number;
+    imageUrl: string;
+    categoryId: string;
+    categoryName: string;
+}
+
+export interface PaginatedResult<T> {
+    items: T[];
+    pageNumber: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+}
+
+export interface ProductQueryParams {
+    languageCode?: string;
+    searchTerm?: string;
+    categoryId?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: string;
+    pageNumber?: number;
+    pageSize?: number;
 }

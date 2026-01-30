@@ -17,7 +17,8 @@ export default async function Home({
   let error = null;
 
   try {
-    products = await productService.getAll();
+    const result = await productService.getAll();
+    products = result.items;
   } catch (e: any) {
     error = e.message || t('unknownError');
   }

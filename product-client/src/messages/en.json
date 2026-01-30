@@ -74,7 +74,8 @@
         "stock": "Stock",
         "addToCart": "Add to Cart",
         "outOfStock": "Out of Stock",
-        "noImage": "No Image Available"
+        "noImage": "No Image Available",
+        "inStock": "Stock Avaible"
     },
     "ApiErrors": {
         "userEmailAlreadyExists": "This email address is already in use.",

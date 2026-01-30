@@ -33,6 +33,7 @@ echo        6. [Product.API] Update Database (dotnet ef database update)
 echo        7. [Product.API] Remove Last Migration (dotnet ef migrations remove)
 echo        8. Open Backend Logs Folder
 echo        9. [Product.API] Open Product Images (Uploads) Folder
+echo       10. [Frontend] Restart (Recreate only frontend)
 echo        0. EXIT
 set /p secim="Select an option (0-9): "
 
@@ -45,6 +46,7 @@ if "%secim%"=="6" goto EF_UPDATE
 if "%secim%"=="7" goto EF_REMOVE
 if "%secim%"=="8" goto OPEN_LOGS
 if "%secim%"=="9" goto OPEN_IMAGES
+if "%secim%"=="10" goto FRONTEND_RESTART
 if "%secim%"=="0" exit
 goto MENU
 
@@ -127,4 +129,13 @@ if not exist "%PRODUCT_IMAGES_PATH%" (
     mkdir "%PRODUCT_IMAGES_PATH%"
 )
 start "" "%PRODUCT_IMAGES_PATH%"
+goto MENU
+
+:FRONTEND_RESTART
+echo.
+echo Restarting frontend container only...
+docker-compose stop frontend
+docker-compose rm -f frontend
+docker-compose up -d frontend
+pause
 goto MENU

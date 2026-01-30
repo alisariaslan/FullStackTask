@@ -1,10 +1,20 @@
 import { ApiResponse } from "@/types";
 
-const getBaseUrl = () => {
-    if (typeof window !== 'undefined') {
-        return process.env.NEXT_PUBLIC_API_URL;
+export const getBaseUrl = () => {
+    if (typeof window === 'undefined') {
+        // D2D
+        return process.env.GATEWAY_URL;
+    } else {
+        // B2D
+        return process.env.NEXT_PUBLIC_GATEWAY_URL;
     }
-    return process.env.API_URL;
+};
+
+export const getPublicImageUrl = (path: string | null | undefined) => {
+    if (!path) return null;
+    // Always B2D
+    const baseUrl = process.env.NEXT_PUBLIC_GATEWAY_URL;
+    return `${baseUrl}${path}`;
 };
 
 export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -16,13 +26,16 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
         token = localStorage.getItem('token');
     }
 
+    const isFormData = options.body instanceof FormData;
+
     const headers = {
-        'Content-Type': 'application/json',
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
         ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
     } as HeadersInit;
 
     const url = `${getBaseUrl()}${cleanEndpoint}`;
+
     console.log(`API Request (${typeof window === 'undefined' ? 'Server' : 'Client'}): ${url}`);
 
     try {
@@ -54,8 +67,8 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
         }
 
         if (!apiResponse.isSuccess) {
-            const failMessage = apiResponse.errorMessage ||
-                (apiResponse.errors && apiResponse.errors[0]) ||
+            const failMessage =
+                (apiResponse.errors && apiResponse.errors.length > 0 ? apiResponse.errors[0] : null) ||
                 apiResponse.message ||
                 'ClientErrors.unknown';
 

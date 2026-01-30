@@ -4,14 +4,14 @@ import { AuthResponseDto } from '@/types';
 
 export const authService = {
     async register(email: string, password: string): Promise<AuthResponseDto> {
-        return apiRequest<AuthResponseDto>('/auth/register', {
+        return apiRequest<AuthResponseDto>('api/auth/register', {
             method: 'POST',
             body: JSON.stringify({ username: email, password: password }),
         });
     },
 
     async login(email: string, password: string): Promise<AuthResponseDto> {
-        return apiRequest<AuthResponseDto>('/auth/login', {
+        return apiRequest<AuthResponseDto>('api/auth/login', {
             method: 'POST',
             body: JSON.stringify({ username: email, password: password }),
         });
