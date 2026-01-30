@@ -50,7 +50,7 @@ services:
     container_name: micro_seq
     environment:
       - ACCEPT_EULA=Y
-      - SEQ_FIRSTRUN_ADMINPASSWORD=123!
+      - SEQ_FIRSTRUN_ADMINPASSWORD=admin
     ports:
       - "6008:80"
     networks:
