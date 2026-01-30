@@ -4,6 +4,18 @@
 
 This project is a modern, high-performance web application built with **Next.js 14+ (App Router)**. It is designed to be SEO-friendly, multi-lingual, and fully integrated with a microservices backend through an API Gateway.
 
+## 🧠 Micro-Frontend Scope Decision
+
+Although the task mentions a micro-frontend architecture (Home & Cart),
+this project focuses on backend microservices and a unified frontend
+application to demonstrate core system design, API gateway integration,
+SEO, and state management.
+
+The frontend architecture is structured in a modular way and can be
+evolved into a micro-frontend setup (Multi-Zone or Module Federation)
+without major refactoring.
+
+
 ## Technology Stack
 
 * **Framework:** Next.js 14+ (App Router)

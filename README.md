@@ -2,6 +2,40 @@
 
 This is the main repository for the full-stack task project, consisting of a microservices-based backend and a modern frontend.
 
+## 🧩 Task Compliance
+
+### Phase 1 – Monolithic Product API
+
+- Product CRUD implemented (POST/GET)
+- EF Core + PostgreSQL
+- Swagger documentation
+- Async operations
+
+### Phase 2 – Auth, CQRS & Redis
+
+- Auth Service with JWT
+- Product Service with CQRS (MediatR)
+- Redis caching + invalidation
+- Global exception handling & logging
+
+### Phase 3 – Microservices & Event-Driven
+
+- Auth, Product, Log microservices
+- RabbitMQ-based event communication
+- YARP API Gateway
+- Dockerized full system
+
+## 🧠 Micro-Frontend Scope Decision
+
+Although the task mentions a micro-frontend architecture (Home & Cart),
+this project focuses on backend microservices and a unified frontend
+application to demonstrate core system design, API gateway integration,
+SEO, and state management.
+
+The frontend architecture is structured in a modular way and can be
+evolved into a micro-frontend setup (Multi-Zone or Module Federation)
+without major refactoring.
+
 ## 🔗 Project Components
 
 For detailed technical documentation, architectural decisions, and setup guides, please visit the respective project directories:
@@ -42,4 +76,11 @@ git clone https://github.com/alisariaslan/FullStackTask.git
 # Launch all
 docker-compose up --build -d
 ```
+
+## 📘 Detailed Setup Guide
+
+For developers who want an in-depth explanation of the infrastructure,
+environment variables, networking, and service communication:
+
+➡️ See [Detailed Setup Guide](./DETAILED_SETUP_GUIDE.md)
 
