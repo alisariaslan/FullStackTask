@@ -19,10 +19,9 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
 
         public async Task<List<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            string cacheKey = $"all_products_{request.LanguageCode}";
+            string cacheKey = $"products_{request.LanguageCode}_{request.SearchTerm}_{request.CategoryId}_{request.MinPrice}_{request.MaxPrice}_{request.SortBy}";
+
             var cachedData = await _cache.GetStringAsync(cacheKey, cancellationToken);
-
-
             if (!string.IsNullOrEmpty(cachedData))
             {
                 return JsonSerializer.Deserialize<List<ProductDto>>(cachedData)!;
@@ -30,15 +29,9 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
 
             var products = await _repository.GetAllAsync();
 
-            var productDtos = products.Select(p =>
-            {
-
-                var pTranslation = p.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
-                                  ?? p.Translations.FirstOrDefault();
-
-
-                var cTranslation = p.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
-                                  ?? p.Category?.Translations.FirstOrDefault();
+            var query = products.Select(p => {
+                var pTranslation = p.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) ?? p.Translations.FirstOrDefault();
+                var cTranslation = p.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) ?? p.Category?.Translations.FirstOrDefault();
 
                 return new ProductDto(
                     p.Id,
@@ -50,17 +43,34 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
                     p.CategoryId,
                     cTranslation?.Name ?? "Uncategorized"
                 );
-            }).ToList();
+            }).AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+                query = query.Where(x => x.Name.Contains(request.SearchTerm, StringComparison.OrdinalIgnoreCase));
 
-            var cacheOptions = new DistributedCacheEntryOptions
+            if (request.CategoryId.HasValue)
+                query = query.Where(x => x.CategoryId == request.CategoryId.Value);
+
+            if (request.MinPrice.HasValue)
+                query = query.Where(x => x.Price >= request.MinPrice.Value);
+
+            if (request.MaxPrice.HasValue)
+                query = query.Where(x => x.Price <= request.MaxPrice.Value);
+
+            query = request.SortBy?.ToLower() switch
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20)
+                "price_asc" => query.OrderBy(x => x.Price),
+                "price_desc" => query.OrderByDescending(x => x.Price),
+                "name_desc" => query.OrderByDescending(x => x.Name),
+                _ => query.OrderBy(x => x.Name)
             };
 
-            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(productDtos), cacheOptions, cancellationToken);
+            var result = query.ToList();
 
-            return productDtos;
+            var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20) };
+            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(result), cacheOptions, cancellationToken);
+
+            return result;
         }
     }
 

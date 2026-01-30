@@ -1,4 +1,5 @@
 logs/
+images/
 *.py
 __pycache__/
 bin/

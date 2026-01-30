@@ -8,7 +8,6 @@ using Services.Product.Application.Features.Products.Queries.GetProductById;
 using Services.Product.Application.Models;
 using Shared.Kernel.Constants;
 using Shared.Kernel.Models;
-using static MassTransit.ValidationResultExtensions;
 
 namespace Services.Product.API.Controllers
 {
@@ -24,9 +23,9 @@ namespace Services.Product.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<List<ProductDto>>>> GetAll()
+        public async Task<ActionResult<ApiResponse<List<ProductDto>>>> GetAll([FromQuery] GetAllProductsQuery query)
         {
-            var result = await _mediator.Send(new GetAllProductsQuery());
+            var result = await _mediator.Send(query);
             return Ok(ApiResponse<List<ProductDto>>.Success(result));
         }
 
