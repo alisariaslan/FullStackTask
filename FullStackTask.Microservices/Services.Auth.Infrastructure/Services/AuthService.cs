@@ -27,14 +27,14 @@ namespace Services.Auth.Infrastructure.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto request)
         {
-            if (await _userRepository.UserExistsAsync(request.Username))
+            if (await _userRepository.UserExistsAsync(request.Email))
                 throw new ValidationException(Messages.UserEmailAlreadyExists);
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             var user = new UserEntity
             {
-                Username = request.Username,
+                Username = request.Email,
                 PasswordHash = Convert.ToBase64String(passwordHash) + "." + Convert.ToBase64String(passwordSalt),
                 Role = Roles.User
             };
@@ -46,7 +46,7 @@ namespace Services.Auth.Infrastructure.Services
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto request)
         {
-            var user = await _userRepository.GetByUsernameAsync(request.Username);
+            var user = await _userRepository.GetByUsernameAsync(request.Email);
 
             if (user == null)
                 throw new ValidationException(Messages.UserNotFound);

@@ -7,9 +7,8 @@ import {
     addToCart
 } from '@/lib/store/features/cart/cartSlice';
 import { useTranslations } from 'next-intl';
-import { getPublicImageUrl } from '@/lib/api';
+import { getPublicImageUrl } from '@/lib/apiHandler';
 
-// Sepetteki ürün tipi (Redux state'inizdeki tipe uygun olmalı)
 interface CartItemProps {
     item: {
         id: string;
@@ -21,10 +20,9 @@ interface CartItemProps {
 }
 
 export default function CartItemCard({ item }: CartItemProps) {
-    const t = useTranslations('Cart'); // Veya genel bir translation dosyası
+    const t = useTranslations('Cart');
     const dispatch = useAppDispatch();
 
-    // Helper fonksiyonu kullanarak güvenli URL alıyoruz
     const imageUrl = getPublicImageUrl(item.imageUrl);
 
     return (

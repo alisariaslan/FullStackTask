@@ -1,4 +1,4 @@
 ﻿namespace Services.Auth.Application.Models
 {
-    public record AuthResponseDto(string Token, string Username);
+    public record AuthResponseDto(string Token, string Email);
 }

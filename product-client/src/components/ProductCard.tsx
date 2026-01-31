@@ -1,11 +1,11 @@
 'use client';
 
-import { Product } from '@/types';
+import { Product } from '@/types/sharedTypes';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { addToCart } from '@/lib/store/features/cart/cartSlice';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
-import { getPublicImageUrl } from '@/lib/api'; // <-- 1. IMPORT ETTİK
+import { getPublicImageUrl } from '@/lib/apiHandler'; // <-- 1. IMPORT ETTİK
 
 interface ProductCardProps {
     product: Product;

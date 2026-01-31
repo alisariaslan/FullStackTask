@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types";
+import { ApiResponse } from "@/types/sharedTypes";
 
 export const getBaseUrl = () => {
     if (typeof window === 'undefined') {

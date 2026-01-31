@@ -1,19 +1,19 @@
 // src/services/authService.ts
-import { apiRequest } from '@/lib/api';
-import { AuthResponseDto } from '@/types';
+import { apiRequest } from '@/lib/apiHandler';
+import { AuthResponseDto, LoginInput, RegisterInput } from '@/types/authTypes';
 
 export const authService = {
-    async register(email: string, password: string): Promise<AuthResponseDto> {
+    async register(data: RegisterInput): Promise<AuthResponseDto> {
         return apiRequest<AuthResponseDto>('api/auth/register', {
             method: 'POST',
-            body: JSON.stringify({ username: email, password: password }),
+            body: JSON.stringify(data),
         });
     },
 
-    async login(email: string, password: string): Promise<AuthResponseDto> {
+    async login(data: LoginInput): Promise<AuthResponseDto> {
         return apiRequest<AuthResponseDto>('api/auth/login', {
             method: 'POST',
-            body: JSON.stringify({ username: email, password: password }),
+            body: JSON.stringify(data),
         });
     }
 };

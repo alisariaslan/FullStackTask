@@ -1,5 +1,5 @@
 import { productService } from '@/services/productService';
-import { Product } from '@/types';
+import { Product } from '@/types/sharedTypes';
 import { Link } from '@/navigation';
 import { getTranslations } from 'next-intl/server';
 import ProductCard from '@/components/ProductCard'; // <-- YENİ BİLEŞENİ İMPORT ET

@@ -1,4 +1,4 @@
 ﻿namespace Services.Auth.Application.Models
 {
-    public record RegisterDto(string Username, string Password);
+    public record RegisterDto(string Email, string Password);
 }

@@ -1,9 +1,10 @@
 // src/services/productService.ts
-import { apiRequest } from '@/lib/api';
-import { Product, PaginatedResult, ProductQueryParams } from '@/types';
+import { apiRequest } from '@/lib/apiHandler';
+import { Product, ProductQueryParams, CreateProductInput, AddProductTranslationInput, GetProductByIdInput } from '@/types/productTypes';
+import { PaginatedResult } from '@/types/sharedTypes';
 
 export const productService = {
-    // GET: /api/Products?PageNumber=1&PageSize=10&SortBy=price_desc...
+    // GET: /api/Products?PageNumber=1&LanguageCode=en...
     async getAll(params: ProductQueryParams = {}): Promise<PaginatedResult<Product>> {
         const queryParams = new URLSearchParams();
 
@@ -21,24 +22,44 @@ export const productService = {
         });
     },
 
-    // GET: /api/Products/{id}
-    async getById(id: string): Promise<Product> {
-        return apiRequest<Product>(`/api/Products/${id}`, {
+    // GET: /api/Products/{id}?LanguageCode=en
+    async getById(params: GetProductByIdInput): Promise<Product> {
+        let endpoint = `/api/Products/${params.id}`;
+
+        if (params.languageCode) {
+            endpoint += `?LanguageCode=${params.languageCode}`;
+        }
+
+        return apiRequest<Product>(endpoint, {
             cache: 'no-store'
         });
     },
 
     // POST: /api/Products
-    async create(data: Omit<Product, 'id'>): Promise<string> {
+    async create(data: CreateProductInput): Promise<string> {
         const formData = new FormData();
 
         Object.entries(data).forEach(([key, value]) => {
-            formData.append(key, value.toString());
+            if (value !== undefined && value !== null) {
+                if (key === 'image' && value instanceof File) {
+                    formData.append(key, value);
+                } else {
+                    formData.append(key, value.toString());
+                }
+            }
         });
 
         return apiRequest<string>('/api/Products', {
             method: 'POST',
             body: formData,
+        });
+    },
+
+    // POST: /api/Products/{id}/translations
+    async addTranslation(data: AddProductTranslationInput): Promise<void> {
+        return apiRequest<void>(`/api/Products/${data.productId}/translations`, {
+            method: 'POST',
+            body: JSON.stringify(data),
         });
     },
 };
