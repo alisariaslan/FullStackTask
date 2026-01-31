@@ -85,7 +85,8 @@
         "nameRequired": "İsimlendirme gereklidir.",
         "priceInvalid": "Geçersiz fiyat değeri.",
         "categoryRequired": "Kategori gereklidir.",
-        "categoryNotFound": "Kategori bulunamadı."
+        "categoryNotFound": "Kategori bulunamadı.",
+        "invalidRole": "Geçersiz rol."
     },
     "ClientErrors": {
         "sessionExpired": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın.",

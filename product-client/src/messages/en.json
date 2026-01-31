@@ -85,7 +85,8 @@
         "nameRequired": "Name is required.",
         "priceInvalid": "Invalid price value.",
         "categoryRequired": "Category is required.",
-        "categoryNotFound": "Category not found."
+        "categoryNotFound": "Category not found.",
+        "invalidRole": "Invalid role."
     },
     "ClientErrors": {
         "sessionExpired": "Your session has expired, please login again.",

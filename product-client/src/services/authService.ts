@@ -3,10 +3,11 @@ import { apiRequest } from '@/lib/apiHandler';
 import { AuthResponseDto, LoginInput, RegisterInput } from '@/types/authTypes';
 
 export const authService = {
-    async register(data: RegisterInput): Promise<AuthResponseDto> {
+    async register(email: string, password: string): Promise<AuthResponseDto> {
+        const payload: RegisterInput = { email, password };
         return apiRequest<AuthResponseDto>('api/auth/register', {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify(payload),
         });
     },
 

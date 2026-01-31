@@ -13,5 +13,6 @@
         public const string CategoryNotFound = "categoryNotFound";
         public const string IdMismatch = "idMismatch";
         public const string TranslationAlreadyExists = "translationAlreadyExists";
+        public const string InvalidRole = "invalidRole";
     }
 }

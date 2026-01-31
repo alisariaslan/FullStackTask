@@ -18,13 +18,12 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
         try {
+
             await authService.register(formData.email, formData.password);
             router.push('/login');
         } catch (e: any) {

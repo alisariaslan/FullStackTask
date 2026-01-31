@@ -29,7 +29,7 @@ namespace Services.Product.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<Guid>>> Create(CreateCategoryCommand command)
         {
             var id = await _mediator.Send(command);
@@ -37,7 +37,7 @@ namespace Services.Product.API.Controllers
         }
 
         [HttpPost("{id}/translations")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<Unit>>> AddTranslation(Guid id, [FromBody] AddCategoryTranslationCommand command)
         {
             if (id != command.CategoryId)
