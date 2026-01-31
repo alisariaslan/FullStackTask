@@ -20,7 +20,10 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
 
         public async Task<PaginatedResult<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            string cacheKey = $"products_{request.LanguageCode}_{request.PageNumber}_{request.PageSize}_{request.SearchTerm}_{request.CategoryId}_{request.MinPrice}_{request.MaxPrice}_{request.SortBy}";
+            var normalizedSearch = request.SearchTerm?.Trim().ToLower();
+
+            string cacheKey = $"products_{request.LanguageCode}_{request.PageNumber}_{request.PageSize}_{normalizedSearch}_{request.CategoryId}_{request.MinPrice}_{request.MaxPrice}_{request.SortBy}";
+
 
             var cachedData = await _cache.GetStringAsync(cacheKey, cancellationToken);
             if (!string.IsNullOrEmpty(cachedData))
@@ -29,7 +32,7 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
             }
 
             var pagedEntities = await _repository.GetFilteredProductsAsync(
-                request.LanguageCode, request.SearchTerm, request.CategoryId,
+                request.LanguageCode, normalizedSearch, request.CategoryId,
                 request.MinPrice, request.MaxPrice, request.SortBy,
                 request.PageNumber, request.PageSize);
 

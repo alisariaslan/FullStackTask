@@ -54,7 +54,13 @@ namespace Services.Product.Infrastructure.Repositories
                 .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                query = query.Where(p => p.Translations.Any(t => t.Name.Contains(searchTerm)));
+            {
+                var term = searchTerm.ToLower();
+                query = query.Where(p =>
+                    p.Translations.Any(t =>
+                        t.Name.ToLower().Contains(term)
+                    ));
+            }
 
             if (categoryId.HasValue)
                 query = query.Where(x => x.CategoryId == categoryId.Value);

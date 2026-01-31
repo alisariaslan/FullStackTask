@@ -1,23 +1,27 @@
 {
     "Layout": {
-        "title": "E-Commerce Application",
+        "title": "E-Commerce - A.SARIASLAN",
         "description": "Next.js & .NET Core Full Stack Project"
     },
     "Navbar": {
-        "title": "E-Commerce Application",
+        "title": "E-Commerce",
         "cart": "Cart",
         "login": "Login",
         "register": "Register",
-        "logout": "Logout"
+        "logout": "Logout",
+        "searchPlaceholder": "Search products..."
     },
     "Home": {
-        "title": "Product List",
+        "title": "Products",
         "price": "Price",
         "stock": "Stock",
         "addToCart": "Add to Cart",
         "addProduct": "Add Product",
         "unknownError": "An unknown error occurred.",
-        "noProducts": "No products found."
+        "noProducts": "No products found.",
+        "searchResultsFor": "Search results for",
+        "noResultsMessage": "did not match any products.",
+        "clearSearch": "Clear search"
     },
     "Login": {
         "title": "Login",

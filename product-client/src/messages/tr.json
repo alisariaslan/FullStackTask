@@ -1,23 +1,27 @@
 {
     "Layout": {
-        "title": "E-Ticaret Uygulaması",
+        "title": "E-Ticaret - A.SARIASLAN",
         "description": "Next.js & .NET Core Full Stack Projesi"
     },
     "Navbar": {
-        "title": "E-Ticaret Uygulaması",
+        "title": "E-Ticaret",
         "cart": "Sepet",
         "login": "Giriş Yap",
         "register": "Kayıt Ol",
-        "logout": "Çıkış Yap"
+        "logout": "Çıkış Yap",
+        "searchPlaceholder": "Ürün ara..."
     },
     "Home": {
-        "title": "Ürün Listesi",
+        "title": "Ürünler",
         "price": "Fiyat",
         "stock": "Stok",
         "addToCart": "Sepete Ekle",
         "addProduct": "Ürün Ekle",
         "unknownError": "Bilinmeyen bir hata oluştu.",
-        "noProducts": "Ürün bulunamadı."
+        "noProducts": "Ürün bulunamadı.",
+        "searchResultsFor": "Arama sonuçları",
+        "noResultsMessage": "ile ilgili herhangi bir ürün bulunamadı.",
+        "clearSearch": "Aramayı sıfırla"
     },
     "Login": {
         "title": "Giriş Yap",
