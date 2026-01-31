@@ -1,9 +1,10 @@
 /// Home.tsx
+
 import { productService } from '@/services/productService';
 import { Product } from '@/types/productTypes';
 import { Link } from '@/navigation';
 import { getTranslations } from 'next-intl/server';
-import ProductCard from '@/components/ProductCard'; // <-- YENİ BİLEŞENİ İMPORT ET
+import ProductCard from '@/components/ProductCard';
 import ErrorMessage from '@/components/ErrorMessage';
 import AddProductButton from '@/components/AddProductButton';
 

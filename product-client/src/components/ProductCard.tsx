@@ -1,3 +1,5 @@
+/// ProductCard.tsx
+
 'use client';
 
 import { Product } from '@/types/productTypes';
@@ -36,10 +38,10 @@ export default function ProductCard({ product }: ProductCardProps) {
                     <Image
                         src={imageUrl}
                         alt={product.name}
-                        fill // Container'ı kaplaması için
+                        fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-contain p-4 transition-transform duration-300 hover:scale-105"
-                        loading="lazy" // Next.js bunu varsayılan olarak yapar ama explicit belirtebilirsiniz
+                        loading="lazy"
                     />
                 ) : (
                     <div className="flex flex-col items-center text-gray-400">
