@@ -52,7 +52,7 @@ export default function Header() {
                             // Giriş Yapılmış 
                             <div className="flex items-center gap-3">
                                 <span className="text-sm font-semibold text-gray-800">
-                                    {user.username}
+                                    {user.email}
                                 </span>
                                 <Button
                                     onClick={handleLogout}

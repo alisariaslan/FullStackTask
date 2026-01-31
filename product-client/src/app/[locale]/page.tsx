@@ -1,9 +1,10 @@
 import { productService } from '@/services/productService';
-import { Product } from '@/types/sharedTypes';
+import { Product } from '@/types/productTypes';
 import { Link } from '@/navigation';
 import { getTranslations } from 'next-intl/server';
 import ProductCard from '@/components/ProductCard'; // <-- YENİ BİLEŞENİ İMPORT ET
 import ErrorMessage from '@/components/ErrorMessage';
+import AddProductButton from '@/components/AddProductButton';
 
 export default async function Home({
   params
@@ -30,12 +31,7 @@ export default async function Home({
           {t('title')}
         </h1>
 
-        <Link
-          href="/add-product"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          {t('addProduct')}
-        </Link>
+        <AddProductButton />
       </div>
 
       {error && <ErrorMessage message={error} />}

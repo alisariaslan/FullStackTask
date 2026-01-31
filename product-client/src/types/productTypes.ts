@@ -24,16 +24,6 @@ export interface ProductQueryParams {
     pageSize?: number;
 }
 
-export interface CreateProductInput {
-    name: string;
-    description?: string;
-    price: number;
-    stock: number;
-    categoryId: string;
-    image?: File | null;
-    languageCode?: string;
-}
-
 export interface AddProductTranslationInput {
     productId: string;
     languageCode: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import { Product } from '@/types/sharedTypes';
+import { Product } from '@/types/productTypes';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { addToCart } from '@/lib/store/features/cart/cartSlice';
 import { Button } from '@/components/ui/Button';

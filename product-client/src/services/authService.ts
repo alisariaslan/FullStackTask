@@ -11,10 +11,11 @@ export const authService = {
         });
     },
 
-    async login(data: LoginInput): Promise<AuthResponseDto> {
+    async login(email: string, password: string): Promise<AuthResponseDto> {
+        const payload: LoginInput = { email, password };
         return apiRequest<AuthResponseDto>('api/auth/login', {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify(payload),
         });
     }
 };

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { productService } from '@/services/productService';
 import ErrorMessage from '@/components/ErrorMessage';
+import AdminGuard from '@/components/RenderGuard';
 
 
 export default function AddProduct() {
@@ -22,11 +23,11 @@ export default function AddProduct() {
         setLoading(true);
         setError(null);
         try {
-            await productService.create({
-                name: formData.name,
-                price: Number(formData.price),
-                stock: Number(formData.stock),
-            });
+            await productService.create(
+                formData.name,
+                Number(formData.price),
+                Number(formData.stock)
+            );
             router.refresh();
             router.back();
         } catch (e: any) {
@@ -45,79 +46,80 @@ export default function AddProduct() {
     };
 
     return (
+        <AdminGuard>
+            <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
+                <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md border">
 
-        <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
-            <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md border">
+                    {/* Başlık */}
+                    <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+                        {t('title')}
+                    </h1>
 
-                {/* Başlık */}
-                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-                    {t('title')}
-                </h1>
+                    {/* Hata Mesajı */}
+                    {error && <ErrorMessage message={error} />}
 
-                {/* Hata Mesajı */}
-                {error && <ErrorMessage message={error} />}
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        {/* Ürün Adı */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                {t('Labels.name')}
+                            </label>
+                            <Input
+                                value={formData.name}
+                                onChange={(e) => handleChange(e, 'name')}
+                                placeholder={t('Placeholders.name')}
+                                required
+                            />
+                        </div>
 
-                    {/* Ürün Adı */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {t('Labels.name')}
-                        </label>
-                        <Input
-                            value={formData.name}
-                            onChange={(e) => handleChange(e, 'name')}
-                            placeholder={t('Placeholders.name')}
-                            required
-                        />
-                    </div>
+                        {/* Fiyat */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                {t('Labels.price')}
+                            </label>
+                            <Input
+                                type="number"
+                                step="0.01"
+                                value={formData.price}
+                                onChange={(e) => handleChange(e, 'price')}
+                                placeholder={t('Placeholders.price')}
+                                required
+                            />
+                        </div>
 
-                    {/* Fiyat */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {t('Labels.price')}
-                        </label>
-                        <Input
-                            type="number"
-                            step="0.01"
-                            value={formData.price}
-                            onChange={(e) => handleChange(e, 'price')}
-                            placeholder={t('Placeholders.price')}
-                            required
-                        />
-                    </div>
+                        {/* Stok */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                {t('Labels.stock')}
+                            </label>
+                            <Input
+                                type="number"
+                                value={formData.stock}
+                                onChange={(e) => handleChange(e, 'stock')}
+                                placeholder={t('Placeholders.stock')}
+                                required
+                            />
+                        </div>
 
-                    {/* Stok */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {t('Labels.stock')}
-                        </label>
-                        <Input
-                            type="number"
-                            value={formData.stock}
-                            onChange={(e) => handleChange(e, 'stock')}
-                            placeholder={t('Placeholders.stock')}
-                            required
-                        />
-                    </div>
+                        {/* Butonlar */}
+                        <div className="flex gap-3 mt-4">
+                            <Button type="submit" disabled={loading} className="flex-1 bg-blue-600 hover:bg-blue-700">
+                                {loading ? t('Buttons.saving') : t('Buttons.save')}
+                            </Button>
 
-                    {/* Butonlar */}
-                    <div className="flex gap-3 mt-4">
-                        <Button type="submit" disabled={loading} className="flex-1 bg-blue-600 hover:bg-blue-700">
-                            {loading ? t('Buttons.saving') : t('Buttons.save')}
-                        </Button>
-
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => router.back()}
-                            className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
-                        >
-                            {t('Buttons.cancel')}
-                        </Button>
-                    </div>
-                </form>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => router.back()}
+                                className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                            >
+                                {t('Buttons.cancel')}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </AdminGuard>
     );
 }

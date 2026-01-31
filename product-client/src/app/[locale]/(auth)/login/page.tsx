@@ -10,6 +10,7 @@ import { useAppDispatch } from '@/lib/store/hooks';
 import { loginSuccess } from '@/lib/store/features/auth/authSlice';
 import { Link } from '@/navigation';
 import ErrorMessage from '@/components/ErrorMessage';
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
     const t = useTranslations('Login');
@@ -26,10 +27,15 @@ export default function LoginPage() {
         setError(null);
         try {
             const response = await authService.login(formData.email, formData.password);
+
+            const decoded: any = jwtDecode(response.token);
+            const roleKey = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+            const userRole = decoded[roleKey] || decoded.role || "User";
+
             dispatch(loginSuccess({
-                username: response.username,
-                email: formData.email,
-                token: response.token
+                email: response.email,
+                token: response.token,
+                role: userRole
             }));
             router.push('/');
             router.refresh();

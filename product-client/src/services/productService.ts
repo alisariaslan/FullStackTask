@@ -1,6 +1,6 @@
 // src/services/productService.ts
 import { apiRequest } from '@/lib/apiHandler';
-import { Product, ProductQueryParams, CreateProductInput, AddProductTranslationInput, GetProductByIdInput } from '@/types/productTypes';
+import { Product, ProductQueryParams, AddProductTranslationInput, GetProductByIdInput } from '@/types/productTypes';
 import { PaginatedResult } from '@/types/sharedTypes';
 
 export const productService = {
@@ -36,24 +36,19 @@ export const productService = {
     },
 
     // POST: /api/Products
-    async create(data: CreateProductInput): Promise<string> {
+    async create(name: string, price: number, stock: number): Promise<string> {
         const formData = new FormData();
 
-        Object.entries(data).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-                if (key === 'image' && value instanceof File) {
-                    formData.append(key, value);
-                } else {
-                    formData.append(key, value.toString());
-                }
-            }
-        });
+        formData.append('name', name);
+        formData.append('price', price.toString());
+        formData.append('stock', stock.toString());
 
         return apiRequest<string>('/api/Products', {
             method: 'POST',
             body: formData,
         });
     },
+
 
     // POST: /api/Products/{id}/translations
     async addTranslation(data: AddProductTranslationInput): Promise<void> {
