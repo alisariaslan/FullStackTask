@@ -33,7 +33,8 @@
         "login": "Giriş Yap",
         "dontHaveAccount": "Hesabın yok mu?",
         "registerLink": "Buradan kayıt ol",
-        "loginNotSuccessful": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin."
+        "loginNotSuccessful": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.",
+        "cartMergeError": "Sepet birleştirme hatası"
     },
     "Register": {
         "title": "Kayıt Ol",
@@ -89,7 +90,13 @@
         "outOfStock": "Stokta Yok",
         "noImage": "Görsel Yok",
         "inStock": "Stokta Var",
-        "productAdded": "Ürün eklendi."
+        "productAdded": "Ürün eklendi.",
+        "tempAdded": "Bağlantı sorunu: Ürün geçici olarak eklendi.",
+        "addErrorBackend": "Backend hatası, sepet yerele çeviriliyor:",
+        "added": "Eklendi"
+    },
+    "StoreProvider": {
+        "cart_load_fail": "Sepet yüklenirken hata oluştu"
     },
     "ApiErrors": {
         "userEmailAlreadyExists": "Bu e-posta adresi zaten kullanılıyor.",

@@ -45,7 +45,7 @@ export default function LoginPage() {
                 await dispatch(mergeLocalCart()).unwrap();
             } catch (cartError) {
                 // Sepet birleşmese bile devam ediyoruz
-                console.error("Sepet birleştirme hatası:", cartError);
+                console.error(t('cartMergeError'), cartError);
             }
 
             router.push('/');

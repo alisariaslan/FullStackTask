@@ -33,7 +33,8 @@
         "login": "Login",
         "dontHaveAccount": "Don't have an account?",
         "registerLink": "Register here",
-        "loginNotSuccessful": "Login unsuccessful. Please check your credentials."
+        "loginNotSuccessful": "Login unsuccessful. Please check your credentials.",
+        "cartMergeError": "Error occured when merging cart"
     },
     "Register": {
         "title": "Register",
@@ -89,7 +90,13 @@
         "outOfStock": "Out of Stock",
         "noImage": "No Image Available",
         "inStock": "Stock Avaible",
-        "productAdded": "Product added."
+        "productAdded": "Product added.",
+        "tempAdded": "Connection error: Product added to cart as temporary.",
+        "addErrorBackend": "Backend Error, falling back to local:",
+        "added": "Added"
+    },
+    "StoreProvider": {
+        "cart_load_fail": "Cart failed during load"
     },
     "ApiErrors": {
         "userEmailAlreadyExists": "This email address is already in use.",

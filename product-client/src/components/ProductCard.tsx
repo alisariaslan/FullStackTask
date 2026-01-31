@@ -53,12 +53,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                 toast.success(t('productAdded'));
             }
         } catch (error) {
-            console.error("Backend Error, falling back to local:", error);
+            console.error(t('addErrorBackend'), error);
 
             // (Backend fallback) Sepete her türlü ekliyoruz
             dispatch(addToCart(itemDto));
 
-            toast.warning('Bağlantı sorunu: Ürün geçici olarak eklendi.');
+            toast.warning(t('tempAdded'));
         } finally {
             setTimeout(() => {
                 setIsAdding(false);
@@ -144,7 +144,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                         disabled={product.stock <= 0 || isAdding}
                     >
                         {product.stock > 0
-                            ? (isAdding ? 'Eklendi' : t('addToCart'))
+                            ? (isAdding ? t('added') : t('addToCart'))
                             : t('outOfStock')}
                     </Button>
                 </div>

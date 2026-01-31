@@ -15,7 +15,7 @@ interface CartState {
     items: CartItem[];
     totalQuantity: number;
     totalAmount: number;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed'; // API durumu için
+    status: 'idle' | 'loading' | 'succeeded' | 'failed'; // API durumları
 }
 
 const initialState: CartState = {

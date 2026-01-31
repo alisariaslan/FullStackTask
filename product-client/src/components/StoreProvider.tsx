@@ -5,8 +5,10 @@ import { Provider } from 'react-redux';
 import { makeStore, AppStore } from '@/lib/store/store';
 import { restoreUser } from '@/lib/store/features/auth/authSlice';
 import { restoreCart, fetchCart, mergeLocalCart } from '@/lib/store/features/cart/cartSlice';
+import { useTranslations } from 'next-intl';
 
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
+    const t = useTranslations('StoreProvider');
     const storeRef = useRef<AppStore>(null);
 
     if (!storeRef.current) {
@@ -26,7 +28,7 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
                         store.dispatch(restoreCart(items));
                     }
                 } catch (e) {
-                    console.error("Cart load error", e);
+                    console.error(t('cart_load_fail'), e);
                 }
             }
 
