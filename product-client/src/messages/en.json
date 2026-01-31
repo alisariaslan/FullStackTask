@@ -21,7 +21,8 @@
         "noProducts": "No products found.",
         "searchResultsFor": "Search results for",
         "noResultsMessage": "did not match any products.",
-        "clearSearch": "Clear search"
+        "clearSearch": "Clear search",
+        "pageIndicator": "Page {current} / {total}"
     },
     "Login": {
         "title": "Login",

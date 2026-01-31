@@ -21,7 +21,8 @@
         "noProducts": "Ürün bulunamadı.",
         "searchResultsFor": "Arama sonuçları",
         "noResultsMessage": "ile ilgili herhangi bir ürün bulunamadı.",
-        "clearSearch": "Aramayı sıfırla"
+        "clearSearch": "Aramayı sıfırla",
+        "pageIndicator": "Sayfa {current} / {total}"
     },
     "Login": {
         "title": "Giriş Yap",

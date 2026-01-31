@@ -21,7 +21,7 @@ export default async function Home({
   const searchTerm = typeof query.searchTerm === 'string' ? query.searchTerm : undefined;
 
   const page = typeof query.page === 'string' ? parseInt(query.page) : 1;
-  const pageSize = 36;
+  const pageSize = 15;
 
   const t = await getTranslations({ locale, namespace: 'Home' });
 
@@ -46,14 +46,23 @@ export default async function Home({
   return (
     <main className="container mx-auto p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          {searchTerm ? (
-            <span className="flex items-center gap-2">
-              {t('searchResultsFor')}
-              <span className="text-primary">"{searchTerm}"</span>
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {searchTerm ? (
+              <span className="flex items-center gap-2">
+                {t('searchResultsFor')}
+                <span className="text-primary">"{searchTerm}"</span>
+              </span>
+            ) : t('title')}
+          </h1>
+
+          {/* Sayfa Göstergesi */}
+          {products.length > 0 && totalPages > 1 && (
+            <span className="ml-2 inline-flex items-center rounded-full bg-secondary/50 border border-border px-3 py-1 text-xs font-medium text-muted-foreground whitespace-nowrap">
+              {t('pageIndicator', { current: page, total: totalPages })}
             </span>
-          ) : t('title')}
-        </h1>
+          )}
+        </div>
 
         <AddProductButton />
       </div>
