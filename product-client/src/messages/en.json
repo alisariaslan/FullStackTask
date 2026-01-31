@@ -42,13 +42,21 @@
     "AddProduct": {
         "title": "Add New Product",
         "unknownError": "An unknown error occurred.",
+        "Errors": {
+            "categoryRequired": "Category is required"
+        },
         "Labels": {
+            "category": "Category",
             "name": "Product Name",
+            "description": "Description",
             "price": "Price",
-            "stock": "Stock Quantity"
+            "stock": "Stock Quantity",
+            "image": "Product Image"
         },
         "Placeholders": {
+            "selectCategory": "Select a category",
             "name": "e.g. Laptop",
+            "description": "Enter product description...",
             "price": "0.00",
             "stock": "0"
         },

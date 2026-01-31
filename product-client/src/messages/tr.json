@@ -42,14 +42,22 @@
     "AddProduct": {
         "title": "Yeni Ürün Ekle",
         "unknownError": "Bilinmeyen bir hata oluştu.",
+        "Errors": {
+            "categoryRequired": "Kategori seçimi zorunludur"
+        },
         "Labels": {
+            "category": "Kategori",
             "name": "Ürün Adı",
+            "description": "Açıklama",
             "price": "Fiyat",
-            "stock": "Stok Miktarı"
+            "stock": "Stok Miktarı",
+            "image": "Ürün Görseli"
         },
         "Placeholders": {
-            "name": "Örn. Laptop",
-            "price": "0,00",
+            "selectCategory": "Bir kategori seçin",
+            "name": "örn. Laptop",
+            "description": "Ürün açıklamasını girin...",
+            "price": "0.00",
             "stock": "0"
         },
         "Buttons": {

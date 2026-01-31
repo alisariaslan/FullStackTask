@@ -36,19 +36,32 @@ export const productService = {
     },
 
     // POST: /api/Products
-    async create(name: string, price: number, stock: number): Promise<string> {
+    async create(
+        name: string,
+        price: number,
+        stock: number,
+        categoryId: string,
+        description?: string,
+        languageCode?: string,
+        image?: File | null
+    ): Promise<string> {
         const formData = new FormData();
 
-        formData.append('name', name);
-        formData.append('price', price.toString());
-        formData.append('stock', stock.toString());
+        formData.append('Name', name);
+        formData.append('Price', price.toString());
+        formData.append('Stock', stock.toString());
+        formData.append('CategoryId', categoryId);
+
+        // Opsiyonel alanlar
+        if (description) formData.append('Description', description);
+        if (languageCode) formData.append('LanguageCode', languageCode);
+        if (image) formData.append('Image', image);
 
         return apiRequest<string>('/api/Products', {
             method: 'POST',
             body: formData,
         });
     },
-
 
     // POST: /api/Products/{id}/translations
     async addTranslation(data: AddProductTranslationInput): Promise<void> {
