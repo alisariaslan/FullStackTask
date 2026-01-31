@@ -34,22 +34,45 @@ export default function Navbar() {
         }
     }, [dispatch]);
 
+    useEffect(() => {
+        const currentParamsTerm = searchParams.get('searchTerm') || '';
+        if (currentParamsTerm !== searchQuery) {
+            setSearchQuery(currentParamsTerm);
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
+        // Debouncer
+        const delayDebounceFn = setTimeout(() => {
+            const params = new URLSearchParams(searchParams.toString());
+            const currentTerm = params.get('searchTerm') || '';
+
+            if (searchQuery !== currentTerm) {
+                if (searchQuery.trim()) {
+                    params.set('searchTerm', searchQuery);
+                } else {
+                    params.delete('searchTerm');
+                }
+
+                // Sayfa numarasını 1 yapılır
+                if (params.get('page')) {
+                    params.delete('page');
+                }
+
+                router.push(`/?${params.toString()}`);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchQuery, router, searchParams]);
+
     const handleLogout = () => {
         dispatch(logout());
         setIsMobileMenuOpen(false);
     };
 
-    const handleSearch = (e: FormEvent) => {
+    const handleFormSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const params = new URLSearchParams(searchParams.toString());
-
-        if (searchQuery.trim()) {
-            params.set('searchTerm', searchQuery);
-        } else {
-            params.delete('searchTerm');
-        }
-
-        router.push(`/?${params.toString()}`);
     };
 
     return (
@@ -61,7 +84,7 @@ export default function Navbar() {
                 </Link>
 
                 {/* Desktop Search Bar */}
-                <form onSubmit={handleSearch} className="flex-1 max-w-md mx-8 hidden md:flex relative">
+                <form onSubmit={handleFormSubmit} className="flex-1 max-w-md mx-8 hidden md:flex relative">
                     <input
                         type="text"
                         placeholder={t('searchPlaceholder') || "Ürün ara..."}
@@ -134,7 +157,7 @@ export default function Navbar() {
 
             {/* Mobile Search Bar */}
             <div className="md:hidden px-4 pb-3 border-b border-gray-100">
-                <form onSubmit={handleSearch} className="relative">
+                <form onSubmit={handleFormSubmit} className="relative">
                     <input
                         type="text"
                         placeholder={t('searchPlaceholder') || "Ara..."}
@@ -148,6 +171,7 @@ export default function Navbar() {
                 </form>
             </div>
 
+            {/* Mobile Menu Content */}
             {isMobileMenuOpen && (
                 <div className="md:hidden absolute top-[calc(100%)] left-0 w-full bg-white shadow-xl border-t border-gray-100 z-40 animate-in slide-in-from-top-2 fade-in-20">
                     <div className="flex flex-col p-4 space-y-4">

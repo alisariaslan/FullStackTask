@@ -62,7 +62,6 @@ export default async function Home({
 
       {!error && (
         <>
-          {/* animate-fade-in sınıfı buraya eklendi */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 animate-fade-in">
             {products.length > 0 ? (
               products.map((product) => (
