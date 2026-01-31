@@ -1,3 +1,5 @@
+// Register.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -7,7 +9,6 @@ import { Button } from '@/components/shared/Button';
 import { Input } from '@/components/shared/Input';
 import { authService } from '@/services/authService';
 import { Link } from '@/navigation';
-
 import ErrorMessage from '@/components/shared/ErrorMessage';
 
 export default function RegisterPage() {
@@ -23,7 +24,6 @@ export default function RegisterPage() {
         setLoading(true);
         setError(null);
         try {
-
             await authService.register(formData.email, formData.password);
             router.push('/login');
         } catch (e: any) {
@@ -35,8 +35,9 @@ export default function RegisterPage() {
 
     return (
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
-            <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md border">
-                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+
+            <div className="w-full max-w-md bg-background p-8 rounded-lg shadow-md border border-border">
+                <h1 className="text-2xl font-bold mb-6 text-center text-foreground">
                     {t('title')}
                 </h1>
 
@@ -45,7 +46,7 @@ export default function RegisterPage() {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">E-Posta</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">E-Posta</label>
                         <Input
                             type="email"
                             required
@@ -56,7 +57,7 @@ export default function RegisterPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Şifre</label>
                         <Input
                             type="password"
                             required
@@ -66,13 +67,18 @@ export default function RegisterPage() {
                         />
                     </div>
 
-                    <Button type="submit" disabled={loading} className="w-full mt-2 bg-blue-600 hover:bg-blue-700">
+
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full mt-2 bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                    >
                         {loading ? t('saving') : t('register')}
                     </Button>
                 </form>
 
-                <p className="mt-4 text-center text-sm text-gray-600">
-                    {t('haveAccount')} <Link href="/login" className="text-blue-600 hover:underline">{t('loginLink')}</Link>
+                <p className="mt-4 text-center text-sm text-foreground/70">
+                    {t('haveAccount')} <Link href="/login" className="text-primary hover:underline font-medium">{t('loginLink')}</Link>
                 </p>
             </div>
         </div>

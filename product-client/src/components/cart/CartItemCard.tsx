@@ -20,10 +20,11 @@ interface CartItemProps {
         price: number;
         quantity: number;
         imageUrl?: string;
-    };
+    },
+    priority?: boolean;
 }
 
-export default function CartItemCard({ item }: CartItemProps) {
+export default function CartItemCard({ item, priority = false }: CartItemProps) {
     const t = useTranslations('Cart');
     const dispatch = useAppDispatch();
 
@@ -52,7 +53,8 @@ export default function CartItemCard({ item }: CartItemProps) {
                             ${isImageLoading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
                         `}
                         onLoad={() => setIsImageLoading(false)}
-                        loading="lazy"
+                        priority={priority}
+                        loading={priority ? undefined : "lazy"}
                     />
                 ) : (
                     <span className="text-gray-400 text-xs text-center px-2">

@@ -1,4 +1,3 @@
-// cart.tsx
 'use client';
 
 import { Link } from '@/navigation';
@@ -47,8 +46,13 @@ export default function CartPage() {
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Ürün Listesi Sol Taraf */}
                 <div className="lg:w-2/3 space-y-4">
-                    {items.map((item) => (
-                        <CartItemCard key={item.id} item={item} />
+                    {items.map((item, index) => (
+                        <CartItemCard
+                            key={item.id}
+                            item={item}
+                            // LCP uyarısı için ilk 6 item ı hızlı render ediyoruz
+                            priority={index < 6}
+                        />
                     ))}
                 </div>
 

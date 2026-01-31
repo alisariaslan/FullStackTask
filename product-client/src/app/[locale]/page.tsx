@@ -73,8 +73,9 @@ export default async function Home({
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 animate-fade-in">
             {products.length > 0 ? (
-              products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              products.map((product, index) => (
+                // LCP uyarısı için ilk 12 item ı hızlı render ediyoruz
+                <ProductCard key={product.id} product={product} priority={index < 12} />
               ))
             ) : (
               <div className="col-span-full text-center py-20 bg-secondary/30 rounded-2xl border border-dashed border-border">

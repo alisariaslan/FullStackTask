@@ -15,9 +15,10 @@ import { cartService } from '@/services/cartService';
 
 interface ProductCardProps {
     product: Product;
+    priority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, priority = false }: ProductCardProps) {
     const t = useTranslations('ProductCard');
     const dispatch = useAppDispatch();
     const { isAuthenticated } = useAppSelector(state => state.auth);
@@ -81,7 +82,8 @@ export default function ProductCard({ product }: ProductCardProps) {
                             ${isImageLoading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
                         `}
                         onLoad={() => setIsImageLoading(false)}
-                        loading="lazy"
+                        priority={priority}
+                        loading={priority ? undefined : "lazy"}
                     />
                 ) : (
                     <div className="flex flex-col items-center text-gray-400">

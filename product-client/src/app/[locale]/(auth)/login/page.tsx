@@ -1,3 +1,5 @@
+// Login.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -8,7 +10,7 @@ import { Input } from '@/components/shared/Input';
 import { authService } from '@/services/authService';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { loginSuccess } from '@/lib/store/features/auth/authSlice';
-import { mergeLocalCart } from '@/lib/store/features/cart/cartSlice'; // <--- YENİ IMPORT
+import { mergeLocalCart } from '@/lib/store/features/cart/cartSlice';
 import { Link } from '@/navigation';
 import ErrorMessage from '@/components/shared/ErrorMessage';
 import { jwtDecode } from "jwt-decode";
@@ -40,11 +42,9 @@ export default function LoginPage() {
                 role: userRole
             }));
 
-            // SEPET BİRLEŞTİRME (Merge)
             try {
                 await dispatch(mergeLocalCart()).unwrap();
             } catch (cartError) {
-                // Sepet birleşmese bile devam ediyoruz
                 console.error(t('cartMergeError'), cartError);
             }
 
@@ -60,8 +60,9 @@ export default function LoginPage() {
 
     return (
         <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
-            <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md border">
-                <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+
+            <div className="w-full max-w-md bg-background p-8 rounded-lg shadow-md border border-border">
+                <h1 className="text-2xl font-bold mb-6 text-center text-foreground">
                     {t('title')}
                 </h1>
 
@@ -69,18 +70,19 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">E-Posta</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">E-Posta</label>
                         <Input
                             type="email"
                             required
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             placeholder={t('emailPlaceholder')}
+
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
+                        <label className="block text-sm font-medium text-foreground mb-1">Şifre</label>
                         <Input
                             type="password"
                             required
@@ -90,13 +92,18 @@ export default function LoginPage() {
                         />
                     </div>
 
-                    <Button type="submit" disabled={loading} className="w-full mt-2 bg-blue-600 hover:bg-blue-700">
+
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full mt-2 bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                    >
                         {loading ? t('logginIn') : t('login')}
                     </Button>
                 </form>
 
-                <p className="mt-4 text-center text-sm text-gray-600">
-                    {t('dontHaveAccount')} <Link href="/register" className="text-blue-600 hover:underline">{t('registerLink')}</Link>
+                <p className="mt-4 text-center text-sm text-foreground/70">
+                    {t('dontHaveAccount')} <Link href="/register" className="text-primary hover:underline font-medium">{t('registerLink')}</Link>
                 </p>
             </div>
         </div>

@@ -1,3 +1,4 @@
+// Add-product.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -195,7 +196,7 @@ export default function AddProduct() {
                         {/* Image */}
                         <div>
                             <label className="block text-sm font-medium mb-1">
-                                {t('Labels.image') || 'Product Image'}
+                                {t('Labels.image')}
                             </label>
                             <input
                                 type="file"
