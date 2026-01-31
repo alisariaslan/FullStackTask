@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/shared/Button';
+import { Input } from '@/components/shared/Input';
 import { authService } from '@/services/authService';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { loginSuccess } from '@/lib/store/features/auth/authSlice';
 import { mergeLocalCart } from '@/lib/store/features/cart/cartSlice'; // <--- YENİ IMPORT
 import { Link } from '@/navigation';
-import ErrorMessage from '@/components/ErrorMessage';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {

@@ -5,7 +5,8 @@ import { Link, usePathname, useRouter } from '@/navigation';
 import { useSearchParams } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
 import { logout, restoreUser } from '@/lib/store/features/auth/authSlice';
-import { Button } from './ui/Button';
+import { Button } from './Button';
+import { Input } from './Input';
 import { useTranslations } from 'next-intl';
 import { clearCart } from '@/lib/store/features/cart/cartSlice';
 
@@ -21,8 +22,6 @@ export default function Navbar() {
 
     const [searchQuery, setSearchQuery] = useState(searchParams.get('searchTerm') || '');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    const searchInputClasses = "w-full h-10 pl-4 pr-10 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary focus:bg-white transition-all";
 
     useEffect(() => {
         setIsMobileMenuOpen(false);
@@ -43,7 +42,6 @@ export default function Navbar() {
     }, [searchParams]);
 
     useEffect(() => {
-        // Debouncer
         const delayDebounceFn = setTimeout(() => {
             const params = new URLSearchParams(searchParams.toString());
             const currentTerm = params.get('searchTerm') || '';
@@ -55,7 +53,6 @@ export default function Navbar() {
                     params.delete('searchTerm');
                 }
 
-                // Sayfa numarasını 1 yapılır
                 if (params.get('page')) {
                     params.delete('page');
                 }
@@ -89,10 +86,10 @@ export default function Navbar() {
 
                 {/* Desktop Search Bar */}
                 <form onSubmit={handleFormSubmit} className="flex-1 max-w-md mx-8 hidden md:flex relative">
-                    <input
+                    <Input
                         type="text"
                         placeholder={t('searchPlaceholder') || "Ürün ara..."}
-                        className={searchInputClasses}
+                        className="pr-10" // İkon için sağ boşluk bıraktık
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -162,10 +159,10 @@ export default function Navbar() {
             {/* Mobile Search Bar */}
             <div className="md:hidden px-4 pb-3 border-b border-gray-100">
                 <form onSubmit={handleFormSubmit} className="relative">
-                    <input
+                    <Input
                         type="text"
-                        placeholder={t('searchPlaceholder') || "Ara..."}
-                        className={searchInputClasses}
+                        placeholder={t('searchPlaceholder')}
+                        className="pr-10"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />

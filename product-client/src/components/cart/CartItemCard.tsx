@@ -1,5 +1,8 @@
+// CartItemCard.tsx
+
 'use client';
 
+import { useState } from 'react';
 import { useAppDispatch } from '@/lib/store/hooks';
 import {
     removeFromCart,
@@ -8,6 +11,7 @@ import {
 } from '@/lib/store/features/cart/cartSlice';
 import { useTranslations } from 'next-intl';
 import { getPublicImageUrl } from '@/lib/apiHandler';
+import Image from 'next/image';
 
 interface CartItemProps {
     item: {
@@ -23,18 +27,31 @@ export default function CartItemCard({ item }: CartItemProps) {
     const t = useTranslations('Cart');
     const dispatch = useAppDispatch();
 
+    const [isImageLoading, setIsImageLoading] = useState(true);
+
     const imageUrl = getPublicImageUrl(item.imageUrl);
 
     return (
-        <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-background border border-border rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
 
             {/* --- GÖRSEL ALANI --- */}
-            <div className="w-24 h-24 bg-gray-50 rounded-md flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-100">
+            <div className="w-24 h-24 bg-secondary rounded-md flex-shrink-0 flex items-center justify-center overflow-hidden relative border border-border">
+
+                {/* Shimmer  */}
+                {isImageLoading && imageUrl && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer bg-[length:200%_100%] z-10" />
+                )}
+
                 {imageUrl ? (
-                    <img
+                    <Image
                         src={imageUrl}
                         alt={item.name}
-                        className="w-full h-full object-contain p-2"
+                        fill
+                        sizes="96px"
+                        className={`object-contain p-2 transition-all duration-500 ease-in-out
+                            ${isImageLoading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
+                        `}
+                        onLoad={() => setIsImageLoading(false)}
                         loading="lazy"
                     />
                 ) : (
@@ -46,10 +63,10 @@ export default function CartItemCard({ item }: CartItemProps) {
 
             {/* --- BİLGİ ALANI --- */}
             <div className="flex-1 text-center sm:text-left w-full">
-                <h3 className="font-semibold text-lg text-gray-800 line-clamp-1">
+                <h3 className="font-semibold text-lg text-foreground line-clamp-1">
                     {item.name}
                 </h3>
-                <p className="text-blue-600 font-medium mt-1">
+                <p className="text-primary font-medium mt-1">
                     ₺{item.price.toFixed(2)}
                 </p>
             </div>
@@ -58,20 +75,20 @@ export default function CartItemCard({ item }: CartItemProps) {
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mt-2 sm:mt-0">
 
                 {/* Miktar Kontrolü */}
-                <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-1 border border-gray-200">
+                <div className="flex items-center gap-3 bg-secondary rounded-lg p-1 border border-border">
                     <button
                         onClick={() => dispatch(decreaseItemQuantity(item.id))}
-                        className="w-8 h-8 flex items-center justify-center bg-white rounded shadow-sm hover:bg-gray-100 text-gray-600 font-bold transition-colors"
+                        className="w-8 h-8 flex items-center justify-center bg-background rounded shadow-sm hover:bg-gray-100 text-foreground font-bold transition-colors"
                         aria-label="Azalt"
                     >
                         -
                     </button>
-                    <span className="w-8 text-center font-bold text-gray-800">
+                    <span className="w-8 text-center font-bold text-foreground">
                         {item.quantity}
                     </span>
                     <button
                         onClick={() => dispatch(addToCart({ ...item }))}
-                        className="w-8 h-8 flex items-center justify-center bg-white rounded shadow-sm hover:bg-blue-50 text-blue-600 font-bold transition-colors"
+                        className="w-8 h-8 flex items-center justify-center bg-background rounded shadow-sm hover:bg-gray-100 text-primary font-bold transition-colors"
                         aria-label="Artır"
                     >
                         +
@@ -80,7 +97,7 @@ export default function CartItemCard({ item }: CartItemProps) {
 
                 {/* Toplam Fiyat ve Sil */}
                 <div className="flex flex-col items-center sm:items-end min-w-[80px]">
-                    <span className="font-bold text-gray-900 text-lg">
+                    <span className="font-bold text-foreground text-lg">
                         ₺{(item.price * item.quantity).toFixed(2)}
                     </span>
 

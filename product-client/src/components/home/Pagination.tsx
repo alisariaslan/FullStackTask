@@ -4,7 +4,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useRouter, usePathname } from '@/navigation';
-import { Button } from './ui/Button';
+import { Button } from '../shared/Button';
 import { useTranslations } from 'next-intl';
 
 interface PaginationProps {

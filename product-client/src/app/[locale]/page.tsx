@@ -3,10 +3,10 @@ import { productService } from '@/services/productService';
 import { Product } from '@/types/productTypes';
 import { Link } from '@/navigation';
 import { getTranslations } from 'next-intl/server';
-import ProductCard from '@/components/ProductCard';
-import ErrorMessage from '@/components/ErrorMessage';
-import AddProductButton from '@/components/AddProductButton';
-import Pagination from '@/components/Pagination';
+import ProductCard from '@/components/home/ProductCard';
+import ErrorMessage from '@/components/shared/ErrorMessage';
+import AddProductButton from '@/components/home/AddProductButton';
+import Pagination from '@/components/home/Pagination';
 
 export default async function Home({
   params,

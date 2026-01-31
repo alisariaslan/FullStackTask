@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/shared/Button';
+import { Input } from '@/components/shared/Input';
 import { authService } from '@/services/authService';
 import { Link } from '@/navigation';
 
-import ErrorMessage from '@/components/ErrorMessage';
+import ErrorMessage from '@/components/shared/ErrorMessage';
 
 export default function RegisterPage() {
     const t = useTranslations('Register');

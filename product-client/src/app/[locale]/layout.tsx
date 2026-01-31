@@ -7,8 +7,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/navigation';
-import StoreProvider from '@/components/StoreProvider';
-import Header from '@/components/Navbar';
+import StoreProvider from '@/components/shared/StoreProvider';
+import Header from '@/components/shared/Navbar';
 import { Toaster } from 'sonner';
 
 const poppins = Poppins({

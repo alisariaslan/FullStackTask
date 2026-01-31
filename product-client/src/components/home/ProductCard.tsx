@@ -1,10 +1,12 @@
+// ProductCard.tsx
+
 'use client';
 
 import { useState } from 'react';
 import { Product } from '@/types/productTypes';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { addToCart, fetchCart } from '@/lib/store/features/cart/cartSlice';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/shared/Button'; // Güncellenmiş Button
 import { useTranslations } from 'next-intl';
 import { getPublicImageUrl } from '@/lib/apiHandler';
 import Image from 'next/image';
@@ -14,23 +16,25 @@ import { cartService } from '@/services/cartService';
 interface ProductCardProps {
     product: Product;
 }
+
 export default function ProductCard({ product }: ProductCardProps) {
     const t = useTranslations('ProductCard');
     const dispatch = useAppDispatch();
     const { isAuthenticated } = useAppSelector(state => state.auth);
 
     const [isImageLoading, setIsImageLoading] = useState(true);
-
     const [isAdding, setIsAdding] = useState(false);
 
     const imageUrl = getPublicImageUrl(product.imageUrl);
 
+    // Stokta yok veya ekleme yapılıyorsa buton pasif olsun
+    const isButtonDisabled = product.stock <= 0 || isAdding;
+
     const handleAddToCart = async () => {
-        if (isAdding || product.stock <= 0) return;
+        if (isButtonDisabled) return;
 
         setIsAdding(true);
 
-        // Ortak ürün verisi
         const itemDto = {
             id: product.id.toString(),
             name: product.name,
@@ -40,24 +44,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         try {
             if (isAuthenticated) {
-                // Önce Backend'e atıyoruz
-                await cartService.addToCart({
-                    ...itemDto,
-                });
-                // Başarılıysa güncel sepeti çekiyoruz
+                await cartService.addToCart(itemDto);
                 dispatch(fetchCart());
                 toast.success(t('productAdded'));
             } else {
-                // Login değilse direkt Redux'a atıyoruz
                 dispatch(addToCart(itemDto));
                 toast.success(t('productAdded'));
             }
         } catch (error) {
             console.error(t('addErrorBackend'), error);
-
-            // (Backend fallback) Sepete her türlü ekliyoruz
             dispatch(addToCart(itemDto));
-
             toast.warning(t('tempAdded'));
         } finally {
             setTimeout(() => {
@@ -71,8 +67,6 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             {/* --- GÖRSEL --- */}
             <div className="w-full h-56 bg-secondary flex items-center justify-center overflow-hidden relative">
-
-                {/* SHIMMER EFEKT */}
                 {isImageLoading && imageUrl && (
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer bg-[length:200%_100%] z-10" />
                 )}
@@ -83,7 +77,6 @@ export default function ProductCard({ product }: ProductCardProps) {
                         alt={product.name}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        // Fade effect
                         className={`object-contain p-4 transition-all duration-500 ease-in-out group-hover:scale-105
                             ${isImageLoading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
                         `}
@@ -132,16 +125,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                         </span>
                     </div>
 
-                    {/* --- Sepete ekle --- */}
+                    {/* --- Sepete Ekle Butonu (Refactored) --- */}
                     <Button
                         onClick={handleAddToCart}
-                        className={`w-full font-semibold py-2.5 rounded-lg transition-all duration-200 active:scale-95 
-        ${product.stock > 0 && !isAdding
-                                ? 'bg-primary hover:bg-primary-dark text-primary-foreground shadow-md hover:shadow-lg cursor-pointer'
-                                : `bg-gray-200  hover:bg-gray-200 text-gray-500 ${isAdding ? 'cursor-default' : 'cursor-not-allowed'}`
-                            }
-    `}
-                        disabled={product.stock <= 0 || isAdding}
+                        disabled={isButtonDisabled}
+                        isLoading={isAdding}
+                        className="w-full"
+                        variant="primary"
                     >
                         {product.stock > 0
                             ? (isAdding ? t('added') : t('addToCart'))

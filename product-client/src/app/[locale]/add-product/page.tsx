@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from '@/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/shared/Button';
+import { Input } from '@/components/shared/Input';
 import { productService } from '@/services/productService';
 import { categoryService } from '@/services/categoryService';
-import ErrorMessage from '@/components/ErrorMessage';
-import AdminGuard from '@/components/RenderGuard';
+import ErrorMessage from '@/components/shared/ErrorMessage';
+import AdminGuard from '@/components/shared/RenderGuard';
 import { Category } from '@/types/categoryTypes';
 
 export default function AddProduct() {
