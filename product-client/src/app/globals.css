@@ -1,28 +1,51 @@
+/* src/app/globals.css */
+
 @import "tailwindcss";
 
-/* TEMAYI BURADA TANIMLIYORUZ (v4 Yöntemi) */
 @theme {
-  /* Renk Paleti - HEX kodları kullanabilirsin, RGB çevirmeye gerek yok */
+  /* Renkler */
   --color-background: #ffffff;
   --color-foreground: #171717;
-  /* Koyu Gri */
-
-  /* Turuncu (Orange-500) */
   --color-primary: #f97316;
   --color-primary-foreground: #ffffff;
-
-  /*Hover*/
   --color-primary-dark: #ea580c;
-
-  /* Arka plan detay rengi */
   --color-secondary: #f9fafb;
   --color-secondary-foreground: #111827;
-
   --color-border: #e5e7eb;
+
+  /* Font*/
+  --font-sans: var(--font-poppins), sans-serif;
+
+  /* Animasyonlar */
+  --animate-shimmer: shimmer 1.5s infinite linear;
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
 }
 
-/* Next.js Body Ayarları */
+/* CSS */
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

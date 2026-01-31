@@ -1,7 +1,7 @@
 /// ProductCard.tsx
-
 'use client';
 
+import { useState } from 'react';
 import { Product } from '@/types/productTypes';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { addToCart } from '@/lib/store/features/cart/cartSlice';
@@ -18,6 +18,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     const t = useTranslations('ProductCard');
     const dispatch = useAppDispatch();
 
+    const [isImageLoading, setIsImageLoading] = useState(true);
+
     const imageUrl = getPublicImageUrl(product.imageUrl);
 
     const handleAddToCart = () => {
@@ -30,17 +32,27 @@ export default function ProductCard({ product }: ProductCardProps) {
     };
 
     return (
-        <div className="border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-background text-foreground flex flex-col justify-between h-full overflow-hidden">
+        <div className="group border border-border rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 bg-background text-foreground flex flex-col justify-between h-full overflow-hidden">
 
-            {/* --- GÖRSEL ALANI --- */}
-            <div className="w-full h-48 bg-secondary flex items-center justify-center overflow-hidden relative">
+            {/* --- GÖRSEL --- */}
+            <div className="w-full h-56 bg-secondary flex items-center justify-center overflow-hidden relative">
+
+                {/* SHIMMER EFEKT */}
+                {isImageLoading && imageUrl && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer bg-[length:200%_100%] z-10" />
+                )}
+
                 {imageUrl ? (
                     <Image
                         src={imageUrl}
                         alt={product.name}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-contain p-4 transition-transform duration-300 hover:scale-105"
+                        // Fade effect
+                        className={`object-contain p-4 transition-all duration-500 ease-in-out group-hover:scale-105
+                            ${isImageLoading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
+                        `}
+                        onLoad={() => setIsImageLoading(false)}
                         loading="lazy"
                     />
                 ) : (
@@ -50,42 +62,46 @@ export default function ProductCard({ product }: ProductCardProps) {
                 )}
 
                 {product.stock < 10 && product.stock > 0 && (
-                    <span className="absolute top-2 right-2 bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded z-10">
+                    <span className="absolute top-3 right-3 bg-red-500/10 text-red-600 border border-red-200 text-xs font-bold px-2 py-1 rounded-full z-20 backdrop-blur-sm">
                         {product.stock}
                     </span>
                 )}
             </div>
 
-            {/* --- İÇERİK ALANI --- */}
-            <div className="p-4 flex flex-col flex-grow">
-                <span className="text-xs text-primary font-semibold uppercase tracking-wider mb-1">
+            {/* --- İÇERİK --- */}
+            <div className="p-5 flex flex-col flex-grow">
+                <span className="text-xs text-primary font-bold uppercase tracking-widest mb-2 opacity-80">
                     {product.categoryName}
                 </span>
 
-                <h2 className="text-lg font-bold mb-2 line-clamp-1" title={product.name}>
+                <h2 className="text-lg font-bold mb-2 line-clamp-1 group-hover:text-primary transition-colors" title={product.name}>
                     {product.name}
                 </h2>
 
-                <p className="text-sm text-gray-500 mb-4 line-clamp-2" title={product.description}>
+                <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed" title={product.description}>
                     {product.description}
                 </p>
 
-                <div className="mt-auto">
+                <div className="mt-auto pt-4 border-t border-border/50">
                     <div className="flex justify-between items-end mb-4">
-                        <span className="text-2xl font-bold text-foreground">
-                            ₺{product.price.toFixed(2)}
-                        </span>
-
-                        <span className={`text-sm font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                        {/* --- Fiyat --- */}
+                        <div className="flex flex-col">
+                            <span className="text-xs text-gray-400 font-medium mb-0.5">Fiyat</span>
+                            <span className="text-xl font-bold text-foreground tracking-tight">
+                                ₺{product.price.toFixed(2)}
+                            </span>
+                        </div>
+                        {/* --- Stok durum --- */}
+                        <span className={`text-sm font-medium px-2 py-1 rounded ${product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                             {product.stock > 0 ? t('inStock') : t('outOfStock')}
                         </span>
                     </div>
-
+                    {/* --- Sepete ekle --- */}
                     <Button
                         onClick={handleAddToCart}
-                        className={`w-full text-primary-foreground transition-colors py-2 rounded-md ${product.stock > 0
-                            ? 'bg-primary hover:bg-primary-dark shadow-sm'
-                            : 'bg-gray-300 cursor-not-allowed text-gray-500'
+                        className={`w-full font-semibold py-2.5 rounded-lg transition-all duration-200 active:scale-95 ${product.stock > 0
+                            ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg'
+                            : 'bg-gray-200 cursor-not-allowed text-gray-500'
                             }`}
                         disabled={product.stock <= 0}
                     >
