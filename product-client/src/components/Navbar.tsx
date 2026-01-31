@@ -7,6 +7,7 @@ import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
 import { logout, restoreUser } from '@/lib/store/features/auth/authSlice';
 import { Button } from './ui/Button';
 import { useTranslations } from 'next-intl';
+import { clearCart } from '@/lib/store/features/cart/cartSlice';
 
 export default function Navbar() {
     const t = useTranslations('Navbar');
@@ -67,8 +68,11 @@ export default function Navbar() {
     }, [searchQuery, router, searchParams]);
 
     const handleLogout = () => {
+        dispatch(clearCart());
         dispatch(logout());
+        localStorage.removeItem('cart_items');
         setIsMobileMenuOpen(false);
+        router.push('/');
     };
 
     const handleFormSubmit = (e: FormEvent) => {

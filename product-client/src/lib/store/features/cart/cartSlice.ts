@@ -1,4 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+// src/lib/store/features/cart/cartSlice.ts
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { RootState } from '../../store';
+import { cartService } from '@/services/cartService';
 
 export interface CartItem {
     id: string;
@@ -12,19 +15,61 @@ interface CartState {
     items: CartItem[];
     totalQuantity: number;
     totalAmount: number;
+    status: 'idle' | 'loading' | 'succeeded' | 'failed'; // API durumu için
 }
 
 const initialState: CartState = {
     items: [],
     totalQuantity: 0,
     totalAmount: 0,
+    status: 'idle',
 };
+
+// --- YARDIMCI FONKSİYONLAR ---
+const calculateTotals = (items: CartItem[]) => {
+    const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
+    const totalAmount = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return { totalQuantity, totalAmount };
+};
+
+// --- ASYNC THUNKS (BACKEND İŞLEMLERİ) ---
+
+// Sepeti Backend'den Çek
+export const fetchCart = createAsyncThunk('cart/fetchCart', async () => {
+    const items = await cartService.getCart();
+    return items;
+});
+
+// Login Olunca Sepetleri Birleştir
+export const mergeLocalCart = createAsyncThunk(
+    'cart/merge',
+    async (_, { getState, dispatch }) => {
+        const state = getState() as RootState;
+        const localItems = state.cart.items;
+
+        if (localItems.length > 0) {
+            // Local sepeti backend'e gönder
+            await cartService.mergeCart(localItems);
+        }
+        // Birleştirmeden sonra güncel sepeti çek
+        dispatch(fetchCart());
+    }
+);
 
 export const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        // Ürün Ekleme
+        // --- LOCAL VE GUEST İŞLEMLERİ ---
+
+        // F5 yapınca localStorage'dan geri yükler
+        restoreCart: (state, action: PayloadAction<CartItem[]>) => {
+            state.items = action.payload;
+            const totals = calculateTotals(state.items);
+            state.totalQuantity = totals.totalQuantity;
+            state.totalAmount = totals.totalAmount;
+        },
+
         addToCart: (state, action: PayloadAction<Omit<CartItem, 'quantity'>>) => {
             const newItem = action.payload;
             const existingItem = state.items.find((item) => item.id === newItem.id);
@@ -32,29 +77,23 @@ export const cartSlice = createSlice({
             if (existingItem) {
                 existingItem.quantity++;
             } else {
-                state.items.push({
-                    ...newItem,
-                    quantity: 1,
-                });
+                state.items.push({ ...newItem, quantity: 1 });
             }
 
-            state.totalQuantity++;
-            state.totalAmount += newItem.price;
+            const totals = calculateTotals(state.items);
+            state.totalQuantity = totals.totalQuantity;
+            state.totalAmount = totals.totalAmount;
         },
 
-        // Ürünü Sepetten Çıkarma
         removeFromCart: (state, action: PayloadAction<string>) => {
             const id = action.payload;
-            const existingItem = state.items.find((item) => item.id === id);
+            state.items = state.items.filter((item) => item.id !== id);
 
-            if (existingItem) {
-                state.items = state.items.filter((item) => item.id !== id);
-                state.totalQuantity -= existingItem.quantity;
-                state.totalAmount -= existingItem.price * existingItem.quantity;
-            }
+            const totals = calculateTotals(state.items);
+            state.totalQuantity = totals.totalQuantity;
+            state.totalAmount = totals.totalAmount;
         },
 
-        // Adet Azaltma
         decreaseItemQuantity: (state, action: PayloadAction<string>) => {
             const id = action.payload;
             const existingItem = state.items.find((item) => item.id === id);
@@ -65,19 +104,40 @@ export const cartSlice = createSlice({
                 } else {
                     existingItem.quantity--;
                 }
-                state.totalQuantity--;
-                state.totalAmount -= existingItem.price;
             }
+
+            const totals = calculateTotals(state.items);
+            state.totalQuantity = totals.totalQuantity;
+            state.totalAmount = totals.totalAmount;
         },
 
-        // Sepeti Temizle
         clearCart: (state) => {
             state.items = [];
             state.totalQuantity = 0;
             state.totalAmount = 0;
+            state.status = 'idle';
         },
+    },
+    extraReducers: (builder) => {
+        builder
+            // Fetch Cart Başarılı
+            .addCase(fetchCart.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.items = action.payload; // Backend'den gelen veri asıldır
+                const totals = calculateTotals(state.items);
+                state.totalQuantity = totals.totalQuantity;
+                state.totalAmount = totals.totalAmount;
+            })
+            // Fetch Cart Bekliyor
+            .addCase(fetchCart.pending, (state) => {
+                state.status = 'loading';
+            })
+            // Fetch Cart Hata
+            .addCase(fetchCart.rejected, (state) => {
+                state.status = 'failed';
+            });
     },
 });
 
-export const { addToCart, removeFromCart, decreaseItemQuantity, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, decreaseItemQuantity, clearCart, restoreCart } = cartSlice.actions;
 export default cartSlice.reducer;

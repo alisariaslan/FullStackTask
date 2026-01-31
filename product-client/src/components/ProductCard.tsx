@@ -2,21 +2,22 @@
 
 import { useState } from 'react';
 import { Product } from '@/types/productTypes';
-import { useAppDispatch } from '@/lib/store/hooks';
-import { addToCart } from '@/lib/store/features/cart/cartSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { addToCart, fetchCart } from '@/lib/store/features/cart/cartSlice';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { getPublicImageUrl } from '@/lib/apiHandler';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import { cartService } from '@/services/cartService';
 
 interface ProductCardProps {
     product: Product;
 }
-
 export default function ProductCard({ product }: ProductCardProps) {
     const t = useTranslations('ProductCard');
     const dispatch = useAppDispatch();
+    const { isAuthenticated } = useAppSelector(state => state.auth);
 
     const [isImageLoading, setIsImageLoading] = useState(true);
 
@@ -24,24 +25,45 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     const imageUrl = getPublicImageUrl(product.imageUrl);
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (isAdding || product.stock <= 0) return;
 
         setIsAdding(true);
 
-        dispatch(addToCart({
+        // Ortak ürün verisi
+        const itemDto = {
             id: product.id.toString(),
             name: product.name,
             price: product.price,
             imageUrl: product.imageUrl
-        }));
+        };
 
-        toast.success(t('productAdded'));
+        try {
+            if (isAuthenticated) {
+                // Önce Backend'e atıyoruz
+                await cartService.addToCart({
+                    ...itemDto,
+                });
+                // Başarılıysa güncel sepeti çekiyoruz
+                dispatch(fetchCart());
+                toast.success(t('productAdded'));
+            } else {
+                // Login değilse direkt Redux'a atıyoruz
+                dispatch(addToCart(itemDto));
+                toast.success(t('productAdded'));
+            }
+        } catch (error) {
+            console.error("Backend Error, falling back to local:", error);
 
-        // Bir süre sonra butonu tekrar aktif et
-        setTimeout(() => {
-            setIsAdding(false);
-        }, 1000);
+            // (Backend fallback) Sepete her türlü ekliyoruz
+            dispatch(addToCart(itemDto));
+
+            toast.warning('Bağlantı sorunu: Ürün geçici olarak eklendi.');
+        } finally {
+            setTimeout(() => {
+                setIsAdding(false);
+            }, 500);
+        }
     };
 
     return (

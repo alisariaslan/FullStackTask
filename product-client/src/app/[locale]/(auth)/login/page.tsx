@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/Input';
 import { authService } from '@/services/authService';
 import { useAppDispatch } from '@/lib/store/hooks';
 import { loginSuccess } from '@/lib/store/features/auth/authSlice';
+import { mergeLocalCart } from '@/lib/store/features/cart/cartSlice'; // <--- YENİ IMPORT
 import { Link } from '@/navigation';
 import ErrorMessage from '@/components/ErrorMessage';
 import { jwtDecode } from "jwt-decode";
@@ -25,6 +26,7 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
         setError(null);
+
         try {
             const response = await authService.login(formData.email, formData.password);
 
@@ -37,8 +39,18 @@ export default function LoginPage() {
                 token: response.token,
                 role: userRole
             }));
+
+            // SEPET BİRLEŞTİRME (Merge)
+            try {
+                await dispatch(mergeLocalCart()).unwrap();
+            } catch (cartError) {
+                // Sepet birleşmese bile devam ediyoruz
+                console.error("Sepet birleştirme hatası:", cartError);
+            }
+
             router.push('/');
             router.refresh();
+
         } catch (e: any) {
             setError(e.message || t('unknownError'));
         } finally {
