@@ -87,7 +87,8 @@
         "addToCart": "Sepete Ekle",
         "outOfStock": "Stokta Yok",
         "noImage": "Görsel Yok",
-        "inStock": "Stokta Var"
+        "inStock": "Stokta Var",
+        "productAdded": "Ürün eklendi."
     },
     "ApiErrors": {
         "userEmailAlreadyExists": "Bu e-posta adresi zaten kullanılıyor.",

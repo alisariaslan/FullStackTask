@@ -1,4 +1,3 @@
-/// ProductCard.tsx
 'use client';
 
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 import { getPublicImageUrl } from '@/lib/apiHandler';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
     product: Product;
@@ -20,15 +20,28 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     const [isImageLoading, setIsImageLoading] = useState(true);
 
+    const [isAdding, setIsAdding] = useState(false);
+
     const imageUrl = getPublicImageUrl(product.imageUrl);
 
     const handleAddToCart = () => {
+        if (isAdding || product.stock <= 0) return;
+
+        setIsAdding(true);
+
         dispatch(addToCart({
             id: product.id.toString(),
             name: product.name,
             price: product.price,
             imageUrl: product.imageUrl
         }));
+
+        toast.success(t('productAdded'));
+
+        // Bir süre sonra butonu tekrar aktif et
+        setTimeout(() => {
+            setIsAdding(false);
+        }, 1000);
     };
 
     return (
@@ -96,16 +109,21 @@ export default function ProductCard({ product }: ProductCardProps) {
                             {product.stock > 0 ? t('inStock') : t('outOfStock')}
                         </span>
                     </div>
+
                     {/* --- Sepete ekle --- */}
                     <Button
                         onClick={handleAddToCart}
-                        className={`w-full font-semibold py-2.5 rounded-lg transition-all duration-200 active:scale-95 ${product.stock > 0
-                            ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg'
-                            : 'bg-gray-200 cursor-not-allowed text-gray-500'
-                            }`}
-                        disabled={product.stock <= 0}
+                        className={`w-full font-semibold py-2.5 rounded-lg transition-all duration-200 active:scale-95 
+        ${product.stock > 0 && !isAdding
+                                ? 'bg-primary hover:bg-primary-dark text-primary-foreground shadow-md hover:shadow-lg cursor-pointer'
+                                : `bg-gray-200  hover:bg-gray-200 text-gray-500 ${isAdding ? 'cursor-default' : 'cursor-not-allowed'}`
+                            }
+    `}
+                        disabled={product.stock <= 0 || isAdding}
                     >
-                        {product.stock > 0 ? t('addToCart') : t('outOfStock')}
+                        {product.stock > 0
+                            ? (isAdding ? 'Eklendi' : t('addToCart'))
+                            : t('outOfStock')}
                     </Button>
                 </div>
             </div>

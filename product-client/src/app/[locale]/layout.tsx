@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/navigation';
 import StoreProvider from '@/components/StoreProvider';
 import Header from '@/components/Navbar';
+import { Toaster } from 'sonner';
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -63,6 +64,7 @@ export default async function LocaleLayout({
             <div className="pt-4">
               {children}
             </div>
+            <Toaster position="bottom-right" richColors />
           </StoreProvider>
         </NextIntlClientProvider>
       </body>
