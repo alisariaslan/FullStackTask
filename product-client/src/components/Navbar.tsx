@@ -25,22 +25,22 @@ export default function Header() {
     };
 
     return (
-        <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+        <header className="bg-white shadow-sm border-b border-border sticky top-0 z-50">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                {/* Logo */}
-                <Link href="/" className="text-2xl font-bold text-blue-600">
+                {/* Logo - Mavi yerine Primary (Turuncu) yapıldı */}
+                <Link href="/" className="text-2xl font-bold text-primary">
                     {t('title')}
                 </Link>
 
                 {/* Menü Linkleri */}
                 <nav className="flex items-center gap-6">
 
-                    {/* Sepet */}
-                    <Link href="/cart" className="relative group flex items-center gap-2 text-gray-600 hover:text-blue-600">
+                    {/* Sepet - Hover rengi Mavi yerine Primary yapıldı */}
+                    <Link href="/cart" className="relative group flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                         <span className="font-medium">{t('cart')}</span>
                         {totalQuantity > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                            <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
                                 {totalQuantity}
                             </span>
                         )}
@@ -66,12 +66,13 @@ export default function Header() {
                             // Giriş Yapılmamış 
                             <div className="flex gap-2">
                                 <Link href="/login">
-                                    <Button variant="outline" className="h-9 px-4">
+                                    <Button variant="outline" className="h-9 px-4 flex items-center justify-center hover:bg-secondary hover:text-primary border-border">
                                         {t('login')}
                                     </Button>
                                 </Link>
                                 <Link href="/register">
-                                    <Button className="h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white">
+                                    {/* Register Butonu - Mavi yerine Primary yapıldı */}
+                                    <Button className="h-9 px-4 flex items-center justify-center bg-primary hover:bg-primary-dark text-primary-foreground transition-all">
                                         {t('register')}
                                     </Button>
                                 </Link>

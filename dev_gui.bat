@@ -34,6 +34,7 @@ echo        7. [Product.API] Remove Last Migration (dotnet ef migrations remove)
 echo        8. Open Backend Logs Folder
 echo        9. [Product.API] Open Product Images (Uploads) Folder
 echo       10. [Frontend] Restart (Recreate only frontend)
+echo       11. Docker Up (Backend Only - No Frontend)
 echo        0. EXIT
 set /p secim="Select an option (0-9): "
 
@@ -47,6 +48,7 @@ if "%secim%"=="7" goto EF_REMOVE
 if "%secim%"=="8" goto OPEN_LOGS
 if "%secim%"=="9" goto OPEN_IMAGES
 if "%secim%"=="10" goto FRONTEND_RESTART
+if "%secim%"=="11" goto DOCKER_UP_BACKEND_ONLY
 if "%secim%"=="0" exit
 goto MENU
 
@@ -137,5 +139,20 @@ echo Restarting frontend container only...
 docker-compose stop frontend
 docker-compose rm -f frontend
 docker-compose up -d frontend
+pause
+goto MENU
+
+:DOCKER_UP_BACKEND_ONLY
+echo.
+echo Starting Docker containers (Backend only, frontend excluded)...
+docker-compose up ^
+ postgres-db ^
+ redis-cache ^
+ rabbitmq ^
+ seq ^
+ auth-api ^
+ product-api ^
+ gateway-yarp ^
+ log-api
 pause
 goto MENU

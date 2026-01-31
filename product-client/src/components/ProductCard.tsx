@@ -5,7 +5,8 @@ import { useAppDispatch } from '@/lib/store/hooks';
 import { addToCart } from '@/lib/store/features/cart/cartSlice';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
-import { getPublicImageUrl } from '@/lib/apiHandler'; // <-- 1. IMPORT ETTİK
+import { getPublicImageUrl } from '@/lib/apiHandler';
+import Image from 'next/image';
 
 interface ProductCardProps {
     product: Product;
@@ -27,16 +28,18 @@ export default function ProductCard({ product }: ProductCardProps) {
     };
 
     return (
-        <div className="border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow bg-white text-gray-800 flex flex-col justify-between h-full overflow-hidden">
+        <div className="border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow bg-background text-foreground flex flex-col justify-between h-full overflow-hidden">
 
             {/* --- GÖRSEL ALANI --- */}
-            <div className="w-full h-48 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+            <div className="w-full h-48 bg-secondary flex items-center justify-center overflow-hidden relative">
                 {imageUrl ? (
-                    <img
+                    <Image
                         src={imageUrl}
                         alt={product.name}
-                        className="w-full h-full object-contain p-4 transition-transform duration-300 hover:scale-105"
-                        loading="lazy"
+                        fill // Container'ı kaplaması için
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-contain p-4 transition-transform duration-300 hover:scale-105"
+                        loading="lazy" // Next.js bunu varsayılan olarak yapar ama explicit belirtebilirsiniz
                     />
                 ) : (
                     <div className="flex flex-col items-center text-gray-400">
@@ -44,9 +47,8 @@ export default function ProductCard({ product }: ProductCardProps) {
                     </div>
                 )}
 
-                {/* Stok Az Uyarı Badge'i */}
                 {product.stock < 10 && product.stock > 0 && (
-                    <span className="absolute top-2 right-2 bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded">
+                    <span className="absolute top-2 right-2 bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded z-10">
                         {product.stock}
                     </span>
                 )}
@@ -54,25 +56,21 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             {/* --- İÇERİK ALANI --- */}
             <div className="p-4 flex flex-col flex-grow">
-                {/* Kategori Adı */}
-                <span className="text-xs text-blue-500 font-semibold uppercase tracking-wider mb-1">
+                <span className="text-xs text-primary font-semibold uppercase tracking-wider mb-1">
                     {product.categoryName}
                 </span>
 
-                {/* Ürün Adı */}
                 <h2 className="text-lg font-bold mb-2 line-clamp-1" title={product.name}>
                     {product.name}
                 </h2>
 
-                {/* Açıklama */}
                 <p className="text-sm text-gray-500 mb-4 line-clamp-2" title={product.description}>
                     {product.description}
                 </p>
 
-                {/* Fiyat ve Stok */}
                 <div className="mt-auto">
                     <div className="flex justify-between items-end mb-4">
-                        <span className="text-2xl font-bold text-gray-900">
+                        <span className="text-2xl font-bold text-foreground">
                             ₺{product.price.toFixed(2)}
                         </span>
 
@@ -83,9 +81,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                     <Button
                         onClick={handleAddToCart}
-                        className={`w-full text-white transition-colors py-2 rounded-md ${product.stock > 0
-                            ? 'bg-blue-600 hover:bg-blue-700'
-                            : 'bg-gray-400 cursor-not-allowed'
+                        className={`w-full text-primary-foreground transition-colors py-2 rounded-md ${product.stock > 0
+                            ? 'bg-primary hover:bg-primary-dark shadow-sm'
+                            : 'bg-gray-300 cursor-not-allowed text-gray-500'
                             }`}
                         disabled={product.stock <= 0}
                     >

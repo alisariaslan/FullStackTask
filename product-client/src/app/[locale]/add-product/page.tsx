@@ -16,7 +16,6 @@ export default function AddProduct() {
     const locale = useLocale();
     const router = useRouter();
 
-    // Form State
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -25,14 +24,11 @@ export default function AddProduct() {
         categoryId: ''
     });
 
-    // Resim ve Kategori State'leri
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [categories, setCategories] = useState<Category[]>([]);
-
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Kategorileri Yükle
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -42,7 +38,7 @@ export default function AddProduct() {
                     setFormData(prev => ({ ...prev, categoryId: data[0].id }));
                 }
             } catch (err) {
-                console.error("Categories failed to load", err);
+                console.error('Categories failed to load', err);
             }
         };
         fetchCategories();
@@ -54,20 +50,20 @@ export default function AddProduct() {
         setError(null);
 
         if (!formData.categoryId) {
-            setError(t('Errors.categoryRequired') || "Category is required");
+            setError(t('Errors.categoryRequired'));
             setLoading(false);
             return;
         }
 
         try {
             await productService.create(
-                formData.name,              // name
-                Number(formData.price),     // price
-                Number(formData.stock),     // stock
-                formData.categoryId,        // categoryId
-                formData.description,       // description (opt)
-                locale,                     // languageCode (opt)
-                selectedImage               // image (opt)
+                formData.name,
+                Number(formData.price),
+                Number(formData.stock),
+                formData.categoryId,
+                formData.description,
+                locale,
+                selectedImage
             );
 
             router.refresh();
@@ -83,7 +79,10 @@ export default function AddProduct() {
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, field: string) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+        field: string
+    ) => {
         setFormData({ ...formData, [field]: e.target.value });
     };
 
@@ -96,9 +95,9 @@ export default function AddProduct() {
     return (
         <AdminGuard>
             <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
-                <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md border">
+                <div className="w-full max-w-md p-8 rounded-lg shadow-md border border-border bg-background">
 
-                    <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+                    <h1 className="text-2xl font-bold mb-6 text-center">
                         {t('title')}
                     </h1>
 
@@ -106,18 +105,25 @@ export default function AddProduct() {
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-                        {/* Kategori */}
+                        {/* Category */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium mb-1">
                                 {t('Labels.category') || 'Category'}
                             </label>
                             <select
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="
+                                    w-full p-2 rounded-md
+                                    bg-background text-foreground
+                                    border border-border
+                                    focus:outline-none focus:ring-2 focus:ring-primary
+                                "
                                 value={formData.categoryId}
                                 onChange={(e) => handleChange(e, 'categoryId')}
                                 required
                             >
-                                <option value="" disabled>{t('Placeholders.selectCategory') || 'Select a category'}</option>
+                                <option value="" disabled>
+                                    {t('Placeholders.selectCategory') || 'Select a category'}
+                                </option>
                                 {categories.map((cat) => (
                                     <option key={cat.id} value={cat.id}>
                                         {cat.name}
@@ -126,9 +132,9 @@ export default function AddProduct() {
                             </select>
                         </div>
 
-                        {/* İsim */}
+                        {/* Name */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium mb-1">
                                 {t('Labels.name')}
                             </label>
                             <Input
@@ -139,23 +145,27 @@ export default function AddProduct() {
                             />
                         </div>
 
-                        {/* Açıklama */}
+                        {/* Description */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium mb-1">
                                 {t('Labels.description') || 'Description'}
                             </label>
                             <textarea
-                                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="
+                                    w-full p-2 rounded-md
+                                    bg-background text-foreground
+                                    border border-border
+                                    focus:outline-none focus:ring-2 focus:ring-primary
+                                "
                                 value={formData.description}
                                 onChange={(e) => handleChange(e, 'description')}
-                                placeholder={t('Placeholders.description') || 'Enter description'}
                                 rows={3}
                             />
                         </div>
 
-                        {/* Fiyat */}
+                        {/* Price */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium mb-1">
                                 {t('Labels.price')}
                             </label>
                             <Input
@@ -168,9 +178,9 @@ export default function AddProduct() {
                             />
                         </div>
 
-                        {/* Stok */}
+                        {/* Stock */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium mb-1">
                                 {t('Labels.stock')}
                             </label>
                             <Input
@@ -182,26 +192,31 @@ export default function AddProduct() {
                             />
                         </div>
 
-                        {/* Resim */}
+                        {/* Image */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium mb-1">
                                 {t('Labels.image') || 'Product Image'}
                             </label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleFileChange}
-                                className="block w-full text-sm text-gray-500
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 file:text-blue-700
-                                hover:file:bg-blue-100"
+                                className="
+                                    block w-full text-sm
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-md file:border-0
+                                    file:bg-primary file:text-primary-foreground
+                                    hover:file:opacity-90
+                                "
                             />
                         </div>
 
                         <div className="flex gap-3 mt-4">
-                            <Button type="submit" disabled={loading} className="flex-1 bg-blue-600 hover:bg-blue-700">
+                            <Button
+                                type="submit"
+                                disabled={loading}
+                                className="flex-1 bg-primary text-primary-foreground hover:opacity-90"
+                            >
                                 {loading ? t('Buttons.saving') : t('Buttons.save')}
                             </Button>
 
@@ -209,7 +224,7 @@ export default function AddProduct() {
                                 type="button"
                                 variant="outline"
                                 onClick={() => router.back()}
-                                className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
+                                className="flex-1 border-border hover:bg-secondary"
                             >
                                 {t('Buttons.cancel')}
                             </Button>
