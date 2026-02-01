@@ -57,7 +57,7 @@ export default async function ProductDetailPage({ params }: Props) {
                                 {hasImage ? (
                                     // Resim VARSA: Next.js Image Component render et
                                     <Image
-                                        src={rawImageUrl!}
+                                        src={displayImage!}
                                         alt={product.name}
                                         fill
                                         priority
