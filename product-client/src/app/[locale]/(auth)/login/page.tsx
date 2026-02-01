@@ -45,7 +45,9 @@ export default function LoginPage() {
             try {
                 await dispatch(mergeLocalCart()).unwrap();
             } catch (cartError) {
-                console.error(t('cartMergeError'), cartError);
+                if (process.env.NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS !== '1') {
+                    console.error('Cart merge error:', cartError);
+                }
             }
 
             router.push('/');

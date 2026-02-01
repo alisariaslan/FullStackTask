@@ -36,7 +36,14 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
 
     const url = `${getBaseUrl()}${cleanEndpoint}`;
 
-    console.log(`API Request (${typeof window === 'undefined' ? 'Server' : 'Client'}): ${url}`);
+    const isMergeRequest = url.includes('/api/Cart');
+    const isSilentMode = process.env.NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS === '1';
+    const shouldLog = !(isMergeRequest && isSilentMode);
+
+
+    if (shouldLog) {
+        console.log(`API Request (${typeof window === 'undefined' ? 'Server' : 'Client'}): ${url}`);
+    }
 
     try {
         const response = await fetch(url, {
@@ -60,7 +67,9 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
             apiResponse = JSON.parse(responseText);
         } catch {
             if (!response.ok) {
-                console.error(`HTTP Error: ${response.status}`);
+                if (shouldLog) {
+                    console.error(`HTTP Error: ${response.status}`);
+                }
                 throw new Error('ClientErrors.networkError');
             }
             throw new Error('ClientErrors.invalidResponse');
@@ -77,7 +86,9 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
         return apiResponse.data as T;
 
     } catch (error: any) {
-        console.error(`Fetch Error on ${url}:`, error);
+        if (shouldLog) {
+            console.error(`Fetch Error on ${url}:`, error);
+        }
 
         if (error.message && (error.message.startsWith('ClientErrors.') || !error.message.includes(' '))) {
             throw error;

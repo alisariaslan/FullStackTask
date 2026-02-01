@@ -31,8 +31,6 @@
         "sortDefault": "Varsayılan",
         "priceLowToHigh": "Fiyat (Artan)",
         "priceHighToLow": "Fiyat (Azalan)",
-        "nameAZ": "İsim (A-Z)",
-        "nameZA": "İsim (Z-A)",
         "clearFilters": "Filtreleri Temizle",
         "tryAdjustingFilters": "Filtrelerinizi değiştirmeyi veya aramayı temizlemeyi deneyin.",
         "resetFilters": "Filtreleri Sıfırla"
@@ -46,8 +44,7 @@
         "login": "Giriş Yap",
         "dontHaveAccount": "Hesabın yok mu?",
         "registerLink": "Buradan kayıt ol",
-        "loginNotSuccessful": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.",
-        "cartMergeError": "Sepet birleştirme hatası"
+        "loginNotSuccessful": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin."
     },
     "Register": {
         "title": "Kayıt Ol",
@@ -103,7 +100,7 @@
         "outOfStock": "Stokta Yok",
         "noImage": "Görsel Yok",
         "inStock": "Stokta Var",
-        "productAdded": "Ürün eklendi.",
+        "productAdded": "Ürün sepetinize eklendi.",
         "tempAdded": "Ürün çevrimdışı olarak eklendi.",
         "addErrorBackend": "Backend hatası, sepet yerele çeviriliyor:",
         "added": "Eklendi"

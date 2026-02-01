@@ -26,7 +26,15 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
 
-    const imageUrl = getPublicImageUrl(product.imageUrl);
+    const rawImageUrl = getPublicImageUrl(product.imageUrl);
+
+    const hasImage =
+        !!rawImageUrl && !rawImageUrl.includes('no-image');
+
+    const displayImage = hasImage
+        ? rawImageUrl
+        : '/no-image.png';
+
 
     // Stokta yok veya ekleme yapılıyorsa buton pasif olsun
     const isButtonDisabled = product.stock <= 0 || isAdding;
@@ -68,28 +76,24 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
 
             {/* --- GÖRSEL --- */}
             <div className="w-full h-56 bg-secondary flex items-center justify-center overflow-hidden relative">
-                {isImageLoading && imageUrl && (
+                {/* Yükleniyor efekti sadece gerçek resim varsa ve henüz yüklenmediyse görünsün */}
+                {isImageLoading && hasImage && (
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer bg-[length:200%_100%] z-10" />
                 )}
 
-                {imageUrl ? (
-                    <Image
-                        src={imageUrl}
-                        alt={product.name}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className={`object-contain p-4 transition-all duration-500 ease-in-out group-hover:scale-105
-                            ${isImageLoading ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
-                        `}
-                        onLoad={() => setIsImageLoading(false)}
-                        priority={priority}
-                        loading={priority ? undefined : "lazy"}
-                    />
-                ) : (
-                    <div className="flex flex-col items-center text-gray-400">
-                        <span className="text-sm">{t('noImage')}</span>
-                    </div>
-                )}
+                <Image
+                    src={displayImage}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className={`object-contain p-4 transition-all duration-500 ease-in-out group-hover:scale-105
+                        ${isImageLoading && hasImage ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
+                    `}
+                    onLoad={() => setIsImageLoading(false)}
+                    // Priority prop'u LCP uyarısını çözer 
+                    priority={priority}
+                    loading={priority ? undefined : "lazy"}
+                />
 
                 {product.stock < 10 && product.stock > 0 && (
                     <span className="absolute top-3 right-3 bg-red-500/10 text-red-600 border border-red-200 text-xs font-bold px-2 py-1 rounded-full z-20 backdrop-blur-sm">

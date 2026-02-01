@@ -31,8 +31,6 @@
         "sortDefault": "Default",
         "priceLowToHigh": "Price (Low to High)",
         "priceHighToLow": "Price (High to Low)",
-        "nameAZ": "Name (A-Z)",
-        "nameZA": "Name (Z-A)",
         "clearFilters": "Clear Filters",
         "tryAdjustingFilters": "Try adjusting your filters or clearing the search.",
         "resetFilters": "Reset Filters"
@@ -46,8 +44,7 @@
         "login": "Login",
         "dontHaveAccount": "Don't have an account?",
         "registerLink": "Register here",
-        "loginNotSuccessful": "Login unsuccessful. Please check your credentials.",
-        "cartMergeError": "Error occurred while merging cart"
+        "loginNotSuccessful": "Login unsuccessful. Please check your credentials."
     },
     "Register": {
         "title": "Register",
@@ -103,7 +100,7 @@
         "outOfStock": "Out of Stock",
         "noImage": "No Image Available",
         "inStock": "In Stock",
-        "productAdded": "Product added.",
+        "productAdded": "Item added to your cart.",
         "tempAdded": "Product added to cart offline.",
         "addErrorBackend": "Backend error, falling back to local:",
         "added": "Added"

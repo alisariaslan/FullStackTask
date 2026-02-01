@@ -149,8 +149,8 @@ export default function ProductFilters({ categories }: ProductFiltersProps) {
                                border border-transparent focus:border-primary/50"
                 >
                     <option value="">{t('sortDefault')}</option>
-                    <option value="priceAsc">{t('priceLowToHigh')}</option>
-                    <option value="priceDesc">{t('priceHighToLow')}</option>
+                    <option value="price_asc">{t('priceLowToHigh')}</option>
+                    <option value="price_desc">{t('priceHighToLow')}</option>
                 </select>
             </div>
 

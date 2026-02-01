@@ -75,7 +75,6 @@ namespace Services.Product.Infrastructure.Repositories
             {
                 "price_asc" => query.OrderBy(x => x.Price).ThenBy(x => x.Id),
                 "price_desc" => query.OrderByDescending(x => x.Price).ThenBy(x => x.Id),
-                "name_desc" => query.OrderByDescending(p => p.Translations.Where(t => t.LanguageCode == languageCode).Select(t => t.Name).FirstOrDefault()),
                 _ => query.OrderBy(p => p.Translations.Where(t => t.LanguageCode == languageCode).Select(t => t.Name).FirstOrDefault())
             };
 
