@@ -6,13 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Data\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
+	<!-- BU SINIF HENÜZ İNŞA EDİLMEDİ -->
+	
   <ItemGroup>
     <ProjectReference Include="..\Services.Log.Application\Services.Log.Application.csproj" />
     <ProjectReference Include="..\Services.Log.Domain\Services.Log.Domain.csproj" />

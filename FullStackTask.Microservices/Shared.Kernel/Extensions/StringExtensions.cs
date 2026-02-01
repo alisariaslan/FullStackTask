@@ -6,6 +6,11 @@ namespace Shared.Kernel.Extensions
 {
     public static class StringExtensions
     {
+        /// <summary>
+        /// Yazıyı slug a çeviren yardımcı metod
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string ToSlug(this string text)
         {
             if (string.IsNullOrWhiteSpace(text))

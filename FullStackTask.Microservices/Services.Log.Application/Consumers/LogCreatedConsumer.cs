@@ -5,6 +5,9 @@ using Shared.Kernel.IntegrationEvents;
 
 namespace Services.Log.Application.Consumers
 {
+    /// <summary>
+    /// Loglar için consumer sınıfı
+    /// </summary>
     public class LogCreatedConsumer : IConsumer<LogCreatedEvent>
     {
         private readonly IMediator _mediator;

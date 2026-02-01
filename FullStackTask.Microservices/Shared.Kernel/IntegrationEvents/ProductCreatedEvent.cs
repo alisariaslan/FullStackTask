@@ -1,5 +1,8 @@
 ﻿namespace Shared.Kernel.IntegrationEvents
 {
+    /// <summary>
+    /// Ürün oluşturuldu bildirim eventi
+    /// </summary>
     public class ProductCreatedEvent
     {
         public Guid Id { get; set; }

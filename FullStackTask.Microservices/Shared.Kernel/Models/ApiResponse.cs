@@ -2,6 +2,10 @@
 
 namespace Shared.Kernel.Models
 {
+    /// <summary>
+    /// Ortak api cevap sınıfı
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ApiResponse<T>
     {
         public bool IsSuccess { get; set; }

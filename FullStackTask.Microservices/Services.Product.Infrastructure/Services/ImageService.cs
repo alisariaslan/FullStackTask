@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Services.Product.Application.Interfaces;
+using Shared.Kernel.Constants;
 
 namespace Services.Product.Infrastructure.Services
 {
@@ -14,8 +15,11 @@ namespace Services.Product.Infrastructure.Services
 
         public async Task<string> SaveImageAsync(Stream fileStream, string fileName, CancellationToken cancellationToken)
         {
-            if (fileStream == null || fileStream.Length == 0)
-                return "/images/no-image.png";
+            var extension = Path.GetExtension(fileName)?.ToLowerInvariant();
+            if (extension != ".png")
+                throw new InvalidOperationException(Messages.InvalidImage);
+
+            // MIME type kontrolü eklenebilir
 
             string webRootPath = _env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             string uploadsFolder = Path.Combine(webRootPath, "images", "products");

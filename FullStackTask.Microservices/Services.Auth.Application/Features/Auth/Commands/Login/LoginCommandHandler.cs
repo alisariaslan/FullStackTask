@@ -4,6 +4,9 @@ using Services.Auth.Application.Models;
 
 namespace Services.Auth.Application.Features.Auth.Commands.Login
 {
+    /// <summary>
+    /// Kullanıcı girişini sağlar
+    /// </summary>
     public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto>
     {
         private readonly IAuthService _authService;

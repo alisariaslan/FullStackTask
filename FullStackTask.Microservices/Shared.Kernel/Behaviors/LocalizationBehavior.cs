@@ -4,6 +4,12 @@ using Shared.Kernel.Interfaces;
 
 namespace Shared.Kernel.Behaviors
 {
+    /// <summary>
+    /// Middleware tipinde dil algılayıcı sınıf.
+    /// İsteklerin dillerini algılayarak commandlara iletilir.
+    /// </summary>
+    /// <typeparam name="TRequest"></typeparam>
+    /// <typeparam name="TResponse"></typeparam>
     public class LocalizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
          where TRequest : IRequest<TResponse>
     {

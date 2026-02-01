@@ -112,11 +112,14 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 // Database Migration
 // Task: Development & demo kolaylığı
-// Production’da genellikle CI/CD aşamasına taşınır
+// Production’da CI/CD aşamasına taşınır
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
+    if (app.Environment.IsDevelopment())
+        db.Database.Migrate();
+    else
+        db.Database.EnsureCreated();
 }
 
 // Swagger (Development only)

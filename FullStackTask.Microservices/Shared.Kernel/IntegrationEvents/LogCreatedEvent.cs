@@ -1,5 +1,8 @@
 ﻿namespace Shared.Kernel.IntegrationEvents
 {
+    /// <summary>
+    /// Log oluşturuldu bildirim eventi
+    /// </summary>
     public class LogCreatedEvent
     {
         public required string Level { get; set; } = "Info";

@@ -1,5 +1,9 @@
 ﻿namespace Shared.Kernel.Constants
 {
+    /// <summary>
+    /// Client için key formatında hata mesajları. 
+    /// Bu kısım key ve dile göre açıklama eklenerek koleksiyon tipinde client tarafına döndürülebilir
+    /// </summary>
     public static class Messages
     {
         public const string UserEmailAlreadyExists = "userEmailAlreadyExists";
@@ -14,5 +18,6 @@
         public const string IdMismatch = "idMismatch";
         public const string TranslationAlreadyExists = "translationAlreadyExists";
         public const string InvalidRole = "invalidRole";
+        public const string InvalidImage = "invalidImage";
     }
 }

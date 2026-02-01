@@ -3,6 +3,9 @@ using Shared.Kernel.Extensions;
 
 namespace Services.Product.Infrastructure.Services
 {
+    /// <summary>
+    /// Uniq Slug oluşturucu
+    /// </summary>
     public class ProductSlugService : IProductSlugService
     {
         private readonly IProductRepository _repository;

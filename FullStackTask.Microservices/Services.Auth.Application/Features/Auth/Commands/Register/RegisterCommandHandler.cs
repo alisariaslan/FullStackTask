@@ -4,6 +4,9 @@ using Services.Auth.Application.Models;
 
 namespace Services.Auth.Application.Features.Auth.Commands.Register
 {
+    /// <summary>
+    /// Kullanıcı kaydını yapmayı sağlar
+    /// </summary>
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthResponseDto>
     {
         private readonly IAuthService _authService;

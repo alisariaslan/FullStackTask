@@ -1,6 +1,9 @@
 ﻿namespace Shared.Kernel.Models
 {
-
+    /// <summary>
+    /// Ortak pagination cevap sınıfı
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PaginatedResult<T>
     {
         public List<T> Items { get; set; }

@@ -11,6 +11,9 @@ using Shared.Kernel.Models;
 
 namespace Services.Product.API.Controllers
 {
+    /// <summary>
+    /// Ürünleri yöneten kontrolcü sınıf
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -22,6 +25,11 @@ namespace Services.Product.API.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Tüm ürünleri filtrelere (parametrelere) göre getirir.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<ApiResponse<PaginatedResult<ProductDto>>>> GetAll([FromQuery] GetAllProductsQuery query)
         {
@@ -29,6 +37,11 @@ namespace Services.Product.API.Controllers
             return Ok(ApiResponse<PaginatedResult<ProductDto>>.Success(result));
         }
 
+        /// <summary>
+        /// Yeni ürün oluşturur. Unique slug verisi oluşturur. (Admin)
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<Guid>>> Create([FromForm] CreateProductCommand command)
@@ -37,6 +50,12 @@ namespace Services.Product.API.Controllers
             return Ok(ApiResponse<Guid>.Success(id));
         }
 
+        /// <summary>
+        /// Ürünü slug verisine göre getirir
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <param name="languageCode"></param>
+        /// <returns></returns>
         [HttpGet("by-slug/{slug}")]
         public async Task<ActionResult<ApiResponse<ProductDto>>> GetBySlug( string slug,[FromQuery] string languageCode = "en")
         {
@@ -50,6 +69,12 @@ namespace Services.Product.API.Controllers
             return Ok(ApiResponse<ProductDto>.Success(result));
         }
 
+        /// <summary>
+        /// Ürüne yeni çeviri ekler. Unique slug verisi oluşturur. (Admin)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="command"></param>
+        /// <returns></returns>
         [HttpPost("{id}/translations")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ApiResponse<Unit>>> AddTranslation(Guid id, [FromBody] AddProductTranslationCommand command)

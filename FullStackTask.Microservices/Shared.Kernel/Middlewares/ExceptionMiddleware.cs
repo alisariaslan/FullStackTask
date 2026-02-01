@@ -11,6 +11,9 @@ using System.Text.Json;
 
 namespace Shared.Kernel.Middlewares
 {
+    /// <summary>
+    /// Hataların logic mi, yoksa beklenmeyen hata mı olup olmadığını ayırt eden sınıf.
+    /// </summary>
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
@@ -34,6 +37,7 @@ namespace Shared.Kernel.Middlewares
             }
             catch (Exception ex)
             {
+                // Eğer validation hatasıysa logic error dur.
                 if (ex is ValidationException)
                     _logger.LogWarning("Business Error: {Message}", ex.Message);
                 else
@@ -53,6 +57,7 @@ namespace Shared.Kernel.Middlewares
             switch (exception)
             {
                 case ValidationException validationEx:
+                    // Logic error u direk bildiriyoruz
                     statusCode = (int)HttpStatusCode.OK;
                     errorKey = validationEx.Message;
                     errors.Add(errorKey);
@@ -62,10 +67,12 @@ namespace Shared.Kernel.Middlewares
                     errorKey = Messages.SystemError;
                     if (_env.IsDevelopment())
                     {
+                        // Geliştirici modunda apiye system hatasını iletiyoruz
                         errors.Add(exception.Message);
                     }
                     else
                     {
+                        // Prod modunda açık aranmaması için detay vermiyoruz
                         errors.Add("An unexpected error occurred at backend.");
                     }
                     _logger.LogError(exception, "System Error");

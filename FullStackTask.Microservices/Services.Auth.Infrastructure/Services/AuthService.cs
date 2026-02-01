@@ -13,7 +13,9 @@ using System.Text;
 namespace Services.Auth.Infrastructure.Services
 {
 
-
+    /// <summary>
+    /// Kullanıcı yetki işlemlerini gerçekleştirir
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
@@ -25,9 +27,15 @@ namespace Services.Auth.Infrastructure.Services
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Kullanıcı kaydını yapar
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="ValidationException"></exception>
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto request)
         {
-            if (await _userRepository.UserExistsAsync(request.Email))
+            if (await _userRepository.UserExistsByEmailAsync(request.Email))
                 throw new ValidationException(Messages.UserEmailAlreadyExists);
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -44,9 +52,15 @@ namespace Services.Auth.Infrastructure.Services
             return new AuthResponseDto(CreateToken(user), user.Username);
         }
 
+        /// <summary>
+        /// Kullanıcı girişini sağlar
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="ValidationException"></exception>
         public async Task<AuthResponseDto> LoginAsync(LoginDto request)
         {
-            var user = await _userRepository.GetByUsernameAsync(request.Email);
+            var user = await _userRepository.GetUserByEmail(request.Email);
 
             if (user == null)
                 throw new ValidationException(Messages.UserNotFound);
@@ -63,6 +77,11 @@ namespace Services.Auth.Infrastructure.Services
             return new AuthResponseDto(CreateToken(user), user.Username);
         }
 
+        /// <summary>
+        /// Kullanıcıya özel token üretir
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private string CreateToken(UserEntity user)
         {
             var claims = new List<Claim>

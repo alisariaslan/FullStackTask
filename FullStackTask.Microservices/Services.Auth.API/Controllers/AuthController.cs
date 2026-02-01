@@ -8,6 +8,9 @@ using Shared.Kernel.Models;
 
 namespace Services.Auth.API.Controllers
 {
+    /// <summary>
+    /// Kullanıcı giriş işlemlerini kontrol eder
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -19,6 +22,11 @@ namespace Services.Auth.API.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Kullanıcı kayıt
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto request)
         {
@@ -26,6 +34,11 @@ namespace Services.Auth.API.Controllers
             return Ok(ApiResponse<AuthResponseDto>.Success(result));
         }
 
+        /// <summary>
+        /// Kullanıcı giriş
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto request)
         {

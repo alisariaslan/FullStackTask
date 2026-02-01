@@ -10,6 +10,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Services.Product.Application.Features.Products.Commands.CreateProduct
 {
+    /// <summary>
+    /// Ürün oluşturmayı sağlar
+    /// </summary>
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
     {
         private readonly IProductRepository _repository;
@@ -30,33 +33,34 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
+            // İsim kontrolü
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ValidationException(Messages.NameRequired);
 
+            // Fiyat kontrolü
             if (request.Price <= 0)
                 throw new ValidationException(Messages.PriceInvalid);
 
+            // Kategori mevcut mu kontrolü
             if (request.CategoryId == Guid.Empty)
                 throw new ValidationException(Messages.CategoryRequired);
 
+            // Kategori veritabanında var mı kontrolü
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category == null)
             {
                 throw new ValidationException(Messages.CategoryNotFound);
             }
 
+            // Uniq slug oluşturuyoruz
             var slug = await _slugService.GenerateUniqueSlugAsync(request.Name,request.LanguageCode);
 
-            string imageUrl;
-
+            // Resim varsa kayıt ediyoruz
+            string imageUrl = string.Empty;
             if (request.Image != null)
             {
                 using var stream = request.Image.OpenReadStream();
                 imageUrl = await _imageService.SaveImageAsync(stream, request.Image.FileName, cancellationToken);
-            }
-            else
-            {
-                imageUrl = await _imageService.SaveImageAsync(Stream.Null, "", cancellationToken);
             }
 
             var newProdId = Guid.NewGuid();
@@ -66,7 +70,7 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
                 Price = request.Price,
                 Stock = request.Stock,
                 CategoryId = request.CategoryId,
-                ImageUrl = imageUrl,
+                ImageUrl = imageUrl ,
                 Translations = new List<ProductTranslationEntity>
                 {
                     new ProductTranslationEntity
@@ -81,10 +85,13 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
                 }
             };
 
+            // Ürünü veritabanına kayıt ediyoruz
             await _repository.AddAsync(newProduct);
 
+            // Bütün ürün cachelerini temizliyoruz (Daha etkin yöntemler kullanılabilir)
             await _redisConnection.RemoveByPatternAsync("product*");
 
+            // Ürün oluşturuldu bildirimi gönderiyoruz
             await _publishEndpoint.Publish(new ProductCreatedEvent
             {
                 Id = newProduct.Id,
