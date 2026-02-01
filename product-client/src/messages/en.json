@@ -13,6 +13,8 @@
     },
     "Home": {
         "title": "Products",
+        "metaTitle": "",
+        "metaDescription": "",
         "price": "Price",
         "stock": "Stock",
         "addToCart": "Add to Cart",

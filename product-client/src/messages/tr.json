@@ -13,6 +13,8 @@
     },
     "Home": {
         "title": "Ürünler",
+        "metaTitle": "",
+        "metaDescription": "",
         "price": "Fiyat",
         "stock": "Stok",
         "addToCart": "Sepete Ekle",
