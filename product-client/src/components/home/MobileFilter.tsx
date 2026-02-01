@@ -1,3 +1,5 @@
+// MobileFilter.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -13,8 +15,6 @@ interface MobileFilterProps {
 export default function MobileFilter({ categories, activeSlug }: MobileFilterProps) {
     const [open, setOpen] = useState(false);
 
-    // Kategori sayfası mı kontrolü artık activeSlug ile daha kolay yapılabilir
-    // veya her zaman "Filtreler" diyebiliriz.
     const buttonText = 'Filtreler & Kategoriler';
 
     return (
@@ -47,7 +47,6 @@ export default function MobileFilter({ categories, activeSlug }: MobileFilterPro
 
                         {/* Content */}
                         <div className="overflow-y-auto p-0">
-
                             <ProductFilters categories={categories} activeSlug={activeSlug} />
                         </div>
                     </div>

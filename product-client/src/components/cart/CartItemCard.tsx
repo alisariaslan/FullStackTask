@@ -9,7 +9,7 @@ import {
     decreaseItemQuantity,
     addToCart
 } from '@/lib/store/features/cart/cartSlice';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { getPublicImageUrl } from '@/lib/apiHandler';
 import Image from 'next/image';
 
@@ -27,9 +27,18 @@ interface CartItemProps {
 
 export default function CartItemCard({ product, priority = false }: CartItemProps) {
     const t = useTranslations('Cart');
+    const locale = useLocale();
     const dispatch = useAppDispatch();
 
     const [isImageLoading, setIsImageLoading] = useState(true);
+
+    // Fiyat formatlayıcı
+    const formatPrice = (value: number) => {
+        return new Intl.NumberFormat(locale, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(value);
+    };
 
     const rawImageUrl = getPublicImageUrl(product.imageUrl);
 
@@ -60,8 +69,8 @@ export default function CartItemCard({ product, priority = false }: CartItemProp
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className={`object-contain p-4 transition-all duration-500 ease-in-out group-hover:scale-105
-                                      ${isImageLoading && hasImage ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
-                                  `}
+                                              ${isImageLoading && hasImage ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
+                                            `}
                         onLoad={() => setIsImageLoading(false)}
                         // Priority prop'u LCP uyarısını çözer 
                         priority={priority}
@@ -102,7 +111,7 @@ export default function CartItemCard({ product, priority = false }: CartItemProp
                     {product.name}
                 </h3>
                 <p className="text-primary font-medium mt-1">
-                    ₺{product.price.toFixed(2)}
+                    ₺{formatPrice(product.price)}
                 </p>
             </div>
 
@@ -133,7 +142,7 @@ export default function CartItemCard({ product, priority = false }: CartItemProp
                 {/* Toplam Fiyat ve Sil */}
                 <div className="flex flex-col items-center sm:items-end min-w-[80px]">
                     <span className="font-bold text-foreground text-lg">
-                        ₺{(product.price * product.quantity).toFixed(2)}
+                        ₺{formatPrice(product.price * product.quantity)}
                     </span>
 
                     <button

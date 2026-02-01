@@ -7,7 +7,7 @@ import { Product } from '@/types/productTypes';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { addToCart, fetchCart } from '@/lib/store/features/cart/cartSlice';
 import { Button } from '@/components/shared/Button';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { getPublicImageUrl } from '@/lib/apiHandler';
 import Image from 'next/image';
 import { toast } from 'sonner';
@@ -21,11 +21,20 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, priority = false }: ProductCardProps) {
     const t = useTranslations('ProductCard');
+    const locale = useLocale();
     const dispatch = useAppDispatch();
     const { isAuthenticated } = useAppSelector(state => state.auth);
 
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
+
+    // Fiyat formatlayıcı
+    const formatPrice = (value: number) => {
+        return new Intl.NumberFormat(locale, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(value);
+    };
 
     const rawImageUrl = getPublicImageUrl(product.imageUrl);
 
@@ -143,7 +152,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                         <div className="flex flex-col">
                             <span className="text-xs text-gray-400 font-medium mb-0.5">{t('price')}</span>
                             <span className="text-xl font-bold text-foreground tracking-tight">
-                                ₺{product.price.toFixed(2)}
+                                ₺{formatPrice(product.price)}
                             </span>
                         </div>
                         {/* --- Stok durum --- */}

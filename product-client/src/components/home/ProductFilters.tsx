@@ -1,3 +1,5 @@
+// ProductFilters.tsx
+
 'use client';
 
 import { useRouter, usePathname } from '@/navigation';
@@ -9,7 +11,7 @@ import { useTranslations } from 'next-intl';
 
 interface ProductFiltersProps {
     categories: Category[];
-    activeSlug?: string; // Parent'tan gelen aktif kategori bilgisi
+    activeSlug?: string;
 }
 
 export default function ProductFilters({ categories, activeSlug }: ProductFiltersProps) {
@@ -23,7 +25,7 @@ export default function ProductFilters({ categories, activeSlug }: ProductFilter
     const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
     const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
 
-    // URL parametreleri değişince state'i güncelle (Geri butonu vs. için)
+    // URL parametreleri değişince state'i güncelle
     useEffect(() => {
         setMinPrice(searchParams.get('minPrice') || '');
         setMaxPrice(searchParams.get('maxPrice') || '');
@@ -31,27 +33,25 @@ export default function ProductFilters({ categories, activeSlug }: ProductFilter
 
     // Kategori Link Oluşturucu
     const createCategoryUrl = (category: Category | null) => {
-        if (!category) return '/'; // Tüm ürünler (Anasayfa)
+        if (!category) return '/';
         return `/${category.slug}`;
     };
 
     // Query Params Güncelleme
     const updateQueryParams = (updates: Record<string, string | null>) => {
         const params = new URLSearchParams(searchParams.toString());
-        params.set('page', '1'); // Filtre değişince sayfa başa döner
+        params.set('page', '1');
 
         Object.entries(updates).forEach(([k, v]) =>
             !v ? params.delete(k) : params.set(k, v)
         );
 
-        // Mevcut pathname üzerinde query parametrelerini güncelle
         router.push(`${pathname}?${params.toString()}`);
     };
 
     const resetFilters = () => {
         setMinPrice('');
         setMaxPrice('');
-        // Sadece query parametrelerini temizle, sayfada kal
         router.push(pathname);
     };
 

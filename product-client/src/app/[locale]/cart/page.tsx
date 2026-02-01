@@ -1,14 +1,25 @@
+// CartPage.tsx
+
 'use client';
 
 import { Link } from '@/navigation';
 import { useAppSelector } from '@/lib/store/hooks';
 import { Button } from '@/components/shared/Button';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import CartItemCard from '@/components/cart/CartItemCard';
 
 export default function CartPage() {
     const t = useTranslations('Cart');
+    const locale = useLocale();
     const { items, totalAmount } = useAppSelector((state) => state.cart);
+
+    // Fiyat formatlayıcı fonksiyon
+    const formatPrice = (value: number) => {
+        return new Intl.NumberFormat(locale, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(value);
+    };
 
     // Sepet boşsa gösterilecek
     if (items.length === 0) {
@@ -50,7 +61,7 @@ export default function CartPage() {
                         <CartItemCard
                             key={item.id}
                             product={item}
-                            // LCP uyarısı için ilk 6 item ı hızlı render ediyoruz
+                            // LCP uyarısı için ilk 6 item'ı öncelikli yüklüyoruz
                             priority={index < 6}
                         />
                     ))}
@@ -66,7 +77,8 @@ export default function CartPage() {
                         <div className="space-y-3">
                             <div className="flex justify-between text-gray-600">
                                 <span>{t('subtotal')}</span>
-                                <span>₺{totalAmount.toFixed(2)}</span>
+                                {/* Formatlanmış Ara Toplam */}
+                                <span>₺{formatPrice(totalAmount)}</span>
                             </div>
                             <div className="flex justify-between text-gray-600">
                                 <span>Kargo</span>
@@ -78,7 +90,8 @@ export default function CartPage() {
 
                         <div className="flex justify-between mb-6">
                             <span className="text-lg font-bold text-foreground">{t('total')}</span>
-                            <span className="text-2xl font-bold text-primary">₺{totalAmount.toFixed(2)}</span>
+                            {/* Formatlanmış Genel Toplam */}
+                            <span className="text-2xl font-bold text-primary">₺{formatPrice(totalAmount)}</span>
                         </div>
 
                         <Button className="w-full bg-primary hover:bg-primary-dark text-primary-foreground py-4 text-lg font-semibold shadow-xl transition-transform hover:-translate-y-1">

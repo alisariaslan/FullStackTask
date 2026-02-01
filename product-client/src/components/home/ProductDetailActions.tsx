@@ -9,13 +9,22 @@ import { addToCart, fetchCart } from '@/lib/store/features/cart/cartSlice';
 import { cartService } from '@/services/cartService';
 import { Button } from '@/components/shared/Button';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function ProductDetailActions({ product }: { product: Product }) {
     const t = useTranslations('ProductCard');
+    const locale = useLocale();
     const dispatch = useAppDispatch();
     const { isAuthenticated } = useAppSelector(state => state.auth);
     const [isAdding, setIsAdding] = useState(false);
+
+    // Fiyat formatlayıcı
+    const formatPrice = (value: number) => {
+        return new Intl.NumberFormat(locale, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(value);
+    };
 
     const isButtonDisabled = product.stock <= 0 || isAdding;
 
@@ -51,7 +60,7 @@ export default function ProductDetailActions({ product }: { product: Product }) 
         <div className="flex flex-col gap-4 mt-8">
             <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg border border-border">
                 <span className="text-2xl font-bold text-primary">
-                    ₺{product.price.toFixed(2)}
+                    ₺{formatPrice(product.price)}
                 </span>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                     }`}>
