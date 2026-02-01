@@ -55,6 +55,12 @@ git clone https://github.com/alisariaslan/FullStackTask.git
 docker-compose up --build -d
 ```
 
+# 📖 Kurulum ve Test Rehberi
+
+Bu rehber, projenin başarılı bir şekilde ayağa kaldırılması ve tüm özelliklerin (Auth, CRUD, Event-Bus) test edilmesi için gereken adımları içerir.
+
+➡️ [KURULUM VE TEST](./INSTRUCTIONS.md)
+
 ## 📊 Dashboard’lar & Arayüz Endpoint’leri
 
 Ortam Docker ile ayağa kaldırıldıktan sonra, sistem bileşenlerine aşağıdaki bağlantılar üzerinden erişebilirsiniz:
@@ -76,7 +82,7 @@ Ortam Docker ile ayağa kaldırıldıktan sonra, sistem bileşenlerine aşağıd
 * **Product Service:** [http://localhost:6007/swagger](http://localhost:6007/swagger)
 * **Log Service:** [http://localhost:6009/swagger](http://localhost:6009/swagger)
 
-## 📘 Detaylı Kurulum Rehberi
+## 📘 Ortam Rehberi
 
 Altyapı, environment değişkenleri, network yapısı ve servisler arası iletişimi
 derinlemesine incelemek isteyenler için:
