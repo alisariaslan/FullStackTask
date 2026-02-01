@@ -12,7 +12,7 @@ interface Props {
 
 export default async function ProductDetailPage({ params }: Props) {
     const { locale, id } = await params;
-    const t = await getTranslations({ locale, namespace: 'Home' }); // Veya 'ProductDetail'
+    const t = await getTranslations({ locale, namespace: 'Product' }); // Veya 'ProductDetail'
 
     let product = null;
     try {
@@ -42,7 +42,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 {/* BREADCRUMB / GERİ DÖN */}
                 <nav className="mb-8 flex items-center text-sm text-gray-500">
                     <Link href={`/`} className="hover:text-primary transition-colors">
-                        {t('title') || 'Ana Sayfa'}
+                        {t('title')}
                     </Link>
                     <span className="mx-2">/</span>
                     <span className="text-foreground font-medium truncate">{product.name}</span>
@@ -101,18 +101,18 @@ export default async function ProductDetailPage({ params }: Props) {
 
                             <div className="w-full h-px bg-border mb-8"></div>
 
-                            {/* Client Component: Fiyat ve Sepete Ekle Butonu */}
+                            {/*  Fiyat ve Sepete Ekle Butonu */}
                             <ProductDetailActions product={product} />
 
-                            {/* Ek Bilgiler (Opsiyonel) */}
+                            {/* Ek Bilgiler */}
                             <div className="mt-8 grid grid-cols-2 gap-4 text-sm text-gray-500">
                                 <div className="flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                                    <span>Güvenli Ödeme</span>
+                                    <span>{t('safePayment')}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
-                                    <span>7/24 Destek</span>
+                                    <span>{t('24hourSupport')}</span>
                                 </div>
                             </div>
                         </div>

@@ -93,6 +93,11 @@
         "checkout": "Ödemeye Geç",
         "remove": "Kaldır"
     },
+    "Product": {
+        "title": "Ürünler",
+        "safePayment": "Güvenli Ödeme",
+        "24hourSupport": "7/24 Canlı Destek"
+    },
     "ProductCard": {
         "price": "Fiyat",
         "stock": "Stok",

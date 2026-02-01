@@ -93,6 +93,11 @@
         "checkout": "Proceed to Checkout",
         "remove": "Remove"
     },
+    "Product": {
+        "title": "Products",
+        "safePayment": "Safe Payment",
+        "24hourSupport": "7/24 Live Support"
+    },
     "ProductCard": {
         "price": "Price",
         "stock": "Stock",
