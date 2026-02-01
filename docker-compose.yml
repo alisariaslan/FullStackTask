@@ -50,7 +50,7 @@ services:
     container_name: micro_seq
     environment:
       - ACCEPT_EULA=Y
-      - SEQ_FIRSTRUN_ADMINPASSWORD=admin
+      - SEQ_FIRSTRUN_ADMINPASSWORD=guest
     ports:
       - "0.0.0.0:6008:80"
     networks:
@@ -65,7 +65,7 @@ services:
       dockerfile: Services.Auth.API/Dockerfile
     container_name: micro_auth_api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=AuthDb;Username=postgres;Password=a5134ba8
       - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
@@ -94,7 +94,7 @@ services:
       dockerfile: Services.Product.API/Dockerfile
     container_name: micro_product_api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
       - ConnectionStrings__Redis=redis-cache:6379
@@ -133,7 +133,7 @@ services:
     ports:
       - "0.0.0.0:6004:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - Serilog__WriteTo__1__Name=Seq
       - Serilog__WriteTo__1__Args__serverUrl=http://micro_seq:80
@@ -158,7 +158,7 @@ services:
       dockerfile: Services.Log.API/Dockerfile
     container_name: micro_log_api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - RabbitMQSettings__Host=rabbitmq
       - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
@@ -187,18 +187,12 @@ services:
       dockerfile: Dockerfile
     container_name: micro_frontend
     environment:
-      - WATCHPACK_POLLING=true
-      # D2D
       - GATEWAY_URL=http://gateway-yarp:8080
-      # B2D
       - NEXT_PUBLIC_GATEWAY_URL=http://localhost:6004
-      - NEXT_PUBLIC_SITE_URL=https://localhost:6005
+      - NEXT_PUBLIC_SITE_URL=http://localhost:6005
       - NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS=1
     ports:
       - "6005:3000"
-    volumes:
-      - ./product-client:/app
-      - /app/node_modules
     depends_on:
       gateway-yarp:
         condition: service_healthy

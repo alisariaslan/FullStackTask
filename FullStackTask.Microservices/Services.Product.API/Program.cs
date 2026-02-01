@@ -94,7 +94,7 @@ builder.Services.AddHttpContextAccessor();
 // Services & Repositories
 // Task: SOLID & clean separation (Infrastructure ↔ Application
 builder.Services.AddScoped<ICategorySlugService, CategorySlugService>();
-builder.Services.AddScoped<IProductSlugService,ProductSlugService>();
+builder.Services.AddScoped<IProductSlugService, ProductSlugService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -144,7 +144,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    db.Database.EnsureCreated();
 }
 
 // Swagger (Development only)

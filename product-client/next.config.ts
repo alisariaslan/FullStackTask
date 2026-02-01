@@ -4,8 +4,10 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
+  // Docker için çıktı boyutunu küçültür ve performansı artırır
+  output: 'standalone',
+
   images: {
-    // Yerel IP ve localhost üzerinden gelen resimlere izin verir
     remotePatterns: [
       {
         protocol: 'http',
@@ -20,15 +22,18 @@ const nextConfig: NextConfig = {
         pathname: '/images/**',
       },
     ],
-    // Geliştirme aşamasında private IP hatalarını bypass eder
-    unoptimized: process.env.NODE_ENV === 'development',
+    unoptimized: true,
   },
-  webpack: (config) => {
-    config.watchOptions = {
-      poll: 1000,
-      aggregateTimeout: 300,
+
+  // Sadece development ortamında polling açılır
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+      };
     }
-    return config
+    return config;
   },
 };
 
