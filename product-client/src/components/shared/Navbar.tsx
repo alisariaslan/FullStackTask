@@ -78,14 +78,14 @@ export default function Navbar() {
 
     return (
         <header className="bg-white shadow-sm border-b border-border sticky top-0 z-50">
-            <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
+            <div className="w-full px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
 
                 <Link href="/" className="text-2xl font-bold text-primary flex-shrink-0 z-20">
                     {t('title')}
                 </Link>
 
                 {/* Desktop Search Bar */}
-                <form onSubmit={handleFormSubmit} className="flex-1 max-w-md mx-8 hidden md:flex relative">
+                <form onSubmit={handleFormSubmit} className="flex-1 max-w-md mx-auto hidden md:flex relative">
                     <Input
                         type="text"
                         placeholder={t('searchPlaceholder') || "Ürün ara..."}

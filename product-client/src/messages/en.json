@@ -22,7 +22,20 @@
         "searchResultsFor": "Search results for",
         "noResultsMessage": "did not match any products.",
         "clearSearch": "Clear search",
-        "pageIndicator": "Page {current} / {total}"
+        "pageIndicator": "Page {current} / {total}",
+        "categories": "Categories",
+        "allProducts": "All Products",
+        "priceRange": "Price Range",
+        "applyFilter": "Apply",
+        "sortBy": "Sort by",
+        "sortDefault": "Default",
+        "priceLowToHigh": "Price (Low to High)",
+        "priceHighToLow": "Price (High to Low)",
+        "nameAZ": "Name (A-Z)",
+        "nameZA": "Name (Z-A)",
+        "clearFilters": "Clear Filters",
+        "tryAdjustingFilters": "Try adjusting your filters or clearing the search.",
+        "resetFilters": "Reset Filters"
     },
     "Login": {
         "title": "Login",
@@ -34,7 +47,7 @@
         "dontHaveAccount": "Don't have an account?",
         "registerLink": "Register here",
         "loginNotSuccessful": "Login unsuccessful. Please check your credentials.",
-        "cartMergeError": "Error occured when merging cart"
+        "cartMergeError": "Error occurred while merging cart"
     },
     "Register": {
         "title": "Register",
@@ -89,10 +102,10 @@
         "addToCart": "Add to Cart",
         "outOfStock": "Out of Stock",
         "noImage": "No Image Available",
-        "inStock": "Stock Avaible",
+        "inStock": "In Stock",
         "productAdded": "Product added.",
-        "tempAdded": "Connection error: Product added to cart as temporary.",
-        "addErrorBackend": "Backend Error, falling back to local:",
+        "tempAdded": "Product added to cart offline.",
+        "addErrorBackend": "Backend error, falling back to local:",
         "added": "Added"
     },
     "StoreProvider": {

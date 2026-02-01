@@ -116,7 +116,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                     <div className="flex justify-between items-end mb-4">
                         {/* --- Fiyat --- */}
                         <div className="flex flex-col">
-                            <span className="text-xs text-gray-400 font-medium mb-0.5">Fiyat</span>
+                            <span className="text-xs text-gray-400 font-medium mb-0.5">{t('price')}</span>
                             <span className="text-xl font-bold text-foreground tracking-tight">
                                 ₺{product.price.toFixed(2)}
                             </span>

@@ -21,8 +21,21 @@
         "noProducts": "Ürün bulunamadı.",
         "searchResultsFor": "Arama sonuçları",
         "noResultsMessage": "ile ilgili herhangi bir ürün bulunamadı.",
-        "clearSearch": "Aramayı sıfırla",
-        "pageIndicator": "Sayfa {current} / {total}"
+        "clearSearch": "Aramayı Sıfırla",
+        "pageIndicator": "Sayfa {current} / {total}",
+        "categories": "Kategoriler",
+        "allProducts": "Tüm Ürünler",
+        "priceRange": "Fiyat Aralığı",
+        "applyFilter": "Uygula",
+        "sortBy": "Sıralama",
+        "sortDefault": "Varsayılan",
+        "priceLowToHigh": "Fiyat (Artan)",
+        "priceHighToLow": "Fiyat (Azalan)",
+        "nameAZ": "İsim (A-Z)",
+        "nameZA": "İsim (Z-A)",
+        "clearFilters": "Filtreleri Temizle",
+        "tryAdjustingFilters": "Filtrelerinizi değiştirmeyi veya aramayı temizlemeyi deneyin.",
+        "resetFilters": "Filtreleri Sıfırla"
     },
     "Login": {
         "title": "Giriş Yap",
@@ -91,7 +104,7 @@
         "noImage": "Görsel Yok",
         "inStock": "Stokta Var",
         "productAdded": "Ürün eklendi.",
-        "tempAdded": "Bağlantı sorunu: Ürün geçici olarak eklendi.",
+        "tempAdded": "Ürün çevrimdışı olarak eklendi.",
         "addErrorBackend": "Backend hatası, sepet yerele çeviriliyor:",
         "added": "Eklendi"
     },

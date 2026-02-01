@@ -19,6 +19,7 @@
   /* Animasyonlar */
   --animate-shimmer: shimmer 1.5s infinite linear;
   --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-down: slideDown 0.25s ease-out;
 }
 
 /* CSS */
@@ -47,5 +48,17 @@ body {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-16px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
