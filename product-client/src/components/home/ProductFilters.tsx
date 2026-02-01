@@ -20,12 +20,10 @@ export default function ProductFilters({ categories, activeSlug }: ProductFilter
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    // URL Parametreleri
     const currentSortBy = searchParams.get('sortBy');
     const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
     const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
 
-    // URL parametreleri değişince state'i güncelle
     useEffect(() => {
         setMinPrice(searchParams.get('minPrice') || '');
         setMaxPrice(searchParams.get('maxPrice') || '');

@@ -116,6 +116,10 @@
     "StoreProvider": {
         "cart_load_fail": "Cart failed during load"
     },
+    "NotFound": {
+        "message": "Sorry, the page you are looking for could not be found.",
+        "goHome": "Go to Home Page"
+    },
     "ApiErrors": {
         "userEmailAlreadyExists": "This email address is already in use.",
         "userNotFound": "User not found or the password is incorrect.",

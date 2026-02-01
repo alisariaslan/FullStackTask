@@ -116,6 +116,10 @@
     "StoreProvider": {
         "cart_load_fail": "Sepet yüklenirken hata oluştu"
     },
+    "NotFound": {
+        "message": "Üzgünüz, aradığınız sayfa bulunamadı.",
+        "goHome": "Ana Sayfaya Dön"
+    },
     "ApiErrors": {
         "userEmailAlreadyExists": "Bu e-posta adresi zaten kullanılıyor.",
         "userNotFound": "Kullanıcı bulunamadı veya şifre hatalı.",
