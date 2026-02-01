@@ -8,7 +8,7 @@
         "cart": "Sepet",
         "login": "Giriş Yap",
         "register": "Kayıt Ol",
-        "logout": "Çıkış Yap",
+        "logout": "Oturumu Kapat",
         "searchPlaceholder": "Ürün ara..."
     },
     "Home": {
@@ -110,7 +110,8 @@
         "productAdded": "Ürün sepetinize eklendi.",
         "tempAdded": "Ürün çevrimdışı olarak eklendi.",
         "addErrorBackend": "Backend hatası, sepet yerele çeviriliyor:",
-        "added": "Eklendi"
+        "added": "Eklendi",
+        "almostOutOfStok": "Stoğu bitmek üzere!"
     },
     "StoreProvider": {
         "cart_load_fail": "Sepet yüklenirken hata oluştu"

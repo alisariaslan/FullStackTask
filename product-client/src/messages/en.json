@@ -110,7 +110,8 @@
         "productAdded": "Item added to your cart.",
         "tempAdded": "Product added to cart offline.",
         "addErrorBackend": "Backend error, falling back to local:",
-        "added": "Added"
+        "added": "Added",
+        "almostOutOfStok": "Stoğu bitmek üzere!"
     },
     "StoreProvider": {
         "cart_load_fail": "Cart failed during load"

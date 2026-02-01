@@ -25,7 +25,7 @@ export default function MobileFilter({ categories, activeSlug }: MobileFilterPro
                 onClick={() => setOpen(true)}
             >
                 {buttonText}
-                <span>☰</span>
+                <span> ☰</span>
             </Button>
 
             {open && (
@@ -47,7 +47,7 @@ export default function MobileFilter({ categories, activeSlug }: MobileFilterPro
 
                         {/* Content */}
                         <div className="overflow-y-auto p-0">
-                            {/* activeSlug'ı iletiyoruz */}
+
                             <ProductFilters categories={categories} activeSlug={activeSlug} />
                         </div>
                     </div>

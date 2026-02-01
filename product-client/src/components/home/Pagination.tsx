@@ -58,7 +58,7 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
                     </Button>
                 ) : (
                     <Link key={page} href={createPageUrl(page)}>
-                        <div className="h-9 w-9 p-0 flex items-center justify-center border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md text-sm font-medium transition-colors">
+                        <div className="h-9 w-9 p-0 flex items-center justify-center border border-input border-gray-400 bg-background hover:bg-accent hover:text-accent-foreground rounded-md text-sm font-medium transition-colors">
                             {page}
                         </div>
                     </Link>

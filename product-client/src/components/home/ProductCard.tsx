@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Product } from '@/types/productTypes';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { addToCart, fetchCart } from '@/lib/store/features/cart/cartSlice';
-import { Button } from '@/components/shared/Button'; // Güncellenmiş Button
+import { Button } from '@/components/shared/Button';
 import { useTranslations } from 'next-intl';
 import { getPublicImageUrl } from '@/lib/apiHandler';
 import Image from 'next/image';
@@ -36,6 +36,8 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         ? rawImageUrl
         : '/no-image.png';
 
+    // Stok kontrolü
+    const isLowStock = product.stock > 0 && product.stock < 10;
 
     // Stokta yok veya ekleme yapılıyorsa buton pasif olsun
     const isButtonDisabled = product.stock <= 0 || isAdding;
@@ -49,7 +51,8 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
             id: product.id,
             name: product.name,
             price: product.price,
-            imageUrl: product.imageUrl
+            imageUrl: product.imageUrl,
+            categoryName: product.categoryName
         };
 
         try {
@@ -86,7 +89,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                         <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-shimmer bg-[length:200%_100%] z-10" />
                     )}
                     {hasImage ? (
-                        // Resim VARSA Image Component render et
                         <Image
                             src={displayImage}
                             alt={product.name}
@@ -96,12 +98,10 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                         ${isImageLoading && hasImage ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
                     `}
                             onLoad={() => setIsImageLoading(false)}
-                            // Priority prop'u LCP uyarısını çözer 
                             priority={priority}
                             loading={priority ? undefined : "lazy"}
                         />
                     ) : (
-                        // Resim YOKSA SVG render et
                         <div className="flex flex-col items-center justify-center text-gray-300">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -118,12 +118,6 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                                 <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                             </svg>
                         </div>
-                    )}
-
-                    {product.stock < 10 && product.stock > 0 && (
-                        <span className="absolute top-3 right-3 bg-red-500/10 text-red-600 border border-red-200 text-xs font-bold px-2 py-1 rounded-full z-20 backdrop-blur-sm">
-                            {product.stock}
-                        </span>
                     )}
                 </div>
 
@@ -158,18 +152,25 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                         </span>
                     </div>
 
-                    {/* --- Sepete Ekle Butonu (Refactored) --- */}
+                    {/* --- Sepete Ekle Butonu --- */}
                     <Button
                         onClick={handleAddToCart}
                         disabled={isButtonDisabled}
                         isLoading={isAdding}
-                        className="w-full"
+                        className={`w-full ${isLowStock ? 'animate-bounce' : ''}`}
                         variant="primary"
                     >
                         {product.stock > 0
                             ? (isAdding ? t('added') : t('addToCart'))
                             : t('outOfStock')}
                     </Button>
+
+                    {/* --- Stok Az Kaldı Uyarısı Metni --- */}
+                    {isLowStock && (
+                        <p className="text-xs text-red-500 font-medium text-center mt-2">
+                            {t('almostOutOfStok')}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

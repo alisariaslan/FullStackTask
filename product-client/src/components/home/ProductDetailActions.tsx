@@ -1,3 +1,5 @@
+// ProductDetailActions.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -71,7 +73,7 @@ export default function ProductDetailActions({ product }: { product: Product }) 
 
             {product.stock > 0 && product.stock < 10 && (
                 <p className="text-sm text-red-500 font-medium text-center">
-                    Son {product.stock} ürün kaldı!
+                    {t('almostOutOfStok')}
                 </p>
             )}
         </div>

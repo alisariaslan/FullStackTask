@@ -1,5 +1,3 @@
-// Navbar.tsx
-
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
@@ -91,7 +89,7 @@ export default function Navbar() {
                     <Input
                         type="text"
                         placeholder={t('searchPlaceholder') || "Ürün ara..."}
-                        className="pr-10" // İkon için sağ boşluk bıraktık
+                        className="pr-10"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -146,19 +144,19 @@ export default function Navbar() {
                     </div>
 
                     <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        onClick={() => setIsMobileMenuOpen(true)}
                         className="md:hidden p-2 text-gray-600 hover:text-primary transition-colors focus:outline-none"
                     >
-                        {isMobileMenuOpen ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                        )}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Search Bar */}
+            {/* Mobile Search Bar  */}
             <div className="md:hidden px-4 pb-3 border-b border-gray-100">
                 <form onSubmit={handleFormSubmit} className="relative">
                     <Input
@@ -174,44 +172,57 @@ export default function Navbar() {
                 </form>
             </div>
 
-            {/* Mobile Menu Content */}
+            {/* Mobile Menu Overlay  */}
             {isMobileMenuOpen && (
-                <div className="md:hidden absolute top-[calc(100%)] left-0 w-full bg-white shadow-xl border-t border-gray-100 z-40 animate-in slide-in-from-top-2 fade-in-20">
-                    <div className="flex flex-col p-4 space-y-4">
-                        {isAuthenticated && user ? (
-                            <>
-                                <div className="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg">
-                                    <span className="text-xs text-gray-500">Giriş yapıldı</span>
-                                    <span className="text-sm font-semibold text-gray-900">{user.email}</span>
-                                </div>
-                                <Button
-                                    onClick={handleLogout}
-                                    variant="outline"
-                                    className="w-full justify-start text-red-600 border-red-100 hover:bg-red-50"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                                    {t('logout')}
-                                </Button>
-                            </>
-                        ) : (
-                            <div className="grid grid-cols-2 gap-3">
-                                <Link href="/login" className="w-full">
-                                    <Button variant="outline" className="w-full justify-center">
-                                        {t('login')}
-                                    </Button>
-                                </Link>
-                                <Link href="/register" className="w-full">
-                                    <Button className="w-full justify-center bg-primary hover:bg-primary-dark text-primary-foreground">
-                                        {t('register')}
-                                    </Button>
-                                </Link>
-                            </div>
-                        )}
-                    </div>
+                <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setIsMobileMenuOpen(false)}>
                     <div
-                        className="fixed inset-0 z-[-1] h-screen"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    ></div>
+                        onClick={(e) => e.stopPropagation()}
+                        className="absolute top-0 left-0 right-0 bg-white rounded-b-2xl max-h-[90vh] flex flex-col animate-slideDown shadow-2xl"
+                    >
+                        {/* Header */}
+                        <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b bg-white rounded-t-2xl">
+                            <h2 className="font-semibold text-base">{t('title') || 'Menü'}</h2>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-lg"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex flex-col p-4 space-y-4 overflow-y-auto">
+                            {isAuthenticated && user ? (
+                                <>
+                                    <div className="flex flex-col gap-1 p-3 bg-gray-50 rounded-lg">
+                                        <span className="text-xs text-gray-500">Giriş yapıldı</span>
+                                        <span className="text-sm font-semibold text-gray-900">{user.email}</span>
+                                    </div>
+                                    <Button
+                                        onClick={handleLogout}
+                                        variant="outline"
+                                        className="w-full justify-start text-red-600 border-red-100 hover:bg-red-50"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                        {t('logout')}
+                                    </Button>
+                                </>
+                            ) : (
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Link href="/login" className="w-full">
+                                        <Button variant="outline" className="w-full justify-center">
+                                            {t('login')}
+                                        </Button>
+                                    </Link>
+                                    <Link href="/register" className="w-full">
+                                        <Button className="w-full justify-center bg-primary hover:bg-primary-dark text-primary-foreground">
+                                            {t('register')}
+                                        </Button>
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
         </header>

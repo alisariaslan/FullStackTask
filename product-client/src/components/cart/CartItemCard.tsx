@@ -20,6 +20,7 @@ interface CartItemProps {
         price: number;
         quantity: number;
         imageUrl?: string;
+        categoryName?: string;
     },
     priority?: boolean;
 }
@@ -89,6 +90,14 @@ export default function CartItemCard({ product, priority = false }: CartItemProp
 
             {/* --- BİLGİ ALANI --- */}
             <div className="flex-1 text-center sm:text-left w-full">
+
+                {/* Kategori Adı Gösterimi */}
+                {product.categoryName && (
+                    <span className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1 block">
+                        {product.categoryName}
+                    </span>
+                )}
+
                 <h3 className="font-semibold text-lg text-foreground line-clamp-1">
                     {product.name}
                 </h3>
@@ -144,7 +153,7 @@ export default function CartItemCard({ product, priority = false }: CartItemProp
                             <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
                         </svg>
                         <span className="underline decoration-transparent group-hover:decoration-red-700">
-                            Sil
+                            {t('remove')}
                         </span>
                     </button>
                 </div>
