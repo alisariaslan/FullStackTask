@@ -39,13 +39,14 @@ namespace Services.Product.Application.Features.Products.Queries.GetProductById
 
             var result = new ProductDto(
                  product.Id,
-                 pTranslation?.Name ?? "No Name",
+                 pTranslation?.Name ?? string.Empty,
                  pTranslation?.Description ?? string.Empty,
                  product.Price,
                  product.Stock,
                  product.ImageUrl,
                  product.CategoryId,
-                 cTranslation?.Name ?? "Uncategorized"
+                 pTranslation?.Slug ?? string.Empty,
+                 cTranslation?.Name ?? string.Empty
              );
 
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20) };

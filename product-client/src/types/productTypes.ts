@@ -10,6 +10,7 @@ export interface Product {
     imageUrl: string;
     categoryId: string;
     categoryName: string;
+    slug: string;
 }
 
 

@@ -17,13 +17,15 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
         private readonly IConnectionMultiplexer _redisConnection;
         private readonly IImageService _imageService;
         private readonly IPublishEndpoint _publishEndpoint;
-        public CreateProductCommandHandler(IProductRepository repository, ICategoryRepository categoryRepository, IConnectionMultiplexer redisConnection, IImageService imageService, IPublishEndpoint publishEndpoint)
+        private readonly IProductSlugService _slugService;
+        public CreateProductCommandHandler(IProductRepository repository, ICategoryRepository categoryRepository, IConnectionMultiplexer redisConnection, IImageService imageService, IPublishEndpoint publishEndpoint, IProductSlugService slugService)
         {
             _repository = repository;
             _categoryRepository = categoryRepository;
             _redisConnection = redisConnection;
             _imageService = imageService;
             _publishEndpoint = publishEndpoint;
+            _slugService = slugService;
         }
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -43,15 +45,7 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
                 throw new ValidationException(Messages.CategoryNotFound);
             }
 
-            string baseSlug = request.Name.ToSlug();
-            string finalSlug = baseSlug;
-            int counter = 1;
-
-            while (await _repository.SlugExistsAsync(finalSlug))
-            {
-                finalSlug = $"{baseSlug}-{counter}";
-                counter++;
-            }
+            var slug = await _slugService.GenerateUniqueSlugAsync(request.Name,request.LanguageCode);
 
             string imageUrl;
 
@@ -65,9 +59,10 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
                 imageUrl = await _imageService.SaveImageAsync(Stream.Null, "", cancellationToken);
             }
 
+            var newProdId = Guid.NewGuid();
             var newProduct = new ProductEntity
             {
-                Id = Guid.NewGuid(),
+                Id = newProdId,
                 Price = request.Price,
                 Stock = request.Stock,
                 CategoryId = request.CategoryId,
@@ -77,10 +72,11 @@ namespace Services.Product.Application.Features.Products.Commands.CreateProduct
                     new ProductTranslationEntity
                     {
                         Id = Guid.NewGuid(),
+                        ProductId = newProdId,
                         LanguageCode =request.LanguageCode,
                         Name = request.Name,
                         Description = request.Description,
-                        Slug = finalSlug
+                        Slug = slug
                     }
                 }
             };

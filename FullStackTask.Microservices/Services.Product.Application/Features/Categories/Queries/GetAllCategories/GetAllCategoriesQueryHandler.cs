@@ -19,7 +19,7 @@ namespace Services.Product.Application.Features.Categories.Queries.GetAllCategor
 
         public async Task<List<CategoryDto>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            string cacheKey = $"all_categories_{request.LanguageCode}";
+            string cacheKey = $"categories_{request.LanguageCode}";
             var cachedData = await _cache.GetStringAsync(cacheKey, cancellationToken);
 
             if (!string.IsNullOrEmpty(cachedData))
@@ -36,7 +36,7 @@ namespace Services.Product.Application.Features.Categories.Queries.GetAllCategor
 
                 return new CategoryDto(
                     c.Id,
-                    translation?.Name ?? "No Name",
+                    translation?.Name ?? string.Empty,
                     translation?.Slug ?? string.Empty
                 );
             }).ToList();

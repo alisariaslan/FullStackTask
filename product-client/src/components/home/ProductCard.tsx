@@ -46,7 +46,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         setIsAdding(true);
 
         const itemDto = {
-            id: product.id.toString(),
+            id: product.id,
             name: product.name,
             price: product.price,
             imageUrl: product.imageUrl
@@ -62,7 +62,9 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                 toast.success(t('productAdded'));
             }
         } catch (error) {
-            console.error(t('addErrorBackend'), error);
+            const isSilentMode = process.env.NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS === '1';
+            if (!isSilentMode)
+                console.error(t('addErrorBackend'), error);
             dispatch(addToCart(itemDto));
             toast.warning(t('tempAdded'));
         } finally {
@@ -75,7 +77,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
     return (
         <div className="group border border-border rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 bg-background text-foreground flex flex-col justify-between h-full overflow-hidden">
 
-            <Link href={`/product/${product.id}`} className="block">
+            <Link href={`/${product.slug}`} className="block">
 
                 {/* --- GÖRSEL --- */}
                 <div className="w-full h-56 bg-secondary flex items-center justify-center overflow-hidden relative">
@@ -109,7 +111,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                                 strokeWidth="1"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                className="w-32 h-32 mb-4"
+                                className="w-32 h-32"
                             >
                                 <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
                                 <circle cx="9" cy="9" r="2" />

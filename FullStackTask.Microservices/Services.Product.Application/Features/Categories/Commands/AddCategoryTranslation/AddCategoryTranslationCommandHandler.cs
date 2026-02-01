@@ -4,6 +4,7 @@ using Services.Product.Application.Interfaces;
 using Services.Product.Domain.Entities;
 using Shared.Kernel.Constants;
 using Shared.Kernel.Extensions;
+using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
 namespace Services.Product.Application.Features.Categories.Commands.AddCategoryTranslation
@@ -11,12 +12,14 @@ namespace Services.Product.Application.Features.Categories.Commands.AddCategoryT
     public class AddCategoryTranslationCommandHandler : IRequestHandler<AddCategoryTranslationCommand, Unit>
     {
         private readonly ICategoryRepository _repository;
-        private readonly IDistributedCache _cache;
+        private readonly IConnectionMultiplexer _redisConnection;
+        private readonly ICategorySlugService _slugService;
 
-        public AddCategoryTranslationCommandHandler(ICategoryRepository repository, IDistributedCache cache)
+        public AddCategoryTranslationCommandHandler(ICategoryRepository repository,  IConnectionMultiplexer redisConnection, ICategorySlugService slugService)
         {
             _repository = repository;
-            _cache = cache;
+            _redisConnection = redisConnection;
+            _slugService = slugService;
         }
 
         public async Task<Unit> Handle(AddCategoryTranslationCommand request, CancellationToken cancellationToken)
@@ -27,16 +30,7 @@ namespace Services.Product.Application.Features.Categories.Commands.AddCategoryT
             if (category.Translations.Any(t => t.LanguageCode == request.LanguageCode))
                 throw new ValidationException(Messages.TranslationAlreadyExists);
 
-            // Slug oluşturma
-            string baseSlug = request.Name.ToSlug();
-            string finalSlug = baseSlug;
-            int counter = 1;
-
-            while (await _repository.SlugExistsAsync(finalSlug))
-            {
-                finalSlug = $"{baseSlug}-{counter}";
-                counter++;
-            }
+            var slug = await _slugService.GenerateUniqueSlugAsync(request.Name,request.LanguageCode);
 
             category.Translations.Add(new CategoryTranslationEntity
             {
@@ -44,11 +38,12 @@ namespace Services.Product.Application.Features.Categories.Commands.AddCategoryT
                 CategoryId = category.Id,
                 LanguageCode = request.LanguageCode,
                 Name = request.Name,
-                Slug = finalSlug
+                Slug = slug
             });
 
             await _repository.UpdateAsync(category);
-            await _cache.RemoveAsync($"all_categories_{request.LanguageCode}", cancellationToken);
+
+            await _redisConnection.RemoveByPatternAsync("categor*");
 
             return Unit.Value;
         }

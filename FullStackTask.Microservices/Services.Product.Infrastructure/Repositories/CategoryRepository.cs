@@ -28,6 +28,18 @@ namespace Services.Product.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<CategoryEntity?> GetBySlugAsync(string slug, string languageCode)
+        {
+            return await _context.Categories
+                .Include(p => p.Translations)
+                .FirstOrDefaultAsync(p =>
+                    p.Translations.Any(t =>
+                        t.Slug == slug &&
+                        t.LanguageCode == languageCode
+                    )
+                );
+        }
+
         public async Task<CategoryEntity?> GetByIdAsync(Guid id)
         {
             return await _context.Categories
@@ -35,11 +47,17 @@ namespace Services.Product.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<bool> SlugExistsAsync(string slug)
+        public async Task<bool> SlugExistsAsync(string slug, string languageCode)
         {
             return await _context.Categories
-                .AnyAsync(c => c.Translations.Any(t => t.Slug == slug));
+                .AnyAsync(p =>
+                    p.Translations.Any(t =>
+                        t.Slug == slug &&
+                        t.LanguageCode == languageCode
+                    )
+                );
         }
+
 
         public async Task UpdateAsync(CategoryEntity category)
         {

@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Shared.Kernel.Extensions
 {
@@ -6,17 +8,34 @@ namespace Shared.Kernel.Extensions
     {
         public static string ToSlug(this string text)
         {
-            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+            if (string.IsNullOrWhiteSpace(text))
+                return string.Empty;
 
-            var s = text.ToLower();
-            s = s.Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u")
-                 .Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
+            text = text.ToLowerInvariant();
 
-            s = Regex.Replace(s, @"[^a-z0-9\s-]", "");
+            // Türkçe karakterler
+            text = text.Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u")
+                       .Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
 
-            s = Regex.Replace(s, @"\s+", "-").Trim();
+            // Unicode normalize (é → e)
+            text = text.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
 
-            return s;
+            foreach (var c in text)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                    sb.Append(c);
+            }
+
+            text = sb.ToString();
+
+            // Alfanumerik + boşluk
+            text = Regex.Replace(text, @"[^a-z0-9\s-]", "");
+
+            // Çoklu boşluk / dash temizliği
+            text = Regex.Replace(text, @"[\s-]+", "-");
+
+            return text.Trim('-');
         }
     }
 }

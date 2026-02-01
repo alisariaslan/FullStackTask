@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Product.Application.Features.Categories.Commands.AddCategoryTranslation;
 using Services.Product.Application.Features.Categories.Commands.CreateCategory;
 using Services.Product.Application.Features.Categories.Queries.GetAllCategories;
+using Services.Product.Application.Features.Categories.Queries.GetCategoryBySlug;
+using Services.Product.Application.Features.Products.Queries.GetProductBySlug;
 using Services.Product.Application.Models;
 using Shared.Kernel.Constants;
 using Shared.Kernel.Models;
@@ -34,6 +36,19 @@ namespace Services.Product.API.Controllers
         {
             var id = await _mediator.Send(command);
             return Ok(ApiResponse<Guid>.Success(id));
+        }
+
+        [HttpGet("by-slug/{slug}")]
+        public async Task<ActionResult<ApiResponse<CategoryDto>>> GetBySlug(string slug, [FromQuery] string languageCode = "en")
+        {
+            var result = await _mediator.Send(
+                new GetCategoryBySlugQuery(slug, languageCode)
+            );
+
+            if (result == null)
+                return NotFound(ApiResponse<CategoryDto>.Fail(Messages.ProductNotFound));
+
+            return Ok(ApiResponse<CategoryDto>.Success(result));
         }
 
         [HttpPost("{id}/translations")]

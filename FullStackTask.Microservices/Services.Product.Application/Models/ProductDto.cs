@@ -8,6 +8,7 @@
         int Stock,
         string? ImageUrl,
         Guid CategoryId,
-        string CategoryName
+          string? Slug,
+        string? CategoryName
     );
 }

@@ -1,37 +1,24 @@
-// Product.tsx
+// src/components/views/ProductDetailView.tsx
 
-import { productService } from '@/services/productService';
 import { getTranslations } from 'next-intl/server';
 import { getPublicImageUrl } from '@/lib/apiHandler';
 import Image from 'next/image';
 import ProductDetailActions from '@/components/home/ProductDetailActions';
-import { notFound } from 'next/navigation';
 import { Link } from '@/navigation';
+import { Product } from '@/types/productTypes'; // Type import'u eklendi
 
-interface Props {
-    params: Promise<{ locale: string; id: string }>;
+interface ProductDetailProps {
+    locale: string;
+    product: Product; // Ürün datası artık dışarıdan geliyor (hazır olarak)
 }
 
-export default async function ProductDetailPage({ params }: Props) {
-    const { locale, id } = await params;
-    const t = await getTranslations({ locale, namespace: 'Product' }); // Veya 'ProductDetail'
-
-    let product = null;
-    try {
-        product = await productService.getById({ id, languageCode: locale });
-    } catch (error) {
-        console.error("Product fetch error:", error);
-    }
-
-    if (!product) {
-        return notFound();
-    }
+export default async function ProductDetailView({ locale, product }: ProductDetailProps) {
+    const t = await getTranslations({ locale, namespace: 'Product' });
 
     // Görsel URL Mantığı
     const rawImageUrl = getPublicImageUrl(product.imageUrl);
 
-    const hasImage =
-        !!rawImageUrl && !rawImageUrl.includes('no-image');
+    const hasImage = !!rawImageUrl && !rawImageUrl.includes('no-image');
 
     const displayImage = hasImage
         ? rawImageUrl
@@ -53,11 +40,10 @@ export default async function ProductDetailPage({ params }: Props) {
                 <div className="bg-background rounded-2xl shadow-sm border border-border overflow-hidden">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8">
 
-                        {/* SOL TARA: GÖRSEL */}
+                        {/* SOL TARAF: GÖRSEL */}
                         <div className="relative h-[400px] lg:h-[600px] bg-white flex items-center justify-center p-8 border-b lg:border-b-0 lg:border-r border-border">
                             <div className="relative w-full h-full flex items-center justify-center">
                                 {hasImage ? (
-                                    // Resim VARSA: Next.js Image Component render et
                                     <Image
                                         src={displayImage!}
                                         alt={product.name}
@@ -66,7 +52,6 @@ export default async function ProductDetailPage({ params }: Props) {
                                         className="object-contain hover:scale-105 transition-transform duration-500"
                                     />
                                 ) : (
-                                    // Resim YOKSA SVG render et
                                     <div className="flex flex-col items-center justify-center text-gray-300">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +61,7 @@ export default async function ProductDetailPage({ params }: Props) {
                                             strokeWidth="1"
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
-                                            className="w-32 h-32 mb-4"
+                                            className="w-64 h-64"
                                         >
                                             <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
                                             <circle cx="9" cy="9" r="2" />
@@ -103,7 +88,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
                             <div className="w-full h-px bg-border mb-8"></div>
 
-                            {/*  Fiyat ve Sepete Ekle Butonu */}
+                            {/* Fiyat ve Sepete Ekle Butonu */}
                             <ProductDetailActions product={product} />
 
                             {/* Ek Bilgiler */}

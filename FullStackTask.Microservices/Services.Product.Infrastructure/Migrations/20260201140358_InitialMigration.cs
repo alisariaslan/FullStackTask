@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Services.Product.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,8 @@ namespace Services.Product.Infrastructure.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,9 +29,9 @@ namespace Services.Product.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LanguageCode = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Slug = table.Column<string>(type: "text", nullable: false)
+                    LanguageCode = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Slug = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,7 +63,7 @@ namespace Services.Product.Infrastructure.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,9 +72,10 @@ namespace Services.Product.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LanguageCode = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Slug = table.Column<string>(type: "text", nullable: false)
+                    LanguageCode = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Slug = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,9 +89,21 @@ namespace Services.Product.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryTranslations_CategoryId",
+                name: "IX_Categories_CreatedDate",
+                table: "Categories",
+                column: "CreatedDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryTranslations_CategoryId_LanguageCode",
                 table: "CategoryTranslations",
-                column: "CategoryId");
+                columns: new[] { "CategoryId", "LanguageCode" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryTranslations_Slug_LanguageCode",
+                table: "CategoryTranslations",
+                columns: new[] { "Slug", "LanguageCode" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -97,9 +111,21 @@ namespace Services.Product.Infrastructure.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductTranslations_ProductId",
+                name: "IX_Products_CreatedDate",
+                table: "Products",
+                column: "CreatedDate");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductTranslations_ProductId_LanguageCode",
                 table: "ProductTranslations",
-                column: "ProductId");
+                columns: new[] { "ProductId", "LanguageCode" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductTranslations_Slug_LanguageCode",
+                table: "ProductTranslations",
+                columns: new[] { "Slug", "LanguageCode" },
+                unique: true);
         }
 
         /// <inheritdoc />

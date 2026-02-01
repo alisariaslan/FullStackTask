@@ -11,11 +11,14 @@ namespace Services.Product.Application.Features.Products.Commands.AddProductTran
     public class AddProductTranslationCommandHandler : IRequestHandler<AddProductTranslationCommand, Unit>
     {
         private readonly IProductRepository _repository;
+        private readonly IProductSlugService _slugService;
         private readonly IConnectionMultiplexer _redisConnection;
 
-        public AddProductTranslationCommandHandler(IProductRepository repository, IConnectionMultiplexer redisConnection)
+        public AddProductTranslationCommandHandler(IProductRepository repository, IProductSlugService 
+            slugService, IConnectionMultiplexer redisConnection)
         {
             _repository = repository;
+            _slugService = slugService;
             _redisConnection = redisConnection;
         }
 
@@ -23,25 +26,12 @@ namespace Services.Product.Application.Features.Products.Commands.AddProductTran
         {
             var product = await _repository.GetByIdAsync(request.ProductId);
             if (product == null)
-            {
                 throw new ValidationException(Messages.ProductNotFound);
-            }
 
-            var existingTranslation = product.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode);
-            if (existingTranslation != null)
-            {
+            if (product.Translations.Any(t => t.LanguageCode == request.LanguageCode))
                 throw new ValidationException(Messages.TranslationAlreadyExists);
-            }
 
-            string baseSlug = request.Name.ToSlug();
-            string finalSlug = baseSlug;
-            int counter = 1;
-
-            while (await _repository.SlugExistsAsync(finalSlug))
-            {
-                finalSlug = $"{baseSlug}-{counter}";
-                counter++;
-            }
+            var slug = await _slugService.GenerateUniqueSlugAsync(request.Name,request.LanguageCode);
 
             var newTranslation = new ProductTranslationEntity
             {
@@ -50,7 +40,7 @@ namespace Services.Product.Application.Features.Products.Commands.AddProductTran
                 LanguageCode = request.LanguageCode,
                 Name = request.Name,
                 Description = request.Description,
-                Slug = finalSlug
+                Slug = slug
             };
 
             product.Translations.Add(newTranslation);

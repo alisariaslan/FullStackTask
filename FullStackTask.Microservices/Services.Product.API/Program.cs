@@ -92,7 +92,9 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 builder.Services.AddHttpContextAccessor();
 
 // Services & Repositories
-// Task: SOLID & clean separation (Infrastructure ↔ Application)
+// Task: SOLID & clean separation (Infrastructure ↔ Application
+builder.Services.AddScoped<ICategorySlugService, CategorySlugService>();
+builder.Services.AddScoped<IProductSlugService,ProductSlugService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

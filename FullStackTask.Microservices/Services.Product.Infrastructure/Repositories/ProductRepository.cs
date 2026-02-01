@@ -32,15 +32,36 @@ namespace Services.Product.Infrastructure.Repositories
            .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<bool> SlugExistsAsync(string slug)
+        public async Task<bool> SlugExistsAsync(string slug, string languageCode)
         {
             return await _context.Products
-                .AnyAsync(p => p.Translations.Any(t => t.Slug == slug));
+                .AnyAsync(p =>
+                    p.Translations.Any(t =>
+                        t.Slug == slug &&
+                        t.LanguageCode == languageCode
+                    )
+                );
         }
+
+
         public async Task UpdateAsync(ProductEntity product)
         {
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ProductEntity?> GetBySlugAsync(string slug, string languageCode)
+        {
+            return await _context.Products
+                .Include(p => p.Translations)
+                .Include(p => p.Category)
+                    .ThenInclude(c => c!.Translations)
+                .FirstOrDefaultAsync(p =>
+                    p.Translations.Any(t =>
+                        t.Slug == slug &&
+                        t.LanguageCode == languageCode
+                    )
+                );
         }
 
         public async Task<PaginatedResult<ProductEntity>> GetFilteredProductsAsync(

@@ -11,8 +11,8 @@ using Services.Auth.Infrastructure.Data;
 namespace Services.Auth.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260129153850_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260201140349_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

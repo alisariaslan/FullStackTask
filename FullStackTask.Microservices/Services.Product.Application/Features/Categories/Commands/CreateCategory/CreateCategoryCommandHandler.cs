@@ -4,6 +4,7 @@ using Services.Product.Application.Interfaces;
 using Services.Product.Domain.Entities;
 using Shared.Kernel.Constants;
 using Shared.Kernel.Extensions;
+using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
 namespace Services.Product.Application.Features.Categories.Commands.CreateCategory
@@ -11,12 +12,14 @@ namespace Services.Product.Application.Features.Categories.Commands.CreateCatego
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Guid>
     {
         private readonly ICategoryRepository _repository;
-        private readonly IDistributedCache _cache;
+        private readonly IConnectionMultiplexer _redisConnection;
+        private readonly ICategorySlugService _slugService;
 
-        public CreateCategoryCommandHandler(ICategoryRepository repository, IDistributedCache cache)
+        public CreateCategoryCommandHandler(ICategoryRepository repository,  IConnectionMultiplexer redisConnection, ICategorySlugService slugService)
         {
             _repository = repository;
-            _cache = cache;
+            _redisConnection = redisConnection;
+            _slugService = slugService;
         }
 
         public async Task<Guid> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -24,34 +27,28 @@ namespace Services.Product.Application.Features.Categories.Commands.CreateCatego
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ValidationException(Messages.NameRequired);
 
-            string baseSlug = request.Name.ToSlug();
-            string finalSlug = baseSlug;
-            int counter = 1;
+            var slug = await _slugService.GenerateUniqueSlugAsync(request.Name,request.LanguageCode);
 
-            while (await _repository.SlugExistsAsync(finalSlug))
-            {
-                finalSlug = $"{baseSlug}-{counter}";
-                counter++;
-            }
-
+            var newCatId = Guid.NewGuid();
             var newCategory = new CategoryEntity
             {
-                Id = Guid.NewGuid(),
+                Id = newCatId,
                 Translations = new List<CategoryTranslationEntity>
                 {
                     new CategoryTranslationEntity
                     {
                         Id = Guid.NewGuid(),
+                        CategoryId = newCatId,
                         LanguageCode = request.LanguageCode,
                         Name = request.Name,
-                       Slug = finalSlug
+                       Slug = slug
                     }
                 }
             };
 
             await _repository.AddAsync(newCategory);
 
-            await _cache.RemoveAsync($"all_categories_{request.LanguageCode}", cancellationToken);
+            await _redisConnection.RemoveByPatternAsync("categor*");
 
             return newCategory.Id;
         }

@@ -22,7 +22,7 @@ export default function ProductDetailActions({ product }: { product: Product }) 
         setIsAdding(true);
 
         const itemDto = {
-            id: product.id.toString(),
+            id: product.id,
             name: product.name,
             price: product.price,
             imageUrl: product.imageUrl
@@ -38,7 +38,6 @@ export default function ProductDetailActions({ product }: { product: Product }) 
                 toast.success(t('productAdded'));
             }
         } catch (error) {
-            console.error('Error adding to cart:', error);
             dispatch(addToCart(itemDto));
             toast.warning(t('tempAdded'));
         } finally {

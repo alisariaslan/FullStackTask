@@ -6,10 +6,10 @@ namespace Services.Product.Application.Interfaces
     public interface IProductRepository
     {
 
-
+        Task<ProductEntity?> GetBySlugAsync(string slug, string languageCode);
         Task AddAsync(ProductEntity product);
         Task<ProductEntity?> GetByIdAsync(Guid id);
-        Task<bool> SlugExistsAsync(string slug);
+        Task<bool> SlugExistsAsync(string slug, string languageCode);
         Task UpdateAsync(ProductEntity product);
 
         Task<PaginatedResult<ProductEntity>> GetFilteredProductsAsync(

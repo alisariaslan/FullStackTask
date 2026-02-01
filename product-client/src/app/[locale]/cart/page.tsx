@@ -49,7 +49,7 @@ export default function CartPage() {
                     {items.map((item, index) => (
                         <CartItemCard
                             key={item.id}
-                            item={item}
+                            product={item}
                             // LCP uyarısı için ilk 6 item ı hızlı render ediyoruz
                             priority={index < 6}
                         />

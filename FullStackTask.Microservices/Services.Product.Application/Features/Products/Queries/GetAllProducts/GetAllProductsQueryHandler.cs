@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Services.Product.Application.Interfaces;
 using Services.Product.Application.Models;
 using Shared.Kernel.Models;
+using StackExchange.Redis;
 using System.Text.Json;
 
 namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
@@ -24,8 +25,8 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
 
             string cacheKey = $"products_{request.LanguageCode}_{request.PageNumber}_{request.PageSize}_{normalizedSearch}_{request.CategoryId}_{request.MinPrice}_{request.MaxPrice}_{request.SortBy}";
 
-
             var cachedData = await _cache.GetStringAsync(cacheKey, cancellationToken);
+
             if (!string.IsNullOrEmpty(cachedData))
             {
                 return JsonSerializer.Deserialize<PaginatedResult<ProductDto>>(cachedData)!;
@@ -42,13 +43,14 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
 
                 return new ProductDto(
                     p.Id,
-                    pTranslation?.Name ?? "No Name",
+                    pTranslation?.Name ?? string.Empty,
                     pTranslation?.Description ?? string.Empty,
                     p.Price,
                     p.Stock,
                     p.ImageUrl,
                     p.CategoryId,
-                    cTranslation?.Name ?? "Uncategorized"
+                    pTranslation?.Slug ?? string.Empty,
+                    cTranslation?.Name ?? string.Empty
                 );
             }).ToList();
 

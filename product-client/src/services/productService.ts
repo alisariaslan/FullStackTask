@@ -4,7 +4,8 @@ import { Product, ProductQueryParams, AddProductTranslationInput, GetProductById
 import { PaginatedResult } from '@/types/sharedTypes';
 
 export const productService = {
-    // GET: /api/Products?PageNumber=1&LanguageCode=en...
+
+    // Tüm ürünleri filtreleyerek getir
     async getAll(params: ProductQueryParams = {}): Promise<PaginatedResult<Product>> {
         const queryParams = new URLSearchParams();
 
@@ -22,7 +23,20 @@ export const productService = {
         });
     },
 
-    // GET: /api/Products/{id}?LanguageCode=en
+    //  Slug ile ürün getir
+    async getBySlug(slug: string, languageCode: string = 'en'): Promise<Product | null> {
+        try {
+            const endpoint = `/api/Products/by-slug/${slug}?languageCode=${languageCode}`;
+            const response = await apiRequest<Product>(endpoint, {
+                cache: 'no-store'
+            });
+            return response;
+        } catch (error) {
+            return null;
+        }
+    },
+
+    // Id ile ürün getir
     async getById(params: GetProductByIdInput): Promise<Product> {
         let endpoint = `/api/Products/${params.id}`;
 
@@ -35,7 +49,7 @@ export const productService = {
         });
     },
 
-    // POST: /api/Products
+    // Ürün oluştur
     async create(
         name: string,
         price: number,
@@ -63,7 +77,7 @@ export const productService = {
         });
     },
 
-    // POST: /api/Products/{id}/translations
+    // Ürün için çeviri oluştur
     async addTranslation(data: AddProductTranslationInput): Promise<void> {
         return apiRequest<void>(`/api/Products/${data.productId}/translations`, {
             method: 'POST',
