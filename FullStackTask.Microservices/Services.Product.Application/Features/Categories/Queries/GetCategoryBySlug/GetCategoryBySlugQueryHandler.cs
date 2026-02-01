@@ -30,14 +30,12 @@ namespace Services.Product.Application.Features.Categories.Queries.GetCategoryBy
                 return JsonSerializer.Deserialize<CategoryDto>(cachedData);
             }
 
-            var category = await _repository.GetBySlugAsync(request.Slug, request.LanguageCode); //SEO SAFE
+            var category = await _repository.GetBySlugAsync(request.Slug, request.LanguageCode);
             if (category == null)
                 return null;
 
-            var cTranslation = category.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode);  //SEO SAFE
-            if (cTranslation == null)
-                return null;
-
+            var cTranslation = category.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)  
+                ?? category.Translations.FirstOrDefault(); // (Web ürününün kapsamına göre tartışılabilir)
 
             var result = new CategoryDto(
                 category.Id,

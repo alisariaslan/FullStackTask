@@ -9,6 +9,7 @@
         string? ImageUrl,
         Guid CategoryId,
           string? Slug,
-        string? CategoryName
+        string? CategoryName,
+        string? CategorySlug
     );
 }

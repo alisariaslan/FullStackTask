@@ -34,8 +34,8 @@ namespace Services.Product.Infrastructure.Repositories
                 .Include(p => p.Translations)
                 .FirstOrDefaultAsync(p =>
                     p.Translations.Any(t =>
-                        t.Slug == slug &&
-                        t.LanguageCode == languageCode
+                        t.Slug == slug 
+                       // && t.LanguageCode == languageCode (Web ürününün kapsamına göre tartışılabilir)
                     )
                 );
         }
@@ -52,8 +52,8 @@ namespace Services.Product.Infrastructure.Repositories
             return await _context.Categories
                 .AnyAsync(p =>
                     p.Translations.Any(t =>
-                        t.Slug == slug &&
-                        t.LanguageCode == languageCode
+                        t.Slug == slug 
+                    // && t.LanguageCode == languageCode (Web ürününün kapsamına göre tartışılabilir)
                     )
                 );
         }

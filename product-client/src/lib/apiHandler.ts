@@ -17,14 +17,11 @@ export const getPublicImageUrl = (path: string | null | undefined) => {
     return `${baseUrl}${path}`;
 };
 
-export async function apiRequest<T>(
-    endpoint: string,
-    options: RequestInit = {}
-): Promise<T> {
+export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
 
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-    let token: string | null = null;
+    let token = null;
     if (typeof window !== 'undefined') {
         token = localStorage.getItem('token');
     }
@@ -39,27 +36,9 @@ export async function apiRequest<T>(
 
     const url = `${getBaseUrl()}${cleanEndpoint}`;
 
-    // -----------------------------
-    // Silent mode flags
-    // -----------------------------
     const isMergeRequest = url.includes('/api/Cart');
-
-    const isSilentCartMode =
-        process.env.NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS === '1';
-
-    const isSilentHandlerMode =
-        process.env.NEXT_PUBLIC_SILENT_API_HANDLER === '1';
-
-    const isFullySilent = isMergeRequest && isSilentCartMode;
-
-    const shouldLog = !isFullySilent;
-    const shouldHandleError = !isFullySilent && !isSilentHandlerMode;
-
-    if (shouldLog) {
-        console.log(
-            `API Request (${typeof window === 'undefined' ? 'Server' : 'Client'}): ${url}`
-        );
-    }
+    const isSilentMode = process.env.NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS === '1';
+    const shouldLog = !(isMergeRequest && isSilentMode);
 
     try {
         const response = await fetch(url, {
@@ -93,33 +72,16 @@ export async function apiRequest<T>(
 
         if (!apiResponse.isSuccess) {
             const failMessage =
-                (apiResponse.errors && apiResponse.errors.length > 0
-                    ? apiResponse.errors[0]
-                    : null) ||
+                (apiResponse.errors && apiResponse.errors.length > 0 ? apiResponse.errors[0] : null) ||
                 apiResponse.message ||
                 'ClientErrors.unknown';
 
             throw new Error(failMessage);
         }
-
         return apiResponse.data as T;
 
     } catch (error: any) {
-
-        if (shouldLog) {
-            console.error(`Fetch Error on ${url}:`, error);
-        }
-
-        // 🔕 Handler sessizse normalize edip geç
-        if (!shouldHandleError) {
-            throw new Error('ClientErrors.networkError');
-        }
-
-        if (
-            error?.message &&
-            (error.message.startsWith('ClientErrors.') ||
-                !error.message.includes(' '))
-        ) {
+        if (error.message && (error.message.startsWith('ClientErrors.') || !error.message.includes(' '))) {
             throw error;
         }
 

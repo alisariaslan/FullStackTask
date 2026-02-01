@@ -38,8 +38,11 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
                 request.PageNumber, request.PageSize);
 
             var dtos = pagedEntities.Items.Select(p => {
-                var pTranslation = p.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) ?? p.Translations.FirstOrDefault();
-                var cTranslation = p.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) ?? p.Category?.Translations.FirstOrDefault();
+                var pTranslation = p.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) 
+                ?? p.Translations.FirstOrDefault(); //  (Web ürününün kapsamına göre tartışılabilir)
+
+                var cTranslation = p.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) 
+                ?? p.Category?.Translations.FirstOrDefault();  // (Web ürününün kapsamına göre tartışılabilir)
 
                 return new ProductDto(
                     p.Id,
@@ -50,7 +53,8 @@ namespace Services.Product.Application.Features.Products.Queries.GetAllProducts
                     p.ImageUrl,
                     p.CategoryId,
                     pTranslation?.Slug ?? string.Empty,
-                    cTranslation?.Name ?? string.Empty
+                    cTranslation?.Name ?? string.Empty,
+                       cTranslation?.Slug ?? string.Empty
                 );
             }).ToList();
 

@@ -32,7 +32,7 @@ namespace Services.Product.Application.Features.Categories.Queries.GetAllCategor
             var categoryDtos = categories.Select(c => {
 
                 var translation = c.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
-                                  ?? c.Translations.FirstOrDefault();
+                                  ?? c.Translations.FirstOrDefault(); // (Web ürününün kapsamına göre tartışılabilir)
 
                 return new CategoryDto(
                     c.Id,

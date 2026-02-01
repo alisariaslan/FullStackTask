@@ -32,10 +32,10 @@ namespace Services.Product.Application.Features.Products.Queries.GetProductById
             if (product == null) return null;
 
             var pTranslation = product.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
-                               ?? product.Translations.FirstOrDefault();
+                               ?? product.Translations.FirstOrDefault();    // (Web ürününün kapsamına göre tartışılabilir)
 
             var cTranslation = product.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
-                               ?? product.Category?.Translations.FirstOrDefault();
+                               ?? product.Category?.Translations.FirstOrDefault();  // (Web ürününün kapsamına göre tartışılabilir)
 
             var result = new ProductDto(
                  product.Id,
@@ -46,7 +46,8 @@ namespace Services.Product.Application.Features.Products.Queries.GetProductById
                  product.ImageUrl,
                  product.CategoryId,
                  pTranslation?.Slug ?? string.Empty,
-                 cTranslation?.Name ?? string.Empty
+                 cTranslation?.Name ?? string.Empty,
+                     cTranslation?.Slug ?? string.Empty
              );
 
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20) };

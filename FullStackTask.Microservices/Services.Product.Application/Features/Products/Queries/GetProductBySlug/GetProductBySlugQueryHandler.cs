@@ -34,13 +34,12 @@ namespace Services.Product.Application.Features.Products.Queries.GetProductBySlu
 
             if (product == null) return null;
 
-            var pTranslation =
-                product.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode); // SEO SAFE
-            if (pTranslation == null)
-                return null;
 
-            var cTranslation =
-                product.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode); //SEO SAFE
+            var pTranslation = product.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode) 
+                ?? product.Translations.FirstOrDefault();  // (Web ürününün kapsamına göre tartışılabilir)
+
+            var cTranslation = product.Category?.Translations.FirstOrDefault(t => t.LanguageCode == request.LanguageCode)
+                ?? product.Category?.Translations.FirstOrDefault(); // (Web ürününün kapsamına göre tartışılabilir)
 
             var result = new ProductDto(
                 product.Id,
@@ -51,7 +50,8 @@ namespace Services.Product.Application.Features.Products.Queries.GetProductBySlu
                 product.ImageUrl,
                 product.CategoryId,
                 pTranslation?.Slug,
-                cTranslation?.Name
+                cTranslation?.Name,
+                    cTranslation?.Slug ?? string.Empty
             );
 
             var cacheOptions = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20) };
