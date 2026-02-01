@@ -12,9 +12,9 @@
         "searchPlaceholder": "Ürün ara..."
     },
     "Home": {
-        "title": "Ürünler",
-        "metaTitle": "",
-        "metaDescription": "",
+        "title": "E-Ticaret",
+        "metaTitle": "E-Ticaret",
+        "metaDescription": "E-Ticaret de bir çok ürün seni bekliyor. Hemen alışverişe başla.",
         "price": "Fiyat",
         "stock": "Stok",
         "addToCart": "Sepete Ekle",
@@ -39,6 +39,8 @@
     },
     "Login": {
         "title": "Giriş Yap",
+        "metaTitle": "Giriş Yap - E-Ticaret",
+        "metaDescription": "Hesabınıza giriş yapın ve alışverişe başlayın.",
         "unknownError": "Bilinmeyen bir hata oluştu.",
         "email": "E-posta",
         "emailPlaceholder": "mail@ornek.com",
@@ -50,6 +52,8 @@
     },
     "Register": {
         "title": "Kayıt Ol",
+        "metaTitle": "Kayıt Ol - E-Ticaret",
+        "metaDescription": "Hesabınızı oluşturun ve alışverişe başlayın..",
         "unknownError": "Bilinmeyen bir hata oluştu.",
         "emailPlaceholder": "mail@ornek.com",
         "saving": "Kayıt yapılıyor...",
@@ -59,6 +63,8 @@
     },
     "AddProduct": {
         "title": "Yeni Ürün Ekle",
+        "metaTitle": "Yeni Ürün Ekle - E-Ticaret",
+        "metaDescription": "Yeni bir ürün ekleyerek işletmenizi büyütün.",
         "unknownError": "Bilinmeyen bir hata oluştu.",
         "Errors": {
             "categoryRequired": "Kategori seçimi zorunludur"
@@ -86,6 +92,8 @@
     },
     "Cart": {
         "title": "Alışveriş Sepeti",
+        "metaTitle": "Alışveriş Sepeti - E-Ticaret",
+        "metaDescription": "Sepetinizi görüntüleyin ve alışverişi tamamlayın.",
         "empty": "Sepetiniz şu anda boş.",
         "continueShopping": "Alışverişe Devam Et",
         "price": "Fiyat",
@@ -118,7 +126,9 @@
     },
     "NotFound": {
         "message": "Üzgünüz, aradığınız sayfa bulunamadı.",
-        "goHome": "Ana Sayfaya Dön"
+        "goHome": "Ana Sayfaya Dön",
+        "metaTitle": "Sayfa Bulunamadı - E-Ticaret",
+        "metaDescription": "Üzgünüz, aradığınız sayfa bulunamadı. Ana sayfaya dönerek devam edebilirsiniz."
     },
     "ApiErrors": {
         "userEmailAlreadyExists": "Bu e-posta adresi zaten kullanılıyor.",

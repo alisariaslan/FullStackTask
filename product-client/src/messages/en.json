@@ -13,8 +13,8 @@
     },
     "Home": {
         "title": "Products",
-        "metaTitle": "",
-        "metaDescription": "",
+        "metaTitle": "E-Commerce",
+        "metaDescription": "Many products are waiting for you in E-Commerce. Start shopping now.",
         "price": "Price",
         "stock": "Stock",
         "addToCart": "Add to Cart",
@@ -39,6 +39,8 @@
     },
     "Login": {
         "title": "Login",
+        "metaTitle": "Login - E-Commerce",
+        "metaDescription": "Log in to your account and start shopping.",
         "unknownError": "An unknown error occurred.",
         "email": "Email",
         "emailPlaceholder": "mail@example.com",
@@ -50,6 +52,8 @@
     },
     "Register": {
         "title": "Register",
+        "metaTitle": "Register - E-Commerce",
+        "metaDescription": "Create your account and start shopping.",
         "unknownError": "An unknown error occurred.",
         "emailPlaceholder": "mail@example.com",
         "saving": "Registering...",
@@ -59,6 +63,8 @@
     },
     "AddProduct": {
         "title": "Add New Product",
+        "metaTitle": "Add New Product - E-Commerce",
+        "metaDescription": "Grow your business by adding a new product.",
         "unknownError": "An unknown error occurred.",
         "Errors": {
             "categoryRequired": "Category is required"
@@ -86,6 +92,8 @@
     },
     "Cart": {
         "title": "Shopping Cart",
+        "metaTitle": "Shopping Cart - E-Commerce",
+        "metaDescription": "View your cart and complete your purchase.",
         "empty": "Your cart is currently empty.",
         "continueShopping": "Continue Shopping",
         "price": "Price",
@@ -98,7 +106,7 @@
     "Product": {
         "title": "Products",
         "safePayment": "Safe Payment",
-        "24hourSupport": "7/24 Live Support"
+        "24hourSupport": "24/7 Live Support"
     },
     "ProductCard": {
         "price": "Price",
@@ -111,14 +119,16 @@
         "tempAdded": "Product added to cart offline.",
         "addErrorBackend": "Backend error, falling back to local:",
         "added": "Added",
-        "almostOutOfStok": "Stoğu bitmek üzere!"
+        "almostOutOfStok": "Almost out of stock!"
     },
     "StoreProvider": {
-        "cart_load_fail": "Cart failed during load"
+        "cart_load_fail": "An error occurred while loading the cart"
     },
     "NotFound": {
         "message": "Sorry, the page you are looking for could not be found.",
-        "goHome": "Go to Home Page"
+        "goHome": "Go to Home Page",
+        "metaTitle": "Page Not Found - E-Commerce",
+        "metaDescription": "Sorry, the page you are looking for could not be found. You can continue by returning to the home page."
     },
     "ApiErrors": {
         "userEmailAlreadyExists": "This email address is already in use.",

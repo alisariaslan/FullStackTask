@@ -7,6 +7,7 @@ import { useAppSelector } from '@/lib/store/hooks';
 import { Button } from '@/components/shared/Button';
 import { useTranslations, useLocale } from 'next-intl';
 import CartItemCard from '@/components/cart/CartItemCard';
+import Head from 'next/head';
 
 export default function CartPage() {
     const t = useTranslations('Cart');
@@ -47,65 +48,75 @@ export default function CartPage() {
     }
 
     return (
-        <div className="container mx-auto p-4 max-w-6xl">
-            <h1 className="text-2xl font-bold mb-6 text-foreground flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                {t('title')}
-                <span className="text-sm font-normal text-gray-500 ml-2">({items.length} ürün)</span>
-            </h1>
+        <>
 
-            <div className="flex flex-col lg:flex-row gap-8">
-                {/* Ürün Listesi Sol Taraf */}
-                <div className="lg:w-2/3 space-y-4">
-                    {items.map((item, index) => (
-                        <CartItemCard
-                            key={item.id}
-                            product={item}
-                            // LCP uyarısı için ilk 6 item'ı öncelikli yüklüyoruz
-                            priority={index < 6}
-                        />
-                    ))}
-                </div>
+            <Head>
+                <title>{t('metaTitle')}</title>
+                <meta name="description" content={t('metaDescription')} />
+                <meta name="robots" content="noindex, nofollow" />
+            </Head>
 
-                {/* Sipariş Özeti Sağ Taraf */}
-                <div className="lg:w-1/3">
-                    <div className="bg-background border border-border rounded-lg p-6 shadow-sm sticky top-24">
-                        <h2 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-2">
-                            {t('summary')}
-                        </h2>
 
-                        <div className="space-y-3">
-                            <div className="flex justify-between text-gray-600">
-                                <span>{t('subtotal')}</span>
-                                {/* Formatlanmış Ara Toplam */}
-                                <span>₺{formatPrice(totalAmount)}</span>
+            <div className="container mx-auto p-4 max-w-6xl">
+                <h1 className="text-2xl font-bold mb-6 text-foreground flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    {t('title')}
+                    <span className="text-sm font-normal text-gray-500 ml-2">({items.length} ürün)</span>
+                </h1>
+
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Ürün Listesi Sol Taraf */}
+                    <div className="lg:w-2/3 space-y-4">
+                        {items.map((item, index) => (
+                            <CartItemCard
+                                key={item.id}
+                                product={item}
+                                // LCP uyarısı için ilk 6 item'ı öncelikli yüklüyoruz
+                                priority={index < 6}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Sipariş Özeti Sağ Taraf */}
+                    <div className="lg:w-1/3">
+                        <div className="bg-background border border-border rounded-lg p-6 shadow-sm sticky top-24">
+                            <h2 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-2">
+                                {t('summary')}
+                            </h2>
+
+                            <div className="space-y-3">
+                                <div className="flex justify-between text-gray-600">
+                                    <span>{t('subtotal')}</span>
+                                    {/* Formatlanmış Ara Toplam */}
+                                    <span>₺{formatPrice(totalAmount)}</span>
+                                </div>
+                                <div className="flex justify-between text-gray-600">
+                                    <span>Kargo</span>
+                                    <span className="text-green-600 font-medium">Ücretsiz</span>
+                                </div>
                             </div>
-                            <div className="flex justify-between text-gray-600">
-                                <span>Kargo</span>
-                                <span className="text-green-600 font-medium">Ücretsiz</span>
+
+                            <hr className="my-6 border-dashed border-border" />
+
+                            <div className="flex justify-between mb-6">
+                                <span className="text-lg font-bold text-foreground">{t('total')}</span>
+                                {/* Formatlanmış Genel Toplam */}
+                                <span className="text-2xl font-bold text-primary">₺{formatPrice(totalAmount)}</span>
                             </div>
-                        </div>
 
-                        <hr className="my-6 border-dashed border-border" />
+                            <Button className="w-full bg-primary hover:bg-primary-dark text-primary-foreground py-4 text-lg font-semibold shadow-xl transition-transform hover:-translate-y-1">
+                                {t('checkout')}
+                            </Button>
 
-                        <div className="flex justify-between mb-6">
-                            <span className="text-lg font-bold text-foreground">{t('total')}</span>
-                            {/* Formatlanmış Genel Toplam */}
-                            <span className="text-2xl font-bold text-primary">₺{formatPrice(totalAmount)}</span>
-                        </div>
-
-                        <Button className="w-full bg-primary hover:bg-primary-dark text-primary-foreground py-4 text-lg font-semibold shadow-xl transition-transform hover:-translate-y-1">
-                            {t('checkout')}
-                        </Button>
-
-                        <div className="mt-4 text-center">
-                            <Link href="/" className="text-sm text-gray-500 hover:text-foreground underline">
-                                {t('continueShopping')}
-                            </Link>
+                            <div className="mt-4 text-center">
+                                <Link href="/" className="text-sm text-gray-500 hover:text-foreground underline">
+                                    {t('continueShopping')}
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }

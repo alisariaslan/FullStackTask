@@ -14,6 +14,7 @@ import { mergeLocalCart } from '@/lib/store/features/cart/cartSlice';
 import { Link } from '@/navigation';
 import ErrorMessage from '@/components/shared/ErrorMessage';
 import { jwtDecode } from "jwt-decode";
+import Head from 'next/head';
 
 export default function LoginPage() {
     const t = useTranslations('Login');
@@ -61,53 +62,61 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
+        <>
+            <Head>
+                <title>{t('metaTitle')}</title>
+                <meta name="description" content={t('metaDescription')} />
+                <meta name="robots" content="noindex, nofollow" />
+            </Head>
 
-            <div className="w-full max-w-md bg-background p-8 rounded-lg shadow-md border border-border">
-                <h1 className="text-2xl font-bold mb-6 text-center text-foreground">
-                    {t('title')}
-                </h1>
+            <div className="container mx-auto p-4 flex justify-center items-center min-h-[80vh]">
 
-                {error && <ErrorMessage message={error} />}
+                <div className="w-full max-w-md bg-background p-8 rounded-lg shadow-md border border-border">
+                    <h1 className="text-2xl font-bold mb-6 text-center text-foreground">
+                        {t('title')}
+                    </h1>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-foreground mb-1">E-Posta</label>
-                        <Input
-                            type="email"
-                            required
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            placeholder={t('emailPlaceholder')}
+                    {error && <ErrorMessage message={error} />}
 
-                        />
-                    </div>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1">E-Posta</label>
+                            <Input
+                                type="email"
+                                required
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                placeholder={t('emailPlaceholder')}
 
-                    <div>
-                        <label className="block text-sm font-medium text-foreground mb-1">Şifre</label>
-                        <Input
-                            type="password"
-                            required
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            placeholder="******"
-                        />
-                    </div>
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1">Şifre</label>
+                            <Input
+                                type="password"
+                                required
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                placeholder="******"
+                            />
+                        </div>
 
 
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full mt-2 bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
-                    >
-                        {loading ? t('logginIn') : t('login')}
-                    </Button>
-                </form>
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full mt-2 bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                        >
+                            {loading ? t('logginIn') : t('login')}
+                        </Button>
+                    </form>
 
-                <p className="mt-4 text-center text-sm text-foreground/70">
-                    {t('dontHaveAccount')} <Link href="/register" className="text-primary hover:underline font-medium">{t('registerLink')}</Link>
-                </p>
+                    <p className="mt-4 text-center text-sm text-foreground/70">
+                        {t('dontHaveAccount')} <Link href="/register" className="text-primary hover:underline font-medium">{t('registerLink')}</Link>
+                    </p>
+                </div>
             </div>
-        </div>
+        </>
     );
 }

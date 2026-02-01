@@ -6,7 +6,6 @@ import Image from 'next/image';
 import ProductDetailActions from '@/components/home/ProductDetailActions';
 import { Link } from '@/navigation';
 import { Product } from '@/types/productTypes';
-import { categoryService } from '@/services/categoryService'; // EKLENDİ
 
 interface ProductDetailProps {
     locale: string;
@@ -24,84 +23,105 @@ export default async function ProductDetailView({ locale, product }: ProductDeta
     const hasImage = !!rawImageUrl && !rawImageUrl.includes('no-image');
     const displayImage = hasImage ? rawImageUrl : '/no-image.png';
 
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        image: [displayImage],
+        description: product.description,
+        sku: product.id,
+        offers: {
+            '@type': 'Offer',
+            price: product.price,
+            priceCurrency: 'TRY',
+            availability: 'https://schema.org/InStock',
+        }
+    };
+
     return (
-        <main className="min-h-screen bg-secondary/30 py-12 animate-fade-in">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
 
-                {/* BREADCRUMB / NAVİGASYON */}
-                <nav className="mb-8 flex items-center text-sm text-gray-500">
-                    {/* Anasayfa / Ürünler Linki */}
-                    <Link href={`/`} className="hover:text-primary transition-colors">
-                        {t('title')}
-                    </Link>
+            <main className="min-h-screen bg-secondary/30 py-12 animate-fade-in">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                    {/* Araya Kategori Linki Ekliyoruz */}
-                    {categorySlug && (
-                        <>
-                            <span className="mx-2">/</span>
-                            <Link
-                                href={`/${categorySlug}`}
-                                className="hover:text-primary transition-colors font-medium text-gray-700"
-                            >
-                                {categoryName}
-                            </Link>
-                        </>
-                    )}
+                    {/* BREADCRUMB / NAVİGASYON */}
+                    <nav className="mb-8 flex items-center text-sm text-gray-500">
+                        {/* Anasayfa / Ürünler Linki */}
+                        <Link href={`/`} className="hover:text-primary transition-colors">
+                            {t('title')}
+                        </Link>
 
-                    <span className="mx-2">/</span>
-                    <span className="text-foreground font-medium truncate max-w-[200px] sm:max-w-md">
-                        {product.name}
-                    </span>
-                </nav>
+                        {/* Araya Kategori Linki  */}
+                        {categorySlug && (
+                            <>
+                                <span className="mx-2">/</span>
+                                <Link
+                                    href={`/${categorySlug}`}
+                                    className="hover:text-primary transition-colors font-medium text-gray-700"
+                                >
+                                    {categoryName}
+                                </Link>
+                            </>
+                        )}
 
-                <div className="bg-background rounded-2xl shadow-sm border border-border overflow-hidden">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8">
-                        {/* ... Geri kalan kodlar aynı ... */}
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground font-medium truncate max-w-[200px] sm:max-w-md">
+                            {product.name}
+                        </span>
+                    </nav>
 
-                        {/* Görsel ve Sağ Taraf İçerikleri buraya gelecek */}
-                        <div className="relative h-[400px] lg:h-[600px] bg-white flex items-center justify-center p-8 border-b lg:border-b-0 lg:border-r border-border">
-                            <div className="relative w-full h-full flex items-center justify-center">
-                                {hasImage ? (
-                                    <Image
-                                        src={displayImage!}
-                                        alt={product.name}
-                                        fill
-                                        priority
-                                        className="object-contain hover:scale-105 transition-transform duration-500"
-                                    />
-                                ) : (
-                                    // Placeholder icon...
-                                    <div className="flex flex-col items-center justify-center text-gray-300">
-                                        {/* SVG Icon */}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                    <div className="bg-background rounded-2xl shadow-sm border border-border overflow-hidden">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8">
 
-                        {/* SAĞ TARAF */}
-                        <div className="p-8 lg:p-12 flex flex-col justify-center">
-                            {/* Kategori adı burada da dinamik linkli olabilir veya statik kalabilir */}
-                            <Link href={categorySlug ? `/${categorySlug}` : '#'} className="text-primary font-bold uppercase tracking-widest text-sm mb-4 hover:underline w-fit">
-                                {categoryName}
-                            </Link>
-
-                            <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-6 leading-tight">
-                                {product.name}
-                            </h1>
-
-                            {/* ... Diğer detaylar ... */}
-                            <div className="prose prose-gray max-w-none text-gray-600 mb-8 leading-relaxed">
-                                <p>{product.description}</p>
+                            {/* Görsel ve Sağ Taraf İçerikleri*/}
+                            <div className="relative h-[400px] lg:h-[600px] bg-white flex items-center justify-center p-8 border-b lg:border-b-0 lg:border-r border-border">
+                                <div className="relative w-full h-full flex items-center justify-center">
+                                    {hasImage ? (
+                                        <Image
+                                            src={displayImage!}
+                                            alt={product.name}
+                                            fill
+                                            priority
+                                            className="object-contain hover:scale-105 transition-transform duration-500"
+                                        />
+                                    ) : (
+                                        // Placeholder
+                                        <div className="flex flex-col items-center justify-center text-gray-300">
+                                            {/* SVG Icon */}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="w-full h-px bg-border mb-8"></div>
-                            <ProductDetailActions product={product} />
-                            {/* ... Footer ikonları ... */}
-                        </div>
+                            {/* SAĞ TARAF */}
+                            <div className="p-8 lg:p-12 flex flex-col justify-center">
+                                {/* Kategori adı */}
+                                <Link href={categorySlug ? `/${categorySlug}` : '#'} className="text-primary font-bold uppercase tracking-widest text-sm mb-4 hover:underline w-fit">
+                                    {categoryName}
+                                </Link>
 
+                                <h1 className="text-3xl lg:text-4xl font-bold text-foreground mb-6 leading-tight">
+                                    {product.name}
+                                </h1>
+
+                                {/* ... Diğer detaylar ... */}
+                                <div className="prose prose-gray max-w-none text-gray-600 mb-8 leading-relaxed">
+                                    <p>{product.description}</p>
+                                </div>
+
+                                <div className="w-full h-px bg-border mb-8"></div>
+                                <ProductDetailActions product={product} />
+                                {/* ... Footer ikonları ... */}
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </>
     );
 }

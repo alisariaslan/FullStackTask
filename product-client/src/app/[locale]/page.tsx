@@ -1,5 +1,4 @@
 // Home.tsx
-
 import { productService } from '@/services/productService';
 import { categoryService } from '@/services/categoryService';
 import { Product, ProductQueryParams } from '@/types/productTypes';
@@ -12,16 +11,37 @@ import ProductFilters from '@/components/home/ProductFilters';
 import MobileFilter from '@/components/home/MobileFilter';
 import { Metadata } from 'next';
 
-// Sayfaya özel Metadata
+// Metadata ve SEO ayarları
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const query = await searchParams;
+
+  // Filtre kontrolü
+  const searchTerm = typeof query.searchTerm === 'string' ? query.searchTerm : undefined;
+  const sortBy = typeof query.sortBy === 'string' ? query.sortBy : undefined;
+  const minPrice = typeof query.minPrice === 'string' ? parseFloat(query.minPrice) : undefined;
+  const maxPrice = typeof query.maxPrice === 'string' ? parseFloat(query.maxPrice) : undefined;
+  const page = typeof query.page === 'string' ? parseInt(query.page) : 1;
+
+  const isFiltered = !!searchTerm || !!sortBy || !!minPrice || !!maxPrice || page > 1;
+
+  // Canonical her zaman ana kategori/dil sayfası olmalı
+  const canonicalUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}`;
+
   return {
     alternates: {
-      canonical: `/${locale}`,
+      canonical: canonicalUrl,
+    },
+    // Eğer filtre varsa noindex bas, yoksa index bas
+    robots: {
+      index: !isFiltered,
+      follow: true,
     },
   };
 }
@@ -71,7 +91,6 @@ export default async function Home({
     console.error(e);
   }
 
-  // JSON-LD Schema (ItemList)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -91,7 +110,7 @@ export default async function Home({
 
   return (
     <main className="relative">
-      {/* JSON-LD Script */}
+      {/* JSON-LD Script*/}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
