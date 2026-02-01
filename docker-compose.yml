@@ -192,6 +192,8 @@ services:
       - GATEWAY_URL=http://gateway-yarp:8080
       # B2D
       - NEXT_PUBLIC_GATEWAY_URL=http://localhost:6004
+      - NEXT_PUBLIC_SITE_URL=https://localhost:6005
+      - NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS=1
     ports:
       - "6005:3000"
     volumes:
