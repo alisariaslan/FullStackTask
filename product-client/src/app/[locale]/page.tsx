@@ -1,3 +1,5 @@
+/// app/[locale]/page.tsx (Home)
+
 import { productService } from '@/services/productService';
 import { categoryService } from '@/services/categoryService';
 import { Product, ProductQueryParams } from '@/types/productTypes';
@@ -8,6 +10,25 @@ import AddProductButton from '@/components/home/AddProductButton';
 import Pagination from '@/components/home/Pagination';
 import ProductFilters from '@/components/home/ProductFilters';
 import MobileFilter from '@/components/home/MobileFilter';
+import { Metadata } from 'next';
+
+// Sayfaya özel Metadata
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Home' });
+
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+    alternates: {
+      canonical: `/${locale}`,
+    },
+  };
+}
 
 export default async function Home({
   params,

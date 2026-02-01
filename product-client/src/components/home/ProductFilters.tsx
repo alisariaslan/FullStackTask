@@ -1,3 +1,5 @@
+//ProductFilters.tsx
+
 'use client';
 
 import { useRouter, usePathname } from '@/navigation';

@@ -1,3 +1,5 @@
+// Product.tsx
+
 import { productService } from '@/services/productService';
 import { getTranslations } from 'next-intl/server';
 import { getPublicImageUrl } from '@/lib/apiHandler';

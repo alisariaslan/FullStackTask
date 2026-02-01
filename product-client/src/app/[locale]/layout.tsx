@@ -18,6 +18,8 @@ const poppins = Poppins({
   display: "swap",
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'e-ticaret.com';
+
 export async function generateMetadata({
   params
 }: {
@@ -27,11 +29,37 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: 'Layout' });
 
   return {
+    metadataBase: new URL(BASE_URL),
     title: {
       template: `%s | ${t('title')}`,
       default: t('title'),
     },
     description: t('description'),
+    // Canonical URL ayarı (Varsayılan)
+    alternates: {
+      canonical: './',
+      languages: {
+        'en': '/en',
+        'tr': '/tr',
+      },
+    },
+    // Open Graph (OG) Meta Etiketleri
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: `${BASE_URL}/${locale}`,
+      siteName: t('title'),
+      locale: locale,
+      type: 'website',
+      images: [
+        {
+          url: '/og-image.jpg',
+          width: 1200,
+          height: 630,
+          alt: t('title'),
+        },
+      ],
+    },
     robots: {
       index: true,
       follow: true,
