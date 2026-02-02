@@ -62,9 +62,9 @@ Proje; ölçeklenebilirlik ve sürdürülebilirlik için modüler ve component t
 
 Konfigürasyonlar, **12-Factor App** metodolojisine uygun olarak `.env` dosyaları üzerinden yönetilir:
 
-* `NEXT_PUBLIC_API_URL`
+* `NEXT_PUBLIC_GATEWAY_URL`
   → **YARP Gateway** adresini gösterir (`http://localhost:6004`)
-* `API_URL`
+* `GATEWAY_URL`
   → SSR sırasında kullanılan server-side internal API adresi
 
 ## Kurulum & Deployment

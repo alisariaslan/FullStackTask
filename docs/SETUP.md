@@ -230,10 +230,21 @@ if (typeof window !== 'undefined') {
 
 ### Environment Değişkenleri
 
-```env
-NEXT_PUBLIC_API_URL=http://localhost:6004
-API_URL=http://micro_product_api:8080/api
-```
+- `GATEWAY_URL`  
+  Server-side API URL (SSR/Docker iç ağ)  
+  _Örnek:_ `http://localhost:6004`
+
+- `NEXT_PUBLIC_GATEWAY_URL`  
+  Client-side API URL (tarayıcıdan erişilebilir)  
+  _Örnek:_ `http://localhost:6004`
+
+- `NEXT_PUBLIC_SITE_URL`  
+  Site ana URL, SEO ve Open Graph referansı için  
+  _Örnek:_ `https://localhost:6005`
+
+- `NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS`  
+  Sepet birleştirme hatalarını sessize alır (0 = raporla, 1 = sessiz)
+
 
 ### Kimlik Doğrulama Akışı
 
