@@ -22,70 +22,74 @@ Bu repo, mikroservis tabanlı bir backend ve modern bir frontend’den oluşan f
 
 * Auth, Product ve Log mikroservisleri
 * RabbitMQ tabanlı event iletişimi
-* YARP API Gateway
+* YARP API Gateway (Reverse Proxy)
 * Tamamen Dockerize edilmiş sistem
 
 ## 🧠 Micro-Frontend Kapsam Kararı
 
-Görev tanımında micro-frontend mimarisi (Home & Cart) geçmesine rağmen,
-bu proje; backend mikroservisleri ve **tekil (unified) bir frontend** uygulaması üzerine odaklanmıştır.
+Görev tanımında micro-frontend mimarisi (Home & Cart) geçmesine rağmen; bu proje, backend mikroservisleri ve **tekil (unified) bir frontend** uygulaması üzerine odaklanmıştır.
 
-Bu tercih bilinçli bir şekilde alınmıştır.
-
-Frontend mimarisi modüler bir şekilde kurgulanmıştır ve **büyük bir refactor gerektirmeden**
-ileride micro-frontend yapısına (Multi-Zone veya Module Federation) evrilebilir.
+Bu tercih bilinçli bir şekilde alınmıştır. Frontend mimarisi modüler bir şekilde kurgulanmıştır ve büyük bir refactor gerektirmeden ileride micro-frontend yapısına (Module Federation vb.) evrilebilir.
 
 ## 🔗 Proje Bileşenleri
 
-Detaylı teknik dokümantasyon, mimari kararlar ve kurulum rehberleri için ilgili proje dizinlerini inceleyebilirsiniz:
+Detaylı teknik dokümantasyon, mimari kararlar ve kurulum rehberleri için ilgili dizinleri inceleyebilirsiniz:
 
-* **[Tasarım Kararları](./DESIGN.md)**
-* **[Backend Dökümantasyon](./FullStackTask.Microservices/README.md)**
-* **[Frontend Dökümantasyon](./product-client/README.md)**
+* 📄 **[Tasarım Kararları](./docs/DESIGN.md)**
+* ⚙️ **[Backend Dökümantasyon](./FullStackTask.Microservices/README.md)**
+* 💻 **[Frontend Dökümantasyon](./product-client/README.md)**
+* 🛠️ **[Ortam (Environment) Rehberi](./docs/SETUP.md)**
 
 ## ⚡ Hızlı Kurulum
-
-**Bash**
 
 ```bash
 # Repoyu klonla
 git clone https://github.com/alisariaslan/FullStackTask.git
 
-# Tüm sistemi ayağa kaldır
+# Tüm sistemi Docker üzerinde ayağa kaldır
 docker-compose up --build -d
 ```
 
 # 📖 Kurulum ve Test Rehberi
 
-Bu rehber, projenin başarılı bir şekilde ayağa kaldırılması ve tüm özelliklerin (Auth, CRUD, Event-Bus) test edilmesi için gereken adımları içerir.
+Projenin başarılı bir şekilde ayağa kaldırılması ve tüm servislerin (Auth, CRUD, Event-Bus) test edilmesi için adım adım yönergeler:
 
-➡️ [KURULUM VE TEST](./INSTRUCTIONS.md)
+➡️ **[KURULUM VE TEST ADIMLARI](https://www.google.com/search?q=./INSTRUCTIONS.md)**
 
-## 📊 Dashboard’lar & Arayüz Endpoint’leri
+## 🌿 Branch Stratejisi
 
-Ortam Docker ile ayağa kaldırıldıktan sonra, sistem bileşenlerine aşağıdaki bağlantılar üzerinden erişebilirsiniz:
+Bu projede **GitHub Flow** tabanlı, çevre odaklı (Environment-based) bir branch stratejisi uygulanmaktadır.
 
-### 🌐 Kullanıcı Arayüzleri
+### 📍 Branch Yapısı
 
-* **Ana Web Uygulaması:** [http://localhost:6005](http://localhost:6005/)
+| **Branch** | **Ortam**            | **Açıklama**                                                                                   |
+| ------------------ | ---------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `main`       | **Production**            | Yayındaki kararlı sürümdür. Sadece`dev`branch'inden merge alır.                              |
+| `dev`        | **Development / Staging** | Geliştirme sürecinin toplandığı ana branch'tir. Docker-compose staging testleri burada yapılır. |
+| `feature/*`  | **Local / Feature**       | Yeni özellikler, hata düzeltmeleri veya geliştirmeler için açılan geçici dallardır.            |
 
-### 🛠️ Geliştirme & İzleme
+### 🚀 İş Akışı (Workflow)
 
-| Servis                   | Bağlantı                                   | Kimlik Bilgileri        |
-| -------------------------- | ---------------------------------------------- | ------------------------- |
-| 📊 Structured Logs (Seq) | [http://localhost:6008](http://localhost:6008/) | `admin`/`admin` |
-| 🐇 RabbitMQ Management   | [http://localhost:6003](http://localhost:6003/) | `admin`/`admin` |
+1. **Feature Başlatma:** Her yeni görev için `dev` branch'inden yeni bir dal oluşturun.
+   **Bash**
+   
+   ```
+   git checkout dev
+   git pull origin dev
+   git checkout -b feature/auth-implementation
+   ```
+2. **Geliştirme ve Commit:** Değişikliklerinizi yapın ve anlamlı commit mesajları yazın.
+3. **Local Test:** Docker üzerinde feature branch'inizi test edin.
+4. **Pull Request (PR):** Geliştirme bittiğinde `feature/*` -> `dev` yönüne bir PR açın.
+5. **Merge & Deploy (Dev):** Kod onaylandığında `dev` branch'ine merge edilir ve geliştirme ortamına deploy edilir.
+6. **Release (Prod):**`dev` branch'i stabil hale geldiğinde `main` branch'ine PR açılarak üretim (production) sürümü yayınlanır.
 
-### 📜 API Dokümantasyonu (Swagger)
+### 📝 Commit Mesaj Standartları
 
-* **Auth Service:** [http://localhost:6006/swagger](http://localhost:6006/swagger)
-* **Product Service:** [http://localhost:6007/swagger](http://localhost:6007/swagger)
-* **Log Service:** [http://localhost:6009/swagger](http://localhost:6009/swagger)
+Projenin takibi için **Conventional Commits** yapısını kullanmanız önerilir:
 
-## 📘 Ortam Rehberi
-
-Altyapı, environment değişkenleri, network yapısı ve servisler arası iletişimi
-derinlemesine incelemek isteyenler için:
-
-➡️ [Ortam Dökümantasyon](./SETUP.md)
+* `feat(api):` Yeni bir özellik eklendiğinde.
+* `fix(client):` Bir hata düzeltildiğinde.
+* `docs:` Dokümantasyon değişikliklerinde.
+* `chore:` Paket güncellemesi, build ayarları vb. teknik işlerde.
 
