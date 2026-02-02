@@ -54,7 +54,7 @@ docker-compose up --build -d
 
 Projenin başarılı bir şekilde ayağa kaldırılması ve tüm servislerin (Auth, CRUD, Event-Bus) test edilmesi için adım adım yönergeler:
 
-➡️ **[KURULUM VE TEST ADIMLARI](https://www.google.com/search?q=./INSTRUCTIONS.md)**
+➡️ **[KURULUM VE TEST ADIMLARI](./docs/INSTRUCTIONS.md)**
 
 ## 🌿 Branch Stratejisi
 
