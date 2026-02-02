@@ -129,7 +129,7 @@ export default async function Home({
                   {t('searchResultsFor')} <span className="text-primary">"{searchTerm}"</span>
                 </span>
               ) : (
-                t('title')
+                t('allProducts')
               )}
             </h1>
             <AddProductButton />

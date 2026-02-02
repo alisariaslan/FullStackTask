@@ -37,10 +37,11 @@ Bu tercih bilinçli bir şekilde alınmıştır. Frontend mimarisi modüler bir 
 
 Detaylı teknik dokümantasyon, mimari kararlar ve kurulum rehberleri için ilgili dizinleri inceleyebilirsiniz:
 
-* 📄 **[Tasarım Kararları](./docs/DESIGN.md)**
+* 📄 **[Tasarım Kararları](./docs/design-choices.md)**
 * ⚙️ **[Backend Dökümantasyon](./FullStackTask.Microservices/README.md)**
 * 💻 **[Frontend Dökümantasyon](./product-client/README.md)**
-* 🛠️ **[Ortam (Environment) Rehberi](./docs/SETUP.md)**
+* 🛠️ **[Ortam (Environment) Rehberi](./docs/environments.md)**
+* 🛠️ **[Kullanılan Teknolojiler](./docs/tech-stack.md)**
 
 ## ⚡ Hızlı Kurulum
 

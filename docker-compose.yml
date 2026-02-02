@@ -65,7 +65,7 @@ services:
       dockerfile: Services.Auth.API/Dockerfile
     container_name: micro_auth_api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=${APP_ENV}
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=AuthDb;Username=postgres;Password=a5134ba8
       - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
@@ -94,7 +94,7 @@ services:
       dockerfile: Services.Product.API/Dockerfile
     container_name: micro_product_api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=${APP_ENV}
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
       - ConnectionStrings__Redis=redis-cache:6379
@@ -135,7 +135,7 @@ services:
     ports:
       - "0.0.0.0:6004:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=${APP_ENV}
       - ASPNETCORE_HTTP_PORTS=8080
       - Serilog__WriteTo__1__Name=Seq
       - Serilog__WriteTo__1__Args__serverUrl=http://micro_seq:80
@@ -160,7 +160,7 @@ services:
       dockerfile: Services.Log.API/Dockerfile
     container_name: micro_log_api
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=${APP_ENV}
       - ASPNETCORE_HTTP_PORTS=8080
       - RabbitMQSettings__Host=rabbitmq
       - RabbitMQSettings__Username=guest
