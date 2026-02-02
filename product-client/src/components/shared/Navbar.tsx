@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
+import { FiSearch, FiShoppingCart, FiMenu, FiLogOut } from 'react-icons/fi';
 import { Link, usePathname, useRouter } from '@/navigation';
 import { useSearchParams } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from '@/lib/store/hooks';
@@ -80,7 +81,7 @@ export default function Navbar() {
         <header className="bg-white shadow-sm border-b border-border sticky top-0 z-50">
             <div className="w-full px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
 
-                <Link href="/" className="text-2xl font-bold text-primary flex-shrink-0 z-20">
+                <Link href="/" className="text-2xl font-bold text-primary shrink-0 z-20">
                     {t('title')}
                 </Link>
 
@@ -97,14 +98,14 @@ export default function Navbar() {
                         type="submit"
                         className="absolute right-0 top-0 h-10 w-10 flex items-center justify-center text-gray-500 hover:text-primary transition-colors"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <FiSearch size={18} />
                     </button>
                 </form>
 
-                <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                <div className="flex items-center gap-2 sm:gap-4 shrink-0">
 
                     <Link href="/cart" className="relative group flex items-center gap-2 text-gray-600 hover:text-primary transition-colors p-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <FiShoppingCart size={24} />
                         <span className="font-medium hidden sm:inline">{t('cart')}</span>
                         {totalQuantity > 0 && (
                             <span className="absolute top-0 right-0 sm:-top-2 sm:-right-2 bg-primary text-primary-foreground text-[10px] sm:text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-in zoom-in">
@@ -147,11 +148,7 @@ export default function Navbar() {
                         onClick={() => setIsMobileMenuOpen(true)}
                         className="md:hidden p-2 text-gray-600 hover:text-primary transition-colors focus:outline-none"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg>
+                        <FiMenu size={24} />
                     </button>
                 </div>
             </div>
@@ -167,7 +164,7 @@ export default function Navbar() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button type="submit" className="absolute right-0 top-0 h-10 w-10 flex items-center justify-center text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <FiSearch size={18} />
                     </button>
                 </form>
             </div>
@@ -203,7 +200,7 @@ export default function Navbar() {
                                         variant="outline"
                                         className="w-full justify-start text-red-600 border-red-100 hover:bg-red-50"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                        <FiLogOut size={16} className="mr-2" />
                                         {t('logout')}
                                     </Button>
                                 </>

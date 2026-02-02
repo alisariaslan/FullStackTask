@@ -6,6 +6,7 @@ import Image from 'next/image';
 import ProductDetailActions from '@/components/home/ProductDetailActions';
 import { Link } from '@/navigation';
 import { Product } from '@/types/productTypes';
+import { FiShoppingCart, FiImage } from "react-icons/fi";
 
 interface ProductDetailProps {
     locale: string;
@@ -82,16 +83,18 @@ export default async function ProductDetailView({ locale, product }: ProductDeta
                                 <div className="relative w-full h-full flex items-center justify-center">
                                     {hasImage ? (
                                         <Image
-                                            src={displayImage!}
+                                            src={displayImage}
                                             alt={product.name}
                                             fill
-                                            priority
-                                            className="object-contain hover:scale-105 transition-transform duration-500"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            className={`object-contain p-4 transition-all duration-500 ease-in-out group-hover:scale-105
+                                                         ${hasImage ? "opacity-0 scale-95" : "opacity-100 scale-100"}
+                                                     `}
+
                                         />
                                     ) : (
-                                        // Placeholder
                                         <div className="flex flex-col items-center justify-center text-gray-300">
-                                            {/* SVG Icon */}
+                                            <FiImage className="w-64 h-64" />
                                         </div>
                                     )}
                                 </div>

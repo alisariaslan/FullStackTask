@@ -2,6 +2,7 @@
 
 'use client';
 
+import { FiShoppingCart } from 'react-icons/fi';
 import { Link } from '@/navigation';
 import { useAppSelector } from '@/lib/store/hooks';
 import { Button } from '@/components/shared/Button';
@@ -27,11 +28,7 @@ export default function CartPage() {
         return (
             <div className="container mx-auto p-4 py-20 text-center">
                 <div className="bg-secondary rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
+                    <FiShoppingCart size={48} className="text-gray-400" />
                 </div>
                 <h1 className="text-3xl font-bold text-foreground mb-4">{t('title')}</h1>
                 <p className="text-gray-500 mb-8 text-lg">
@@ -59,7 +56,7 @@ export default function CartPage() {
 
             <div className="container mx-auto p-4 max-w-6xl">
                 <h1 className="text-2xl font-bold mb-6 text-foreground flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <FiShoppingCart size={24} />
                     {t('title')}
                     <span className="text-sm font-normal text-gray-500 ml-2">({items.length} ürün)</span>
                 </h1>

@@ -20,7 +20,7 @@
         "addToCart": "Sepete Ekle",
         "addProduct": "Ürün Ekle",
         "unknownError": "Bilinmeyen bir hata oluştu.",
-        "noProducts": "Ürün bulunamadı.",
+        "noProducts": "Ürün mevcut değil.",
         "searchResultsFor": "Arama sonuçları",
         "noResultsMessage": "ile ilgili herhangi bir ürün bulunamadı.",
         "clearSearch": "Aramayı Sıfırla",
@@ -65,7 +65,6 @@
         "title": "Yeni Ürün Ekle",
         "metaTitle": "Yeni Ürün Ekle - E-Ticaret",
         "metaDescription": "Yeni bir ürün ekleyerek işletmenizi büyütün.",
-        "successMessage": "Ürün sepete eklendi",
         "unknownError": "Bilinmeyen bir hata oluştu.",
         "Errors": {
             "categoryRequired": "Kategori seçimi zorunludur"

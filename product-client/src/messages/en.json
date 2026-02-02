@@ -20,7 +20,7 @@
         "addToCart": "Add to Cart",
         "addProduct": "Add Product",
         "unknownError": "An unknown error occurred.",
-        "noProducts": "No products found.",
+        "noProducts": "No products avaible.",
         "searchResultsFor": "Search results for",
         "noResultsMessage": "did not match any products.",
         "clearSearch": "Clear search",
@@ -65,7 +65,6 @@
         "title": "Add New Product",
         "metaTitle": "Add New Product - E-Commerce",
         "metaDescription": "Grow your business by adding a new product.",
-        "successMessage": "Product has been added to cart",
         "unknownError": "An unknown error occurred.",
         "Errors": {
             "categoryRequired": "Category is required"

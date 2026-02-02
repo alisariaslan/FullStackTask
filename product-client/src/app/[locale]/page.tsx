@@ -120,7 +120,7 @@ export default async function Home({
         <ProductFilters categories={categories} />
       </aside>
 
-      <section className="lg:pl-72">
+      <section className="lg:pl-72 pb-12">
         <div className="max-w-1xl mx-auto px-4 md:px-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold tracking-tight">
