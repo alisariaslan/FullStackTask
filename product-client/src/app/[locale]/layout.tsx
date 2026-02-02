@@ -98,7 +98,7 @@ export default async function LocaleLayout({
             <div className="pt-4">
               {children}
             </div>
-            <Toaster position="bottom-right" richColors />
+            <Toaster position="bottom-right" duration={1500} />
           </StoreProvider>
         </NextIntlClientProvider>
       </body>

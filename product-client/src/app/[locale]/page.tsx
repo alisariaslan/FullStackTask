@@ -97,7 +97,7 @@ export default async function Home({
     'itemListElement': products.map((product, index) => ({
       '@type': 'ListItem',
       'position': index + 1,
-      'url': `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/${product.id}`,
+      'url': `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/${product.slug}`,
       'name': product.name,
       'image': product.imageUrl,
       'offers': {

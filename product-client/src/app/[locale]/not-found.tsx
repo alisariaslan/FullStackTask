@@ -1,6 +1,7 @@
 'use client';
 
 
+import { FiX } from 'react-icons/fi';
 import { Button } from '@/components/shared/Button';
 import { Link } from '@/navigation';
 import { useTranslations, useLocale } from 'next-intl';
@@ -21,20 +22,7 @@ export default function NotFound() {
 
             <div className="container mx-auto p-4 py-20 text-center">
                 <div className="bg-secondary rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="48"
-                        height="48"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-gray-400"
-                    >
-                        <path d="M1 1l22 22M1 23L23 1" />
-                    </svg>
+                    <FiX size={48} className="text-gray-400" />
                 </div>
                 <h1 className="text-3xl font-bold text-foreground mb-4">404</h1>
                 <p className="text-gray-500 mb-8 text-lg">

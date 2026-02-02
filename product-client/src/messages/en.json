@@ -65,6 +65,7 @@
         "title": "Add New Product",
         "metaTitle": "Add New Product - E-Commerce",
         "metaDescription": "Grow your business by adding a new product.",
+        "successMessage": "Product has been added to cart",
         "unknownError": "An unknown error occurred.",
         "Errors": {
             "categoryRequired": "Category is required"

@@ -65,6 +65,7 @@
         "title": "Yeni Ürün Ekle",
         "metaTitle": "Yeni Ürün Ekle - E-Ticaret",
         "metaDescription": "Yeni bir ürün ekleyerek işletmenizi büyütün.",
+        "successMessage": "Ürün sepete eklendi",
         "unknownError": "Bilinmeyen bir hata oluştu.",
         "Errors": {
             "categoryRequired": "Kategori seçimi zorunludur"
