@@ -1,0 +1,740 @@
+{
+  "info": {
+    "_postman_id": "7e7ea0ae-8c3f-4309-9209-318d299f625e",
+    "name": "Full-Stack-Task-Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48994500"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Extract token from response and save to environment",
+                  "const responseData = pm.response.json();",
+                  "const token = responseData.data.token;",
+                  "pm.environment.set(\"token\", token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"acsayear@gmail.com\",\r\n  \"password\": \"a5134ba8\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/auth/login",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"acsayear@gmail.com\",\r\n  \"password\": \"a5134ba8\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/login",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 02 Feb 2026 00:02:16 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"isSuccess\": true,\n    \"message\": \"\",\n    \"data\": {\n        \"token\": \"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWNzYXllYXJAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NzAwNzY5MzYsImlzcyI6Ik1pY3Jvc2VydmljZUFwcCIsImF1ZCI6Ik1pY3Jvc2VydmljZUFwcCJ9.eJhcrKHEtbrK1xjSxJnCiyGz4IZbDDfgGKA2KyBS7wOYBHLQxerQu7FpmT_-tU851d14FRwv4dkbER5eSWJOUA\",\n        \"email\": \"acsayear@gmail.com\"\n    },\n    \"errors\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"dev@alisariaslan.com\",\r\n  \"password\": \"lelalua\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/auth/register",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Register",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"dev@alisariaslan.com\",\r\n  \"password\": \"lelalua\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/register",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 02 Feb 2026 00:05:03 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"isSuccess\": true,\n    \"message\": \"\",\n    \"data\": {\n        \"token\": \"eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiZGV2QGFsaXNhcmlhc2xhbi5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzcwMDc3MTAzLCJpc3MiOiJNaWNyb3NlcnZpY2VBcHAiLCJhdWQiOiJNaWNyb3NlcnZpY2VBcHAifQ.4yX9APexjJCir2sOCDnOzTTHFkrnFaA97OLd1i6dLrTl9GfZyGyefTTIpOx-Arjd-0J5lBPcBSLbURA-IvmhuA\",\n        \"email\": \"dev@alisariaslan.com\"\n    },\n    \"errors\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "AddCategory",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse the response JSON",
+                  "const jsonData = pm.response.json();",
+                  "",
+                  "// Extract the category ID from the data field and set it as an environment variable",
+                  "pm.environment.set(\"categoryId\", jsonData.data);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{$randomCompanyName}}\",\r\n  \"languageCode\": \"en\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/categories",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "AddCategory",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"{{$randomCompanyName}}\",\r\n  \"languageCode\": \"en\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/categories",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 02 Feb 2026 00:05:09 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"isSuccess\": true,\n    \"message\": \"\",\n    \"data\": \"f2c06d15-a303-4c5d-8f42-14553ea69996\",\n    \"errors\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "AddProduct",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "{{$randomProduct}}",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "{{$randomPrice}}",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "{{$randomInt}}",
+                  "type": "text"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "languageCode",
+                  "value": "en",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "{{$randomCatchPhrase}}",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "d7372c09-0cf9-4cb3-80ff-e9d74ee5885e",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/products",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "AddProduct",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "{{$randomProduct}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "price",
+                      "value": "{{$randomPrice}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "stock",
+                      "value": "{{$randomInt}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "categoryId",
+                      "value": "{{categoryId}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "languageCode",
+                      "value": "en",
+                      "type": "text"
+                    },
+                    {
+                      "key": "description",
+                      "value": "{{$randomCatchPhrase}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "uuid": "d7372c09-0cf9-4cb3-80ff-e9d74ee5885e",
+                      "value": null
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/products",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "products"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 02 Feb 2026 00:05:13 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"isSuccess\": true,\n    \"message\": \"\",\n    \"data\": \"5ba4d565-51d1-4189-949e-93bf81a52bb0\",\n    \"errors\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Categories",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/categories",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Categories",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/categories",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 02 Feb 2026 00:05:18 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"isSuccess\": true,\n    \"message\": \"\",\n    \"data\": [\n        {\n            \"id\": \"099839a0-90f7-47fa-9492-88f75984e54c\",\n            \"name\": \"Raynor Group\",\n            \"slug\": \"raynor-group\"\n        },\n        {\n            \"id\": \"308cb83e-67cb-4652-a147-cc85489944fe\",\n            \"name\": \"Gibson - McCullough\",\n            \"slug\": \"gibson-mccullough\"\n        },\n        {\n            \"id\": \"84029fc0-c706-47ed-b70b-6ccaf2f8f20a\",\n            \"name\": \"Stokes - Schultz\",\n            \"slug\": \"stokes-schultz\"\n        },\n        {\n            \"id\": \"94610a16-395b-47de-9f1e-681f9a79855d\",\n            \"name\": \"Bayer, Crist and Lynch\",\n            \"slug\": \"bayer-crist-and-lynch\"\n        },\n        {\n            \"id\": \"abc6c1f1-75ef-4f8d-9ae9-33ba87777778\",\n            \"name\": \"Bosco - Gleichner\",\n            \"slug\": \"bosco-gleichner\"\n        },\n        {\n            \"id\": \"b48dfa7c-32f3-4682-9c0d-9c01c8f0df3f\",\n            \"name\": \"Kihn, Batz and Haley\",\n            \"slug\": \"kihn-batz-and-haley\"\n        },\n        {\n            \"id\": \"b8ef24be-2642-4b86-9bcb-8638607105cc\",\n            \"name\": \"Kuphal Inc\",\n            \"slug\": \"kuphal-inc\"\n        },\n        {\n            \"id\": \"c450eb61-afa9-4df3-85d1-410309394147\",\n            \"name\": \"Satterfield - Schmidt\",\n            \"slug\": \"satterfield-schmidt\"\n        },\n        {\n            \"id\": \"cf1c58a6-e92f-47c7-aade-2f5a48c0604b\",\n            \"name\": \"Dicki - Abshire\",\n            \"slug\": \"dicki-abshire\"\n        },\n        {\n            \"id\": \"f2c06d15-a303-4c5d-8f42-14553ea69996\",\n            \"name\": \"Howell, Nicolas and Satterfield\",\n            \"slug\": \"howell-nicolas-and-satterfield\"\n        },\n        {\n            \"id\": \"f2d26e23-0d89-4f68-95c7-cfac53665c12\",\n            \"name\": \"Abshire Inc\",\n            \"slug\": \"abshire-inc\"\n        }\n    ],\n    \"errors\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Products",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/products?LanguageCode=tr&SearchTerm=&CategoryId={{categoryId}}&MinPrice=1&MaxPrice=350&SortBy=price_asc&PageNumber=1&PageSize=100",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "LanguageCode",
+                  "value": "tr"
+                },
+                {
+                  "key": "SearchTerm",
+                  "value": ""
+                },
+                {
+                  "key": "CategoryId",
+                  "value": "{{categoryId}}"
+                },
+                {
+                  "key": "MinPrice",
+                  "value": "1"
+                },
+                {
+                  "key": "MaxPrice",
+                  "value": "350"
+                },
+                {
+                  "key": "SortBy",
+                  "value": "price_asc"
+                },
+                {
+                  "key": "PageNumber",
+                  "value": "1"
+                },
+                {
+                  "key": "PageSize",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Products",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/products?LanguageCode=tr&SearchTerm=&CategoryId={{categoryId}}&MinPrice=1&MaxPrice=350&SortBy=price_asc&PageNumber=1&PageSize=100",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "LanguageCode",
+                      "value": "tr"
+                    },
+                    {
+                      "key": "SearchTerm",
+                      "value": ""
+                    },
+                    {
+                      "key": "CategoryId",
+                      "value": "{{categoryId}}"
+                    },
+                    {
+                      "key": "MinPrice",
+                      "value": "1"
+                    },
+                    {
+                      "key": "MaxPrice",
+                      "value": "350"
+                    },
+                    {
+                      "key": "SortBy",
+                      "value": "price_asc"
+                    },
+                    {
+                      "key": "PageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "PageSize",
+                      "value": "100"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 02 Feb 2026 00:08:25 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"isSuccess\": true,\n    \"message\": \"\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e32bcdc6-44cd-4a9a-b448-42cfab86b002\",\n                \"name\": \"Tuna\",\n                \"description\": \"Implemented impactful alliance\",\n                \"price\": 45.14,\n                \"stock\": 589,\n                \"imageUrl\": \"/images/no-image.png\",\n                \"categoryId\": \"8a6443bb-4592-4b46-a1cd-33031091c088\",\n                \"slug\": \"tuna\",\n                \"categoryName\": \"Mosciski Inc\",\n                \"categorySlug\": \"mosciski-inc\"\n            },\n            {\n                \"id\": \"d4b87be6-3f8b-44e2-8616-48f0a39167c8\",\n                \"name\": \"Pants\",\n                \"description\": \"Programmable asymmetric contingency\",\n                \"price\": 308.76,\n                \"stock\": 583,\n                \"imageUrl\": \"/images/no-image.png\",\n                \"categoryId\": \"8a6443bb-4592-4b46-a1cd-33031091c088\",\n                \"slug\": \"pants\",\n                \"categoryName\": \"Mosciski Inc\",\n                \"categorySlug\": \"mosciski-inc\"\n            }\n        ],\n        \"pageNumber\": 1,\n        \"pageSize\": 100,\n        \"totalCount\": 2,\n        \"totalPages\": 1\n    },\n    \"errors\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Product-BySlug",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/Products/by-slug/tuna?languageCode=tr",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "Products",
+                "by-slug",
+                "tuna"
+              ],
+              "query": [
+                {
+                  "key": "languageCode",
+                  "value": "tr"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Product-BySlug",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/Products/by-slug/tuna?languageCode=tr",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "Products",
+                    "by-slug",
+                    "tuna"
+                  ],
+                  "query": [
+                    {
+                      "key": "languageCode",
+                      "value": "tr"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 02 Feb 2026 00:10:00 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"isSuccess\": true,\n    \"message\": \"\",\n    \"data\": {\n        \"id\": \"e32bcdc6-44cd-4a9a-b448-42cfab86b002\",\n        \"name\": \"Tuna\",\n        \"description\": \"Implemented impactful alliance\",\n        \"price\": 45.14,\n        \"stock\": 589,\n        \"imageUrl\": \"/images/no-image.png\",\n        \"categoryId\": \"8a6443bb-4592-4b46-a1cd-33031091c088\",\n        \"slug\": \"tuna\",\n        \"categoryName\": \"Mosciski Inc\",\n        \"categorySlug\": \"mosciski-inc\"\n    },\n    \"errors\": null\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
