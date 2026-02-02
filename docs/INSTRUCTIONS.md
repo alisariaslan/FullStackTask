@@ -41,6 +41,18 @@ docker-compose ps
 docker inspect --format='{{json .State.Health}}' <container_name>
 ```
 
+## ⚙️ Ana Konfigürasyon (Root .env)
+
+Projenin en üst dizininde (root) yer alan `.env` dosyası, genel uygulama ortamını belirler.
+
+```env
+# --- UYGULAMA ORTAM AYARLARI ---
+# Swagger açmak için 'Development' kullanın.
+# Canlıya alırken 'Production' olarak değiştirilmelidir.
+APP_ENV=Development
+
+```
+
 ## Postman (Opsiyonel)
 
 * POSTMAN ile test yapmak isteyenler için proje ana dizininde

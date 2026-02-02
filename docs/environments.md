@@ -1,3 +1,4 @@
+
 # 🛠️ Detaylı Kurulum & Dağıtım Rehberi
 
 Bu doküman, yalnızca hızlı bir `docker-compose up` akışının ötesine geçerek sistemi **tam anlamıyla kavramak, özelleştirmek veya debug etmek** isteyen geliştiriciler için hazırlanmış **adım adım ve detaylı bir kurulum rehberi** sunar.
@@ -28,20 +29,34 @@ Sistem, tamamı Docker container’ları içinde çalışan aşağıdaki bileşe
 
 Tüm servisler, `micro-net` isimli özel bir Docker bridge network üzerinden haberleşir.
 
+## ⚙️ Ana Konfigürasyon (Root .env)
+
+Projenin en üst dizininde (root) yer alan `.env` dosyası, genel uygulama ortamını belirler.
+
+```env
+# --- UYGULAMA ORTAM AYARLARI ---
+# Geliştirme modunda Swagger açmak için 'Development' kullanın.
+# Canlıya alırken 'Production' olarak değiştirilmelidir.
+APP_ENV=Development
+
+```
+
+* **`APP_ENV`**: Bu değişken `Development` olduğunda backend servisleri Swagger arayüzlerini dışarı açar. `Production` ortamında güvenlik gereği kapatılmalıdır.
+
 ## 🔌 Network & Port Eşlemeleri
 
-| Servis             | Dahili Port | Harici Port |
-| -------------------- | ------------- | ------------- |
-| PostgreSQL         | 5432        | 6000        |
-| Redis              | 6379        | 6001        |
-| RabbitMQ (AMQP)    | 5672        | 6002        |
-| RabbitMQ UI        | 15672       | 6003        |
-| API Gateway (YARP) | 8080        | 6004        |
-| Frontend (Next.js) | 3000        | 6005        |
-| Auth API           | 8080        | 6006        |
-| Product API        | 8080        | 6007        |
-| Seq                | 80          | 6008        |
-| Log API            | 8080        | 6009        |
+| Servis | Dahili Port | Harici Port |
+| --- | --- | --- |
+| PostgreSQL | 5432 | 6000 |
+| Redis | 6379 | 6001 |
+| RabbitMQ (AMQP) | 5672 | 6002 |
+| RabbitMQ UI | 15672 | 6003 |
+| API Gateway (YARP) | 8080 | 6004 |
+| Frontend (Next.js) | 3000 | 6005 |
+| Auth API | 8080 | 6006 |
+| Product API | 8080 | 6007 |
+| Seq | 80 | 6008 |
+| Log API | 8080 | 6009 |
 
 ## 🐘 PostgreSQL Kurulumu
 
@@ -55,6 +70,7 @@ Tüm servisler, `micro-net` isimli özel bir Docker bridge network üzerinden ha
 ```text
 Kullanıcı Adı: postgres
 Şifre: a5134ba8
+
 ```
 
 ### Veritabanları
@@ -67,6 +83,7 @@ Kullanıcı Adı: postgres
 ```yaml
 volumes:
   - postgres_data:/var/lib/postgresql/data
+
 ```
 
 Bu yapılandırma, container yeniden başlatılsa bile verilerin korunmasını sağlar.
@@ -77,6 +94,7 @@ PostgreSQL, aşağıdaki komut ile **healthy** olarak işaretlenir:
 
 ```bash
 pg_isready -U postgres
+
 ```
 
 Diğer servisler, **veritabanı hazır olana kadar** başlatılmaz.
@@ -89,12 +107,14 @@ Diğer servisler, **veritabanı hazır olana kadar** başlatılmaz.
 ```text
 Host: redis-cache
 Port: 6379
+
 ```
 
 Redis sağlık durumu şu komutla kontrol edilir:
 
 ```bash
 redis-cli ping
+
 ```
 
 ## 🐇 RabbitMQ Event Bus
@@ -111,6 +131,7 @@ RabbitMQ, servisler arası **event-driven (olay tabanlı)** iletişimi sağlar.
 ```text
 Kullanıcı Adı: guest
 Şifre: guest
+
 ```
 
 ### Kullanım Senaryosu
@@ -126,6 +147,7 @@ Seq, tüm .NET servislerinden gelen **yapılandırılmış logları** Serilog ar
 
 ```text
 http://localhost:6008
+
 ```
 
 ### Varsayılan Kullanıcı Bilgileri
@@ -133,12 +155,14 @@ http://localhost:6008
 ```text
 Kullanıcı Adı: admin
 Şifre: guest
+
 ```
 
 Tüm servisler logları şu adres üzerinden gönderir:
 
 ```text
 http://micro_seq:80
+
 ```
 
 ## 🔐 Auth API
@@ -156,6 +180,7 @@ ConnectionStrings__PostgreConnection=Host=postgres-db;Database=AuthDb
 JwtSettings__Key=...
 JwtSettings__Issuer=MicroserviceApp
 JwtSettings__Audience=MicroserviceApp
+
 ```
 
 ### Başlangıç Davranışı
@@ -178,6 +203,7 @@ JwtSettings__Audience=MicroserviceApp
 ```yaml
 volumes:
   - ./images:/app/wwwroot/images
+
 ```
 
 ### Cache Stratejisi
@@ -193,7 +219,7 @@ volumes:
 * Logları Seq’e gönderir
 * Loglamayı request lifecycle’ından ayırır
 
-Bu sayede kullanıcıya bakan API’lerde ​**performans kaybı yaşanmaz**​.
+Bu sayede kullanıcıya bakan API’lerde **performans kaybı yaşanmaz**.
 
 ## 🌐 API Gateway (YARP)
 
@@ -201,12 +227,12 @@ Gateway, frontend’ten gelen tüm istekler için **tek giriş noktası** olarak
 
 ### Routing
 
-| Public Path             | Hedef Servis |
-| ------------------------- | -------------- |
-| `/api/auth/*`       | Auth API     |
-| `/api/products/*`   | Product API  |
-| `/api/categories/*` | Product API  |
-| `/api/logs/*`       | Log API      |
+| Public Path | Hedef Servis |
+| --- | --- |
+| `/api/auth/*` | Auth API |
+| `/api/products/*` | Product API |
+| `/api/categories/*` | Product API |
+| `/api/logs/*` | Log API |
 
 ### Özellikler
 
@@ -218,32 +244,35 @@ Gateway, frontend’ten gelen tüm istekler için **tek giriş noktası** olarak
 
 ### Çalışma Modu
 
-Frontend, çalıştığı ortama göre otomatik olarak API adresini değiştirir:
+Frontend, çalıştığı ortama göre (Server-side vs Client-side) otomatik olarak doğru API adresini seçer.
 
-```ts
-if (typeof window !== 'undefined') {
-  NEXT_PUBLIC_API_URL
-} else {
-  API_URL
-}
-```
+### Environment Değişkenleri (`product-client/.env.local`)
 
-### Environment Değişkenleri
+`product-client` klasörü içerisindeki `.env.local` dosyası şu ayarları içerir:
 
-- `GATEWAY_URL`  
-  Server-side API URL (SSR/Docker iç ağ)  
-  _Örnek:_ `http://localhost:6004`
+* **`GATEWAY_URL`**
+* *Tanım:* Sunucu tarafı (Server-to-Server) API istekleri için kullanılan ana URL.
+* *İşlev:* `apiRequest` fonksiyonu sunucu tarafında (window undefined iken) çalışıyorsa, bu URL üzerinden Docker iç ağı veya localhost ile haberleşir.
+* *Değer:* `http://localhost:6004`
 
-- `NEXT_PUBLIC_GATEWAY_URL`  
-  Client-side API URL (tarayıcıdan erişilebilir)  
-  _Örnek:_ `http://localhost:6004`
 
-- `NEXT_PUBLIC_SITE_URL`  
-  Site ana URL, SEO ve Open Graph referansı için  
-  _Örnek:_ `https://localhost:6005`
+* **`NEXT_PUBLIC_GATEWAY_URL`**
+* *Tanım:* Tarayıcı tarafı (Browser-to-Server) API istekleri için kullanılan URL.
+* *İşlev:* `NEXT_PUBLIC_` ön eki sayesinde tarayıcıdan erişilebilir. Kullanıcının tarayıcısı üzerinden API'ye (Fetch/Axios) istek atarken bu adresi kullanır.
+* *Değer:* `http://localhost:6004`
 
-- `NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS`  
-  Sepet birleştirme hatalarını sessize alır (0 = raporla, 1 = sessiz)
+
+* **`NEXT_PUBLIC_SITE_URL`**
+* *Tanım:* Sitenin kendi ana URL'i.
+* *İşlev:* Layout.tsx içerisinde MetadataBase (SEO), Canonical URL'ler ve Open Graph (sosyal medya paylaşım görselleri) oluşturulurken referans alınır.
+* *Değer:* `https://localhost:6005`
+
+
+* **`NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS`**
+* *Tanım:* Sepet birleştirme (Cart Merge) hatalarının sessize alınıp alınmayacağını belirler.
+* *İşlev:* `1` ise: Login sonrası veya sepet işlemlerindeki hatalar konsola basılmaz ve kullanıcıya kritik olmayan uyarılar gösterilmez. (apiHandler.ts ve ProductCard.tsx içinde kullanılır).
+* *Değer:* `0`
+
 
 
 ### Kimlik Doğrulama Akışı
@@ -258,32 +287,33 @@ if (typeof window !== 'undefined') {
 
 ```bash
 docker-compose up --build -d
+
 ```
 
 ### Sağlık Kontrolü
 
 ```bash
 docker ps
+
 ```
 
 Tüm servislerin **healthy** durumda olması gerekir.
 
 ## 🧪 Faydalı URL’ler
 
-* Frontend: [http://localhost:6005](http://localhost:6005/)
-* Gateway: [http://localhost:6004](http://localhost:6004/)
-* Auth Swagger: [http://localhost:6006/swagger](http://localhost:6006/swagger)
-* Product Swagger: [http://localhost:6007/swagger](http://localhost:6007/swagger)
-* Log Swagger: [http://localhost:6009/swagger](http://localhost:6009/swagger)
-* RabbitMQ UI: [http://localhost:6003](http://localhost:6003/)
-* Seq Logs: [http://localhost:6008](http://localhost:6008/)
+* Frontend: [http://localhost:6005](https://www.google.com/search?q=http://localhost:6005/)
+* Gateway: [http://localhost:6004](https://www.google.com/search?q=http://localhost:6004/)
+* Auth Swagger: [http://localhost:6006/swagger](https://www.google.com/search?q=http://localhost:6006/swagger)
+* Product Swagger: [http://localhost:6007/swagger](https://www.google.com/search?q=http://localhost:6007/swagger)
+* Log Swagger: [http://localhost:6009/swagger](https://www.google.com/search?q=http://localhost:6009/swagger)
+* RabbitMQ UI: [http://localhost:6003](https://www.google.com/search?q=http://localhost:6003/)
+* Seq Logs: [http://localhost:6008](https://www.google.com/search?q=http://localhost:6008/)
 
 ## 🧠 İnceleyenler İçin Notlar
 
-* Tüm konfigürasyonlar **12-Factor App** prensiplerine uygundur
-* Servisler bağımsız olarak deploy edilebilir
-* Servisler birbiriyle **doğrudan** değil, yalnızca RabbitMQ veya Gateway üzerinden haberleşir
-* Local ve container ortamları arasında environment parity korunur
+* Tüm konfigürasyonlar **12-Factor App** prensiplerine uygundur.
+* Servisler bağımsız olarak deploy edilebilir.
+* Servisler birbiriyle **doğrudan** değil, yalnızca RabbitMQ veya Gateway üzerinden haberleşir.
+* Local ve container ortamları arasında environment parity korunur.
 
 Bu rehber; **detaylı mimariyi ve runtime davranışını tam şeffaflıkla görmek isteyen ileri seviye reviewer’lar, DevOps mühendisleri ve geliştiriciler** için hazırlanmıştır.
-
