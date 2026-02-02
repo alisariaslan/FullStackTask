@@ -99,6 +99,8 @@ services:
       - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
       - ConnectionStrings__Redis=redis-cache:6379
       - RabbitMQSettings__Host=rabbitmq
+      - RabbitMQSettings__Username=guest
+      - RabbitMQSettings__Password=guest
       - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
       - JwtSettings__Issuer=MicroserviceApp
       - JwtSettings__Audience=MicroserviceApp
@@ -161,6 +163,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - RabbitMQSettings__Host=rabbitmq
+      - RabbitMQSettings__Username=guest
+      - RabbitMQSettings__Password=guest
       - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
       - JwtSettings__Issuer=MicroserviceApp
       - JwtSettings__Audience=MicroserviceApp
