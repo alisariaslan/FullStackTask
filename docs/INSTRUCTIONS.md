@@ -41,9 +41,18 @@ docker-compose ps
 docker inspect --format='{{json .State.Health}}' <container_name>
 ```
 
+## Postman (Opsiyonel)
+
+* POSTMAN ile test yapmak isteyenler için proje ana dizininde
+  
+  - Full-Stack-Task-Collection.postman_collection.json
+  - Full-Stack-Task-Env.postman_environment.json
+
+dosyaları mevcuttur.
+
 ## 3️⃣ Auth Servis Testi (Swagger Kullanımı)
 
-1. **Auth Swagger:**[http://localhost:6006/swagger](https://www.google.com/search?q=http://localhost:6006/swagger)
+1. **Auth Swagger:**[http://localhost:6006/swagger](http://localhost:6006/swagger)
 2. **Kayıt Ol (Register):** Endpoint’ini kullanarak yeni bir kullanıcı oluştur.
 3. **Login:** Giriş yap ve dönen ​**JWT Token**​’ı kopyala.
 4. Bu token’ı ​**Product Swagger**​’da Authorization header olarak ekle:
@@ -51,7 +60,7 @@ docker inspect --format='{{json .State.Health}}' <container_name>
 
 ## 4️⃣ Product Servis Testi
 
-1. **Product Swagger:**[http://localhost:6007/swagger](https://www.google.com/search?q=http://localhost:6007/swagger)
+1. **Product Swagger:**[http://localhost:6007/swagger](http://localhost:6007/swagger)
 2. **Token Uygulandıktan Sonra:**
    * **Kategori Oluştur** (POST `/categories`)
    * **Ürün Oluştur** (POST `/products`) – *Not: Bu işlem frontend üzerinden de yapılabilir.*
@@ -78,13 +87,13 @@ WHERE email = 'kullanici@example.com';
 
 | **Servis / Araç** | **URL**                                                                               | **Notlar**                        |
 | -------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **Frontend**            | [http://localhost:6005](https://www.google.com/search?q=http://localhost:6005)                 | Arayüz testi ve ürün işlemleri      |
-| **Seq Logs**            | [http://localhost:6008](https://www.google.com/search?q=http://localhost:6008)                 | `admin/admin`ile merkezi log takibi |
-| **RabbitMQ**            | [http://localhost:6003](https://www.google.com/search?q=http://localhost:6003)                 | `admin/admin`ile Event mesaj takibi |
+| **Frontend**            | [http://localhost:6005](http://localhost:6005)                 | Arayüz testi ve ürün işlemleri      |
+| **Seq Logs**            | [http://localhost:6008](http://localhost:6008)                 | `admin/guest`ile merkezi log takibi |
+| **RabbitMQ**            | [http://localhost:6003](http://localhost:6003)                 | `guest/guest`ile Event mesaj takibi |
 | **PostgreSQL**          | `localhost:6000`                                                                        | Veritabanı yönetimi (DBeaver vb.)     |
 | **Redis**               | `localhost:6001`                                                                        | Cache kontrolü                         |
-| **Auth API Swagger**    | [http://localhost:6006/swagger](https://www.google.com/search?q=http://localhost:6006/swagger) | Token ve kullanıcı işlemleri         |
-| **Product API Swagger** | [http://localhost:6007/swagger](https://www.google.com/search?q=http://localhost:6007/swagger) | CRUD işlemleri                         |
+| **Auth API Swagger**    | [http://localhost:6006/swagger](http://localhost:6006/swagger) | Token ve kullanıcı işlemleri         |
+| **Product API Swagger** | [http://localhost:6007/swagger](http://localhost:6007/swagger) | CRUD işlemleri                         |
 
 ## 7️⃣ Event & Background Testleri
 

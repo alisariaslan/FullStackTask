@@ -109,8 +109,8 @@ RabbitMQ, servisler arası **event-driven (olay tabanlı)** iletişimi sağlar.
 ### Varsayılan UI Kimlik Bilgileri
 
 ```text
-Kullanıcı Adı: admin
-Şifre: admin
+Kullanıcı Adı: guest
+Şifre: guest
 ```
 
 ### Kullanım Senaryosu
@@ -128,10 +128,11 @@ Seq, tüm .NET servislerinden gelen **yapılandırılmış logları** Serilog ar
 http://localhost:6008
 ```
 
-### Varsayılan Kullanıcı (admin) Şifresi
+### Varsayılan Kullanıcı Bilgileri
 
 ```text
-admin
+Kullanıcı Adı: admin
+Şifre: guest
 ```
 
 Tüm servisler logları şu adres üzerinden gönderir:
