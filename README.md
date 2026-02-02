@@ -2,6 +2,8 @@
 
 Bu repo, mikroservis tabanlı bir backend ve modern bir frontend’den oluşan full-stack task projesinin ana reposudur.
 
+<img width="1920" height="932" alt="image" src="https://github.com/user-attachments/assets/4bf26efb-51ec-444d-a905-e7d677c28e22" />
+
 ## 🧩 Görev Uyumluluğu
 
 ### Aşama 1 – Monolitik Product API
