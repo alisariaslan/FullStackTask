@@ -1,0 +1,49 @@
+﻿
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Services.Auth.Application.Features.Auth.Commands.Login;
+using Services.Auth.Application.Features.Auth.Commands.Register;
+using Services.Auth.Application.Models;
+using Shared.Kernel.Models;
+
+namespace Services.Auth.API.Controllers
+{
+    /// <summary>
+    /// Kullanıcı giriş işlemlerini kontrol eder
+    /// </summary>
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+
+        public AuthController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        /// <summary>
+        /// Kullanıcı kayıt
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("register")]
+        public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto request)
+        {
+            var result = await _mediator.Send(new RegisterCommand(request));
+            return Ok(ApiResponse<AuthResponseDto>.Success(result));
+        }
+
+        /// <summary>
+        /// Kullanıcı giriş
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthResponseDto>> Login(LoginDto request)
+        {
+            var result = await _mediator.Send(new LoginCommand(request));
+            return Ok(ApiResponse<AuthResponseDto>.Success(result));
+        }
+    }
+}

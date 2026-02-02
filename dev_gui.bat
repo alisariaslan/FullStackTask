@@ -1,94 +1,140 @@
 @echo off
 title AliSariaslan - Developer CLI
 
-set BACKEND_PROJECT=ProductAPI
+set AUTH_API_PROJECT=Services.Auth.API
+set AUTH_INFRA_PROJECT=Services.Auth.Infrastructure
+set PRODUCT_API_PROJECT=Services.Product.API
+set PRODUCT_INFRA_PROJECT=Services.Product.Infrastructure
+set LOG_API_PROJECT=Services.Log.API
+set LOG_INFRA_PROJECT=Services.Log.Infrastructure
 set DOCKER_COMPOSE_FILE=docker-compose.yml
+set IMAGES_PATH=.\images\products\
+set ROOT_DIR=%~dp0
+set MICROSERVICES_DIR=%ROOT_DIR%FullStackTask.Microservices
 
-:MENU
+:: Klasör kontrolü
+if not exist "%MICROSERVICES_DIR%" (
+    echo Path error: %MICROSERVICES_DIR% not found.
+    pause
+    exit /b 1
+)
+
 cls
-echo    Backend: %BACKEND_PROJECT%
-echo        1. Docker Up (Normal Baslat)
-echo        2. Docker Up --Build (Kod degisti, yeniden derle ve baslat)
-echo        3. Docker Hard Reset (Cache sil, her seyi sil ve sifirdan kur)
-echo        4. Docker Down (Konteynerleri durdur ve sil)
-echo        5. Migration Ekle (dotnet ef migrations add)
-echo        6. Veritabanini Guncelle (dotnet ef database update)
-echo        7. Son Migration'i Geri Al (dotnet ef migrations remove)
-echo        0. CIKIS
+echo ===========================================
+echo         AliSariaslan - Developer CLI
+echo ===========================================
+echo   1. Full Build ^& Start (All)
+echo   2. Backend Only (Build ^& Start)
+echo   3. Hard Reset (Clean ^& Rebuild)
+echo   4. Open Products Image Folder
+echo   5. Open All User Interfaces
 
-set /p secim="Islem Seciniz (0-7): "
+echo   6. Add Migration (AUTH)
+echo   7. Add Migration (PRODUCT)
+echo   8. Add Migration (LOG)
 
-if "%secim%"=="1" goto DOCKER_UP
-if "%secim%"=="2" goto DOCKER_BUILD
-if "%secim%"=="3" goto DOCKER_HARD_RESET
-if "%secim%"=="4" goto DOCKER_DOWN
-if "%secim%"=="5" goto EF_ADD
-if "%secim%"=="6" goto EF_UPDATE
-if "%secim%"=="7" goto EF_REMOVE
+echo   9. Update Database
+echo   0. EXIT
+echo ===========================================
+echo.
+
+set /p secim="Select an option: "
+
+if "%secim%"=="1" goto FULL_BUILD
+if "%secim%"=="2" goto BACKEND_ONLY
+if "%secim%"=="3" goto HARD_RESET
+if "%secim%"=="4" goto OPEN_IMAGES
+if "%secim%"=="5" goto OPEN_ALL_UI
+
+if "%secim%"=="6" goto EF_ADD_AUTH
+if "%secim%"=="7" goto EF_ADD_PRODUCT
+if "%secim%"=="8" goto EF_ADD_LOG
+
+if "%secim%"=="9" goto EF_UPDATE
 if "%secim%"=="0" exit
+exit
 
-goto MENU
-
-:: -------------------------------------------------------------------------
-:: DOCKER BOLUMU
-:: -------------------------------------------------------------------------
-:DOCKER_UP
+:FULL_BUILD
 echo.
-echo Docker konteynerleri baslatiliyor...
-docker-compose up
-pause
-goto MENU
-
-:DOCKER_BUILD
-echo.
-echo Kod degisiklikleri derleniyor ve baslatiliyor...
+echo Starting all containers with build...
 docker-compose up --build
-pause
-goto MENU
+exit
 
-:DOCKER_HARD_RESET
+:BACKEND_ONLY
 echo.
-echo !!! DIKKAT: Konteynerler, Aglar ve Cache silinecek !!!
-pause
+echo Starting Backend-only with build...
+docker-compose up --build ^
+ postgres-db ^
+ redis-cache ^
+ rabbitmq ^
+ seq ^
+ auth-api ^
+ product-api ^
+ gateway-yarp ^
+ log-api
+exit
+
+:HARD_RESET
+echo.
+echo Performing Docker Hard Reset...
 docker-compose down --rmi all --volumes --remove-orphans
-echo.
 docker-compose up --build --force-recreate
-pause
-goto MENU
+exit
 
-:DOCKER_DOWN
+:EF_ADD_AUTH
 echo.
-echo Konteynerler durduruluyor...
-docker-compose down
+set /p migName="Enter migration name: "
+pushd "%MICROSERVICES_DIR%"
+dotnet ef migrations add %migName% --project %AUTH_INFRA_PROJECT% --startup-project %AUTH_API_PROJECT%
+popd
 pause
-goto MENU
+exit
 
-:: -------------------------------------------------------------------------
-:: EF CORE BOLUMU
-:: -------------------------------------------------------------------------
-:EF_ADD
+:EF_ADD_PRODUCT
 echo.
-set /p migName="Migration ismini girin: "
-cd %BACKEND_PROJECT%
-dotnet ef migrations add %migName%
-cd ..
+set /p migName="Enter migration name: "
+pushd "%MICROSERVICES_DIR%"
+dotnet ef migrations add %migName% --project %PRODUCT_INFRA_PROJECT% --startup-project %PRODUCT_API_PROJECT%
+popd
 pause
-goto MENU
+exit
+
+:EF_ADD_LOG
+echo.
+set /p migName="Enter migration name: "
+pushd "%MICROSERVICES_DIR%"
+dotnet ef migrations add %migName% --project %LOG_INFRA_PROJECT% --startup-project %LOG_API_PROJECT%
+popd
+pause
+exit
 
 :EF_UPDATE
 echo.
-cd %BACKEND_PROJECT%
-echo Veritabani guncelleniyor (Migrate ediliyor)...
-dotnet ef database update
-cd ..
+pushd "%MICROSERVICES_DIR%"
+dotnet ef database update --project %AUTH_INFRA_PROJECT% --startup-project %AUTH_API_PROJECT%
+dotnet ef database update --project %PRODUCT_INFRA_PROJECT% --startup-project %PRODUCT_API_PROJECT%
+dotnet ef database update --project %LOG_INFRA_PROJECT% --startup-project %LOG_API_PROJECT%
+popd
 pause
-goto MENU
+exit
 
-:EF_REMOVE
+:OPEN_IMAGES
 echo.
-echo Son migration geri aliniyor...
-cd %BACKEND_PROJECT%
-dotnet ef migrations remove
-cd ..
-pause
-goto MENU
+if not exist "%IMAGES_PATH%" (
+    echo Creating directory: %IMAGES_PATH%
+    mkdir "%IMAGES_PATH%"
+)
+start "" "%IMAGES_PATH%"
+exit
+
+:OPEN_ALL_UI
+echo.
+echo Opening all user interfaces...
+start "" "http://localhost:6005"   :: Main Web Application
+start "" "http://localhost:6006/swagger" :: Auth
+start "" "http://localhost:6007/swagger" :: Product
+start "" "http://localhost:6009/swagger" :: Log
+start "" "http://localhost:6008"   :: Seq
+start "" "http://localhost:6003"   :: RabbitMQ
+echo All interfaces opened.
+exit

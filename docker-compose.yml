@@ -1,64 +1,210 @@
 services:
-  # Veritabanı (PostgreSQL)
-  db:
-    image: postgres:latest
-    container_name: product_db
+  postgres-db:
+    image: postgres:17-alpine
+    container_name: micro_postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: a5134ba8
-      POSTGRES_DB: ProductDb
     ports:
-      - "5432:5432"
+      - "6000:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: always
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  # Cache (Redis)
-  redis:
+  redis-cache:
     image: redis:alpine
-    container_name: product_cache
+    container_name: micro_redis
     ports:
-      - "6379:6379"
-    restart: always
+      - "6001:6379"
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
-  # Backend API (.NET)
-  api:
-    build:
-      context: ./ProductAPI
-      dockerfile: Dockerfile
-    container_name: product_api
-    depends_on:
-      - db
-      - redis
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: micro_rabbitmq
     ports:
-      - "5000:8080"
+      - "6002:5672"
+      - "6003:15672"
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  seq:
+    image: datalust/seq:latest
+    container_name: micro_seq
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
-      - ConnectionStrings__Redis=redis:6379
-    restart: on-failure
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORD=guest
+    ports:
+      - "0.0.0.0:6008:80"
+    networks:
+      - micro-net
+    restart: unless-stopped
+    volumes:
+      - seq_data:/data
 
-  # Frontend (Next.js)
+  auth-api:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Services.Auth.API/Dockerfile
+    container_name: micro_auth_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=AuthDb;Username=postgres;Password=a5134ba8
+      - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
+      - JwtSettings__Issuer=MicroserviceApp
+      - JwtSettings__Audience=MicroserviceApp
+      - Serilog__WriteTo__1__Name=Seq
+      - Serilog__WriteTo__1__Args__serverUrl=http://micro_seq:80
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6006:8080"
+
+  product-api:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Services.Product.API/Dockerfile
+    container_name: micro_product_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__PostgreConnection=Host=postgres-db;Port=5432;Database=ProductDb;Username=postgres;Password=a5134ba8
+      - ConnectionStrings__Redis=redis-cache:6379
+      - RabbitMQSettings__Host=rabbitmq
+      - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
+      - JwtSettings__Issuer=MicroserviceApp
+      - JwtSettings__Audience=MicroserviceApp
+      - Serilog__WriteTo__1__Name=Seq
+      - Serilog__WriteTo__1__Args__serverUrl=http://micro_seq:80
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    volumes:
+      - ./images:/app/wwwroot/images
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6007:8080"
+
+  gateway-yarp:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Gateways.Yarp/Dockerfile
+    container_name: micro_gateway
+    ports:
+      - "0.0.0.0:6004:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - Serilog__WriteTo__1__Name=Seq
+      - Serilog__WriteTo__1__Args__serverUrl=http://micro_seq:80
+    depends_on:
+      auth-api:
+        condition: service_healthy
+      product-api:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  log-api:
+    build:
+      context: ./FullStackTask.Microservices
+      dockerfile: Services.Log.API/Dockerfile
+    container_name: micro_log_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - RabbitMQSettings__Host=rabbitmq
+      - JwtSettings__Key=MGvY3wu8u31E3GqRXMuFmVIxfXBczUGh4pzPoILbuC3Fv0L78iIW8EC9cCtOscbx
+      - JwtSettings__Issuer=MicroserviceApp
+      - JwtSettings__Audience=MicroserviceApp
+      - Serilog__WriteTo__1__Name=Seq
+      - Serilog__WriteTo__1__Args__serverUrl=http://micro_seq:80
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    networks:
+      - micro-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6009:8080"
+
   frontend:
     build:
       context: ./product-client
       dockerfile: Dockerfile
-    container_name: product_client
-    # Hot Reload için dosya takibi (Linux/Windows WSL için önemli)
+    container_name: micro_frontend
     environment:
-      - WATCHPACK_POLLING=true
-      # Tarayıcı (Client) için dış adres
-      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
-      # Sunucu (Server Container) için iç adres
-      - API_URL=http://product_api:8080/api
+      - GATEWAY_URL=http://gateway-yarp:8080
+      - NEXT_PUBLIC_GATEWAY_URL=http://localhost:6004
+      - NEXT_PUBLIC_SITE_URL=http://localhost:6005
+      - NEXT_PUBLIC_SILENT_CART_MERGE_ERRORS=1
     ports:
-      - "3000:3000"
-    volumes:
-      - ./product-client:/app
-      - /app/node_modules # node_modules'u host'tan ezmemesi için
+      - "6005:3000"
     depends_on:
-      - api
+      gateway-yarp:
+        condition: service_healthy
+    networks:
+      - micro-net
     restart: always
 
 volumes:
   postgres_data:
+  seq_data:
+
+
+networks:
+  micro-net:
+    driver: bridge

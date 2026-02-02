@@ -1,0 +1,150 @@
+{
+    "Layout": {
+        "title": "E-Commerce - A.SARIASLAN",
+        "description": "Next.js & .NET Core Full Stack Project"
+    },
+    "Navbar": {
+        "title": "E-Commerce",
+        "cart": "Cart",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "searchPlaceholder": "Search products..."
+    },
+    "Home": {
+        "title": "Products",
+        "metaTitle": "E-Commerce",
+        "metaDescription": "Many products are waiting for you in E-Commerce. Start shopping now.",
+        "price": "Price",
+        "stock": "Stock",
+        "addToCart": "Add to Cart",
+        "addProduct": "Add Product",
+        "unknownError": "An unknown error occurred.",
+        "noProducts": "No products avaible.",
+        "searchResultsFor": "Search results for",
+        "noResultsMessage": "did not match any products.",
+        "clearSearch": "Clear search",
+        "pageIndicator": "Page {current} / {total}",
+        "categories": "Categories",
+        "allProducts": "All Products",
+        "priceRange": "Price Range",
+        "applyFilter": "Apply",
+        "sortBy": "Sort by",
+        "sortDefault": "Default",
+        "priceLowToHigh": "Price (Low to High)",
+        "priceHighToLow": "Price (High to Low)",
+        "clearFilters": "Clear Filters",
+        "tryAdjustingFilters": "Try adjusting your filters or clearing the search.",
+        "resetFilters": "Reset Filters"
+    },
+    "Login": {
+        "title": "Login",
+        "metaTitle": "Login - E-Commerce",
+        "metaDescription": "Log in to your account and start shopping.",
+        "unknownError": "An unknown error occurred.",
+        "email": "Email",
+        "emailPlaceholder": "mail@example.com",
+        "logginIn": "Logging in...",
+        "login": "Login",
+        "dontHaveAccount": "Don't have an account?",
+        "registerLink": "Register here",
+        "loginNotSuccessful": "Login unsuccessful. Please check your credentials."
+    },
+    "Register": {
+        "title": "Register",
+        "metaTitle": "Register - E-Commerce",
+        "metaDescription": "Create your account and start shopping.",
+        "unknownError": "An unknown error occurred.",
+        "emailPlaceholder": "mail@example.com",
+        "saving": "Registering...",
+        "register": "Register",
+        "haveAccount": "Already have an account?",
+        "loginLink": "Login here"
+    },
+    "AddProduct": {
+        "title": "Add New Product",
+        "metaTitle": "Add New Product - E-Commerce",
+        "metaDescription": "Grow your business by adding a new product.",
+        "unknownError": "An unknown error occurred.",
+        "Errors": {
+            "categoryRequired": "Category is required"
+        },
+        "Labels": {
+            "category": "Category",
+            "name": "Product Name",
+            "description": "Description",
+            "price": "Price",
+            "stock": "Stock Quantity",
+            "image": "Product Image"
+        },
+        "Placeholders": {
+            "selectCategory": "Select a category",
+            "name": "e.g. Laptop",
+            "description": "Enter product description...",
+            "price": "0.00",
+            "stock": "0"
+        },
+        "Buttons": {
+            "save": "Save",
+            "saving": "Saving...",
+            "cancel": "Cancel"
+        }
+    },
+    "Cart": {
+        "title": "Shopping Cart",
+        "metaTitle": "Shopping Cart - E-Commerce",
+        "metaDescription": "View your cart and complete your purchase.",
+        "empty": "Your cart is currently empty.",
+        "continueShopping": "Continue Shopping",
+        "price": "Price",
+        "total": "Total",
+        "subtotal": "Subtotal",
+        "summary": "Order Summary",
+        "checkout": "Proceed to Checkout",
+        "remove": "Remove"
+    },
+    "Product": {
+        "title": "Products",
+        "safePayment": "Safe Payment",
+        "24hourSupport": "24/7 Live Support"
+    },
+    "ProductCard": {
+        "price": "Price",
+        "stock": "Stock",
+        "addToCart": "Add to Cart",
+        "outOfStock": "Out of Stock",
+        "noImage": "No Image Available",
+        "inStock": "In Stock",
+        "productAdded": "Item added to your cart.",
+        "tempAdded": "Product added to cart offline.",
+        "addErrorBackend": "Backend error, falling back to local:",
+        "added": "Added",
+        "almostOutOfStok": "Almost out of stock!"
+    },
+    "StoreProvider": {
+        "cart_load_fail": "An error occurred while loading the cart"
+    },
+    "NotFound": {
+        "message": "Sorry, the page you are looking for could not be found.",
+        "goHome": "Go to Home Page",
+        "metaTitle": "Page Not Found - E-Commerce",
+        "metaDescription": "Sorry, the page you are looking for could not be found. You can continue by returning to the home page."
+    },
+    "ApiErrors": {
+        "userEmailAlreadyExists": "This email address is already in use.",
+        "userNotFound": "User not found or the password is incorrect.",
+        "systemError": "An unexpected error occurred.",
+        "apiError": "Could not connect to the server.",
+        "nameRequired": "Name is required.",
+        "priceInvalid": "Invalid price value.",
+        "categoryRequired": "Category is required.",
+        "categoryNotFound": "Category not found.",
+        "invalidRole": "Invalid role."
+    },
+    "ClientErrors": {
+        "sessionExpired": "Your session has expired, please login again.",
+        "networkError": "Could not connect to the server. Please check your internet connection.",
+        "invalidResponse": "Invalid response received from the server.",
+        "unknown": "An unexpected system error occurred."
+    }
+}

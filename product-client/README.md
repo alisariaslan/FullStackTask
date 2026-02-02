@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend Proje Mimarisi
 
-## Getting Started
+## Genel Bakış
 
-First, run the development server:
+Bu proje, **Next.js 14+ (App Router)** ile geliştirilmiş modern ve yüksek performanslı bir web uygulamasıdır.
+SEO uyumlu, çok dilli (multi-language) olacak şekilde tasarlanmış ve bir **API Gateway** üzerinden mikroservis tabanlı backend ile tamamen entegredir.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🧠 Micro-Frontend Kapsam Kararı
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Görev tanımında micro-frontend mimarisi (Home & Cart) geçmesine rağmen,
+bu proje; backend mikroservisleri ve **tekil (unified) bir frontend** uygulaması üzerine odaklanmıştır.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Bu tercih bilinçli bir şekilde alınmıştır.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Frontend mimarisi modüler bir şekilde kurgulanmıştır ve **büyük bir refactor gerektirmeden**
+ileride micro-frontend yapısına (Multi-Zone veya Module Federation) evrilebilir.
 
-## Learn More
+## Teknoloji Yığını
 
-To learn more about Next.js, take a look at the following resources:
+* **Framework:** Next.js 14+ (App Router)
+* **Dil:** TypeScript
+* **State Management:** Redux Toolkit (RTK)
+* **Internationalization:** next-intl
+* **Stil:** Tailwind CSS
+* **Data Fetching:** Özel servis wrapper’ları ile Fetch API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Mimari Yapı
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Proje; ölçeklenebilirlik ve sürdürülebilirlik için modüler ve component tabanlı bir yapı izler:
 
-## Deploy on Vercel
+* **`src/app`**
+  Dosya sistemi tabanlı routing, layout’lar ve server/client component’ler
+* **`src/components`**
+  Atomic UI component’leri (Shared ve Feature-specific)
+* **`src/lib`**
+  Redux store slice’ları, provider’lar ve global yardımcı fonksiyonlar
+* **`src/services`**
+  YARP Gateway üzerinden backend servislerine istek atan API katmanı
+* **`src/i18n`**
+  Internationalization için middleware ve konfigürasyonlar
+* **`src/messages`**
+  JSON tabanlı çeviri sözlükleri (örn: TR, EN)
+* **`src/middleware.ts`**
+  Dil algılama (locale detection) ve auth redirect işlemleri
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Temel Tasarım Kararları
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* **Server-Side Rendering (SSR) & ISR:**
+  Ürün listeleme ve detay sayfalarında maksimum SEO performansı ve dinamik meta tag’ler için kullanılır
+* **Micro-Frontend’e Hazır Mimari:**
+  Home, Cart gibi bağımsız modülleri ortak Redux state ile yönetebilecek şekilde tasarlanmıştır
+* **Global State Management:**
+  Redux Toolkit; alışveriş sepeti, kullanıcı oturumu ve çok adımlı UI state’lerini yönetir
+* **Internationalization (i18n):**
+  `next-intl` ile çok dilli routing ve içerik değiştirme desteği
+* **Responsive UI:**
+  Tailwind CSS ile mobile-first ve responsive tasarım
+* **Performans:**
+  `next/image` kullanılarak lazy-loading ve WebP destekli optimize edilmiş görseller
+
+## Ortam (Environment) Konfigürasyonu
+
+Konfigürasyonlar, **12-Factor App** metodolojisine uygun olarak `.env` dosyaları üzerinden yönetilir:
+
+* `NEXT_PUBLIC_API_URL`
+  → **YARP Gateway** adresini gösterir (`http://localhost:6004`)
+* `API_URL`
+  → SSR sırasında kullanılan server-side internal API adresi
+
+## Kurulum & Deployment
+
+* **[Full-Stack-Task](../README.md)**
+  Ana README dosyasını ziyaret edin.
+

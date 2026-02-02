@@ -1,0 +1,150 @@
+{
+    "Layout": {
+        "title": "E-Ticaret - A.SARIASLAN",
+        "description": "Next.js & .NET Core Full Stack Projesi"
+    },
+    "Navbar": {
+        "title": "E-Ticaret",
+        "cart": "Sepet",
+        "login": "Giriş Yap",
+        "register": "Kayıt Ol",
+        "logout": "Oturumu Kapat",
+        "searchPlaceholder": "Ürün ara..."
+    },
+    "Home": {
+        "title": "E-Ticaret",
+        "metaTitle": "E-Ticaret",
+        "metaDescription": "E-Ticaret de bir çok ürün seni bekliyor. Hemen alışverişe başla.",
+        "price": "Fiyat",
+        "stock": "Stok",
+        "addToCart": "Sepete Ekle",
+        "addProduct": "Ürün Ekle",
+        "unknownError": "Bilinmeyen bir hata oluştu.",
+        "noProducts": "Ürün mevcut değil.",
+        "searchResultsFor": "Arama sonuçları",
+        "noResultsMessage": "ile ilgili herhangi bir ürün bulunamadı.",
+        "clearSearch": "Aramayı Sıfırla",
+        "pageIndicator": "Sayfa {current} / {total}",
+        "categories": "Kategoriler",
+        "allProducts": "Tüm Ürünler",
+        "priceRange": "Fiyat Aralığı",
+        "applyFilter": "Uygula",
+        "sortBy": "Sıralama",
+        "sortDefault": "Varsayılan",
+        "priceLowToHigh": "Fiyat (Artan)",
+        "priceHighToLow": "Fiyat (Azalan)",
+        "clearFilters": "Filtreleri Temizle",
+        "tryAdjustingFilters": "Filtrelerinizi değiştirmeyi veya aramayı temizlemeyi deneyin.",
+        "resetFilters": "Filtreleri Sıfırla"
+    },
+    "Login": {
+        "title": "Giriş Yap",
+        "metaTitle": "Giriş Yap - E-Ticaret",
+        "metaDescription": "Hesabınıza giriş yapın ve alışverişe başlayın.",
+        "unknownError": "Bilinmeyen bir hata oluştu.",
+        "email": "E-posta",
+        "emailPlaceholder": "mail@ornek.com",
+        "logginIn": "Giriş yapılıyor...",
+        "login": "Giriş Yap",
+        "dontHaveAccount": "Hesabın yok mu?",
+        "registerLink": "Buradan kayıt ol",
+        "loginNotSuccessful": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin."
+    },
+    "Register": {
+        "title": "Kayıt Ol",
+        "metaTitle": "Kayıt Ol - E-Ticaret",
+        "metaDescription": "Hesabınızı oluşturun ve alışverişe başlayın..",
+        "unknownError": "Bilinmeyen bir hata oluştu.",
+        "emailPlaceholder": "mail@ornek.com",
+        "saving": "Kayıt yapılıyor...",
+        "register": "Kayıt Ol",
+        "haveAccount": "Zaten hesabın var mı?",
+        "loginLink": "Buradan giriş yap"
+    },
+    "AddProduct": {
+        "title": "Yeni Ürün Ekle",
+        "metaTitle": "Yeni Ürün Ekle - E-Ticaret",
+        "metaDescription": "Yeni bir ürün ekleyerek işletmenizi büyütün.",
+        "unknownError": "Bilinmeyen bir hata oluştu.",
+        "Errors": {
+            "categoryRequired": "Kategori seçimi zorunludur"
+        },
+        "Labels": {
+            "category": "Kategori",
+            "name": "Ürün Adı",
+            "description": "Açıklama",
+            "price": "Fiyat",
+            "stock": "Stok Miktarı",
+            "image": "Ürün Görseli"
+        },
+        "Placeholders": {
+            "selectCategory": "Bir kategori seçin",
+            "name": "örn. Laptop",
+            "description": "Ürün açıklamasını girin...",
+            "price": "0.00",
+            "stock": "0"
+        },
+        "Buttons": {
+            "save": "Kaydet",
+            "saving": "Kaydediliyor...",
+            "cancel": "İptal"
+        }
+    },
+    "Cart": {
+        "title": "Alışveriş Sepeti",
+        "metaTitle": "Alışveriş Sepeti - E-Ticaret",
+        "metaDescription": "Sepetinizi görüntüleyin ve alışverişi tamamlayın.",
+        "empty": "Sepetiniz şu anda boş.",
+        "continueShopping": "Alışverişe Devam Et",
+        "price": "Fiyat",
+        "total": "Toplam",
+        "subtotal": "Ara Toplam",
+        "summary": "Sipariş Özeti",
+        "checkout": "Ödemeye Geç",
+        "remove": "Kaldır"
+    },
+    "Product": {
+        "title": "Ürünler",
+        "safePayment": "Güvenli Ödeme",
+        "24hourSupport": "7/24 Canlı Destek"
+    },
+    "ProductCard": {
+        "price": "Fiyat",
+        "stock": "Stok",
+        "addToCart": "Sepete Ekle",
+        "outOfStock": "Stokta Yok",
+        "noImage": "Görsel Yok",
+        "inStock": "Stokta Var",
+        "productAdded": "Ürün sepetinize eklendi.",
+        "tempAdded": "Ürün çevrimdışı olarak eklendi.",
+        "addErrorBackend": "Backend hatası, sepet yerele çeviriliyor:",
+        "added": "Eklendi",
+        "almostOutOfStok": "Stoğu bitmek üzere!"
+    },
+    "StoreProvider": {
+        "cart_load_fail": "Sepet yüklenirken hata oluştu"
+    },
+    "NotFound": {
+        "message": "Üzgünüz, aradığınız sayfa bulunamadı.",
+        "goHome": "Ana Sayfaya Dön",
+        "metaTitle": "Sayfa Bulunamadı - E-Ticaret",
+        "metaDescription": "Üzgünüz, aradığınız sayfa bulunamadı. Ana sayfaya dönerek devam edebilirsiniz."
+    },
+    "ApiErrors": {
+        "userEmailAlreadyExists": "Bu e-posta adresi zaten kullanılıyor.",
+        "userNotFound": "Kullanıcı bulunamadı veya şifre hatalı.",
+        "systemError": "Beklenmeyen bir hata oluştu.",
+        "apiError": "Sunucuya bağlanılamadı.",
+        "nameRequired": "İsimlendirme gereklidir.",
+        "priceInvalid": "Geçersiz fiyat değeri.",
+        "categoryRequired": "Kategori gereklidir.",
+        "categoryNotFound": "Kategori bulunamadı.",
+        "invalidRole": "Geçersiz rol."
+    },
+    "ClientErrors": {
+        "sessionExpired": "Oturumunuzun süresi doldu, lütfen tekrar giriş yapın.",
+        "networkError": "Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.",
+        "invalidResponse": "Sunucudan geçersiz bir yanıt alındı.",
+        "unknown": "Beklenmeyen bir sistem hatası oluştu."
+    }
+}
